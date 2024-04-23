@@ -1,0 +1,64 @@
+<div class="bg-gray-100 min-h-screen flex flex-col">
+  <div class="container max-w-md mx-auto flex-1 flex flex-col items-center justify-center px-3">
+      <div class="bg-white px-4 py-4 rounded-lg shadow-md text-black w-full">
+          <h1 class="mb-6 text-3xl text-center font-bold">Sign up</h1>
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+          <input
+              type="text"
+              class="block border border-gray-300 w-full p-3 rounded mb-4 focus:outline-none focus:border-green-500"
+              name="fullname"
+              formControlName="fullname"
+              placeholder="Full Name" />
+
+          <input
+              type="text"
+              class="block border border-gray-300 w-full p-3 rounded mb-4 focus:outline-none focus:border-green-500"
+              name="email"
+              formControlName="email"
+              placeholder="Email" />
+
+          <input
+              type="text"
+              class="block border border-gray-300 w-full p-3 rounded mb-4 focus:outline-none focus:border-green-500"
+              name="username"
+              formControlName="username"
+              placeholder="Username" />
+
+
+          <input
+              type="password"
+              class="block border border-gray-300 w-full p-3 rounded mb-4 focus:outline-none focus:border-green-500"
+              name="password"
+              formControlName="password"
+              placeholder="Password" />
+
+          <input
+              type="password"
+              class="block border border-gray-300 w-full p-3 rounded mb-6 focus:outline-none focus:border-green-500"
+              name="cpassword"  
+              formControlName="cpassword"
+              placeholder="Confirm Password" />
+
+          <button
+              type="submit"
+              class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded focus:outline-none focus:shadow-outline"
+          >Create Account</button>
+        </form>
+          <div class="text-center text-sm text-gray-600 mt-4">
+              By signing up, you agree to the
+              <a class="no-underline border-b border-gray-600 text-gray-800" href="#">Terms of Service</a>
+              and
+              <a class="no-underline border-b border-gray-600 text-gray-800" href="#">Privacy Policy</a>
+          </div>
+      </div>
+  
+
+      <div class="text-gray-600 mt-3 mb-2 text-center">
+          Already have an account?
+          <a class="no-underline border-b border-blue-500 text-blue-500" href="../login/">
+              Log in
+          </a>.
+      </div>
+  </div>
+</div>
