@@ -3,6 +3,8 @@ import { AuthService } from './../../../services/auth.service';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {  Router } from '@angular/router';
+import * as CryptoJS from 'crypto-js';
+
 interface User {
   email: string;
   username: string;
@@ -47,12 +49,11 @@ registerUser(): void {
   if (this.registerForm.valid) {
     const formValue = this.registerForm.value;
 
-    const fullname: string = formValue.fullname ?? ''; // Default to empty string if null or undefined
-    const email: string = formValue.email ?? ''; // Default to empty string if null or undefined
-    const username: string = formValue.username ?? ''; // Default to empty string if null or undefined
-    const password: string = formValue.password ?? ''; // Default to empty string if null or undefined
+    const fullname: string = formValue.fullname ?? ''; 
+    const email: string = formValue.email ?? ''; 
+    const username: string = formValue.username ?? ''; 
+    const password: string = formValue.password ?? ''; 
 
-    // Create User object
     const user: User = {
       fullname,
       email,
@@ -60,9 +61,10 @@ registerUser(): void {
       password,
     };
     this.auth.createUser(user).subscribe({
-      next: () => {
+      next: (response) => {
+        localStorage.setItem('userEmail',response.email)
         alert('Registration Completed!');
-        //this.route.navigate(['/login']);
+        this.route.navigate(['/verify']);
       },
       error: (error: any) => {
         console.log('Error registering user:', error);

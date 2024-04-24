@@ -1,0 +1,56 @@
+<div class="relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 py-12">
+  <div class="relative bg-white px-6 pt-10 pb-9 shadow-xl mx-auto w-full max-w-lg rounded-2xl">
+    <div class="mx-auto flex w-full max-w-md flex-col space-y-16">
+      <div class="flex flex-col items-center justify-center text-center space-y-2">
+        <div class="font-semibold text-3xl">
+          <p>Email Verification</p>
+        </div>
+        <div class="flex flex-row text-sm font-medium text-gray-400">
+          <!-- Display user's email with an email masking pipe (assuming you have implemented this) -->
+          <p>We have sent a code to your email {{ Email | emailMask }}</p>
+        </div>
+      </div>
+
+      <div>
+        <form [formGroup]="verifyForm" (ngSubmit)="verifyOTP()" class="">
+          <div class="flex flex-row items-center justify-between mx-auto w-full max-w-xs mb-4">
+            <!-- Input field for OTP -->
+            <input
+              type="text"
+              class="block border border-gray-300 w-full p-3 rounded mb-4 focus:outline-none focus:border-green-500"
+              formControlName="enteredOTP"
+              placeholder="Enter OTP"
+              [(ngModel)]="otp"
+              (ngModelChange)="onOtpChange()"
+              maxlength="4"
+            />
+          </div>
+          <div *ngIf="remainingTime > 0" class="text-center mb-3">
+            <p>Time remaining: {{ remainingTime }} seconds</p>
+          </div>
+          <div *ngIf="remainingTime === 0" class="text-center mb-3">
+            <p>Time Expired!</p>
+          </div>
+
+          <div class="flex flex-col space-y-5">
+            <!-- Verify Account button -->
+            <div>
+              <button
+                type="submit"
+                [disabled]="verifyForm.invalid || remainingTime === 0 || otpInvalid"
+                class="flex items-center justify-center w-full border rounded-xl outline-none py-5 bg-green-500 border-none text-white text-sm shadow-sm hover:bg-green-600 transition-colors duration-300"
+              >
+                Verify Account
+              </button>
+            </div>
+
+            <div class="flex items-center justify-center text-sm font-medium text-gray-500 space-x-1">
+              <!-- Resend code link -->
+              <p>Didn't receive code?</p> <button   [disabled]="verifyForm.invalid || remainingTime === 0 || otpInvalid" class="flex items-center text-blue-600" (click)="resendCode()">Resend</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
