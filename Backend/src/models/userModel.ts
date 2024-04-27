@@ -5,11 +5,12 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export interface User {
     username: string;
     email: string;
-    password?: string;
+    password: string;
     fullname: string;
     profilePic?: string;
     phone?: string;
     bio?: string;
+    gender?:string;
     chatList: Types.ObjectId[];
     savedPosts: Types.ObjectId[];
     online: boolean;
@@ -64,6 +65,11 @@ const userSchema = new Schema<UserDocument>({
         type: String,
         trim: true,
         maxlength: 200,
+    },
+    gender:{
+        type:String,
+        trim:true,
+        maxlength:5
     },
     chatList: {
         type: [{ type: Types.ObjectId, ref: "User" }],

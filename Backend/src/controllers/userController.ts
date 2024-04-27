@@ -1,12 +1,13 @@
 
+import multer from 'multer';
 import { Request, Response } from 'express';
 import authService from '../services/userService';
 import generateOTP from '../utils/generateOtp';
 import userRepository from '../repositories/userRepository';
 import nodemailer from '../utils/nodemailer';
-import Joi from 'joi'
 import User, { UserDocument } from '../models/userModel';
 import { tempUserDocument } from '../models/tempUserModel';
+
 
 export const signup = async (req: Request, res: Response) => {
   const { fullname,email, username, password } = req.body;
@@ -57,7 +58,11 @@ export const login = async (req: Request, res: Response) => {
     const result= await authService.login(email, password);
 
     if (typeof result === 'string') {
-      res.status(201).json({ token: result }); // Return token if authentication is successful
+      const token = result;
+      const userId = await authService.getUserIdFromToken(token);
+      console.log("token decode:",userId);
+      
+      res.status(201).json({ token,userId }); // Return token if authentication is successful
     } else if ('emailMatch' in result) {
       res.status(401).json({ message: 'Email not found' }); // Return email not found error
     } else if ('passMatch' in result) {
@@ -108,6 +113,72 @@ export const verifyOTP = async (req: Request, res: Response) => {
 };
 
 
+
+export const fetchAllUsers = async (req: Request, res: Response) => {
+  try {
+    const userDatas = await userRepository.getAllUsers();
+    res.status(200).json({ users: userDatas });
+  } catch (error) {
+    console.log(error);
+    res.json({ error });
+  }
+};
+
+
+export const fetchUserById = async (req: Request, res: Response) => {
+  const  id  = req.query.id;
+console.log(id)
+  try {
+    if (!id || typeof id !== 'string') {
+      return res.status(400).json({ error: 'Invalid _id parameter in request' });
+    }
+    console.log(id)
+    const user = await userRepository.findUserById(id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error('Error fetching user by ID:', error);
+    res.status(500).json({ error: 'Failed to fetch user' });
+  }
+};
+
+
+
+
+// Update user profile route
+export const editProfile= async (req: Request, res: Response) => {
+  try {
+    const id = req.query.id as string | undefined; // Ensure id is a string or undefined
+    console.log("User id editprofile:",id);
+    if (!id) {
+      throw new Error('User ID is missing in the query parameters');
+    }
+    const { fullname, username, gender, bio } = req.body;
+    let profilePic = ''; // Default profile picture URL
+    // Check if profile picture is uploaded
+    console.log(req.file)
+    if (req.file) {
+      // Upload image to Cloudinary
+      profilePic = await authService.uploadImage(req.file);
+      console.log("Profilepic:",profilePic);
+      
+    }
+
+     await userRepository.updateUserProfile(id, {
+      fullname,
+      username,
+      gender,
+      bio,
+      profilePic
+    });
+
+    res.json({ success: true, message: 'User profile updated successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to update user profile', error: error });
+  }
+};
 
 
 

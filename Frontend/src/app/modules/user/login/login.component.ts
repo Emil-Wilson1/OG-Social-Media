@@ -41,12 +41,14 @@ export class LoginComponent {
     this.userService.getUser({ email, password }).subscribe(
       (response) => {
         // Successful login, redirect to home page or dashboard
+        localStorage.setItem('userId',response.userId)
         if(response.passMatch){
           this.passMessage=response.passMatch
         }else if(response.emailMatch){
           this.emailMessage=response.emailMatch
         }else{
-          this.router.navigate(['/home']);
+         
+          this.router.navigate(['/profile']);
         }
    
       },

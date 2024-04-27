@@ -55,8 +55,35 @@ export class UserRepository {
         ).exec();
       }
 
+      async getAllUsers(): Promise<UserDocument[]> {
+        const verifiedUsers=await this.userModel.find({verified:true}).exec();
+        return verifiedUsers
+      }
+      async findUserById(userId: string): Promise<UserDocument | null> {
+        try {
+          const user = await this.userModel
+            .findOne({ _id: userId })
+            .exec()
+          return user;
+        } catch (error) {
+          console.error(`Error fetching user by ID ${userId}:`, error);
+          throw new Error('Failed to fetch user');
+        }
+      }
 
-  
+
+      async updateUserProfile(userId: string, updatedData: Partial<UserDocument>): Promise<UserDocument | null> {
+        try {
+          const user = await this.userModel.findOneAndUpdate({ _id: userId }, updatedData, { new: true });
+          console.log("User details from userRepo:",user);
+          return user;
+        } catch (error) {
+          console.error(`Error updating user profile for ID ${userId}:`, error);
+          throw new Error('Failed to update user profile');
+        }
+      }
+
+
 }
 
 export default new UserRepository()
