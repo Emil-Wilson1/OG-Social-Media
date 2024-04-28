@@ -1,0 +1,58 @@
+<div class="bg-gray-100 flex">
+  <!-- Sidebar -->
+  <div class="bg-gray-800 text-gray-100 w-64 flex-none min-h-screen">
+      <div class="p-6">
+          <h1 class="text-2xl font-bold">Admin</h1>
+          <ul class="mt-6">
+              <li class="mb-4">
+                  <a href="#" class="block text-gray-300 hover:bg-gray-700 px-4 py-2 rounded">Dashboard</a>
+              </li>
+              <li class="mb-4">
+                  <a href="#" class="block text-gray-300 hover:bg-gray-700 px-4 py-2 rounded">User Management</a>
+              </li>
+                    <li class="mb-4">
+                  <a href="#" class="block text-gray-300 hover:bg-gray-700 px-4 py-2 rounded">Logout</a>
+              </li>
+          </ul>
+      </div>
+
+  </div>
+
+  <!-- Content -->
+  <div class="flex-1 m-6">
+      <div class="container mx-auto px-4 py-8">
+          <h1 class="text-3xl font-semibold mb-4">User Management</h1>
+          <div class="-mx-4 overflow-x-auto">
+              <table class="min-w-full bg-white rounded-lg overflow-hidden" *ngIf="(users$ | async) as userdata">
+                  <thead class="bg-gray-200 text-gray-700">
+                      <tr >
+                          <th class="py-2 px-4">Name</th>
+                          <th class="py-2 px-4">Username</th>
+                          <th class="py-2 px-4">Email</th>
+                          <th class="py-2 px-4">Actions</th>
+                      </tr>
+                  </thead>
+                  <tbody class="text-gray-600" *ngFor="let user of userdata; let i = index">
+                      <!-- Dummy Content -->
+                      <tr>
+                          <td class="py-3 px-4 text-center">{{i+1}}</td>
+                          <td class="py-3 px-4 text-center">{{user.username}}</td>
+                          <td class="py-3 px-4 text-center">{{user.fullname}}</td>
+                          <td class="py-3 px-4 text-center">
+                            @if(!user.blocked){
+                              <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg" (click)="blockUser(user._id)">Block</button>
+                            }@else{
+                              <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg" (click)="unblockUser(user._id)">UnBlock</button>
+                            }
+                             
+                              
+                          </td>
+                      </tr>
+                     
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+</div>
+ 

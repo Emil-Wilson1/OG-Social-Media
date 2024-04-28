@@ -1,5 +1,4 @@
 
-import multer from 'multer';
 import { Request, Response } from 'express';
 import authService from '../services/userService';
 import generateOTP from '../utils/generateOtp';
@@ -114,15 +113,7 @@ export const verifyOTP = async (req: Request, res: Response) => {
 
 
 
-export const fetchAllUsers = async (req: Request, res: Response) => {
-  try {
-    const userDatas = await userRepository.getAllUsers();
-    res.status(200).json({ users: userDatas });
-  } catch (error) {
-    console.log(error);
-    res.json({ error });
-  }
-};
+
 
 
 export const fetchUserById = async (req: Request, res: Response) => {
@@ -179,6 +170,41 @@ export const editProfile= async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: 'Failed to update user profile', error: error });
   }
 };
+
+
+
+
+export const forgotPassword= async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    // Call the sendPasswordResetEmail method to handle sending the reset email
+    const result = await authService.sendPasswordResetEmail(email);
+    // Return the result message
+    res.status(200).json({message:"Reset password link sent successfully!"});
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    res.status(500).json({meassage:'Internal server error'});
+  }
+}
+
+
+
+export const resetPassword=async (req: Request, res: Response)=> {
+  const token: string | undefined = req.query.token as string;
+  const { newPassword } = req.body;
+
+  try {
+    if (!token) {
+      throw new Error('Token is missing');
+    }
+    await authService.resetPassword(token, newPassword);
+    res.status(200).json({meassage:'Password reset successfully'});
+  } catch (error) {
+    res.status(400).json({error});
+  }
+}
+
+
 
 
 

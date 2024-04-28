@@ -28,6 +28,25 @@ async function sendOTP(email:string, otp:number) {
   }
 }
 
+
+async function sendReset(email:string, resetLink:string) {
+  try {
+    // Send email with OTP
+    await transporter.sendMail({
+      from: 'emilwilson67@gmail.com',
+      to: email,
+      subject: 'Reset Password',
+      text: `Click the link to reset your password: ${resetLink}`
+    });
+
+    console.log(`Reset link sent to ${email}`);
+  } catch (error) {
+    console.error('Error sending link via email:', error);
+    throw new Error('Failed to send link');
+  }
+}
+
 export default {
-  sendOTP
+  sendOTP,
+  sendReset
 };

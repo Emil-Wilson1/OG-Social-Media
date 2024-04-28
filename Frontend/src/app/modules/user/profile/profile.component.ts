@@ -1,7 +1,7 @@
-import { fetchUserAPI } from './../../store/user.action';
+import { fetchUserAPI } from '../../store/user/user.action';
 import { AuthService } from './../../../services/auth.service';
 
-import { SelectorData } from './../../store/user.selector';
+import { SelectorData } from '../../store/user/user.selector';
 import { Component } from '@angular/core';
 import { Store} from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -17,9 +17,7 @@ import { RouterLinkActive } from '@angular/router';
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent {
-  userId: string | null = localStorage.getItem('userId');
   user$!: Observable<IUser[]>; // Define the observable with User type
-
   constructor(private store: Store<{ user: IUser[] }>) {
   }
 

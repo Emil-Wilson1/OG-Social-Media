@@ -1,4 +1,5 @@
-
+import JWTUtil  from './../utils/jwt';
+import nodemailer from './../utils/nodemailer';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import userRepository from '../repositories/userRepository';
@@ -18,7 +19,8 @@ class AuthService {
           }
     
           // Generate JWT token
-          const token = jwt.sign({ userId: user._id }, process.env.JWT_KEY_SECRET || '', { expiresIn: '1h' });
+          // const token = jwt.sign({ userId: user._id }, process.env.JWT_KEY_SECRET || '', { expiresIn: '1h' });
+          const token=JWTUtil.generateAccessToken(user._id)
           return token;
         } catch (error) {
           console.error('Error in signup:', error);
@@ -77,6 +79,45 @@ class AuthService {
     } catch (error) {
       throw new Error('Error uploading image to Cloudinary');
     }
+  }
+
+
+
+  async sendPasswordResetEmail(email: string): Promise<string> {
+    try {
+      // Check if the user exists
+      const user = await userRepository.findByEmail(email);
+      if (!user) {
+        return 'User not found';
+      }
+
+      // Generate reset token
+      const resetToken = Math.random().toString(36).slice(-8);
+
+      // Update user's reset token in the database
+      await userRepository.updateResetToken(email, resetToken);
+
+      // Send reset password link to the user's email
+      const resetLink = `http://localhost:4200/forgot?token=${resetToken}`;
+
+      await nodemailer.sendReset(email,resetLink) 
+
+      return 'Reset password link sent successfully';
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+      throw new Error('Failed to send password reset email');
+    }
+  }
+
+
+
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    const user = await userRepository.findByResetToken(token);
+    if (!user) {
+      throw new Error('Invalid or expired token');
+    }
+
+    await userRepository.updatePassword(user.id, newPassword);
   }
 
 }

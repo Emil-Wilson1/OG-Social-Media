@@ -1,7 +1,7 @@
 
 import { Model } from 'mongoose';
 import User, { UserDocument } from '../models/userModel';
-
+import bcrypt from 'bcryptjs';
 
 import tempUser,{ tempUserDocument } from '../models/tempUserModel';
 
@@ -55,10 +55,7 @@ export class UserRepository {
         ).exec();
       }
 
-      async getAllUsers(): Promise<UserDocument[]> {
-        const verifiedUsers=await this.userModel.find({verified:true}).exec();
-        return verifiedUsers
-      }
+
       async findUserById(userId: string): Promise<UserDocument | null> {
         try {
           const user = await this.userModel
@@ -82,7 +79,35 @@ export class UserRepository {
           throw new Error('Failed to update user profile');
         }
       }
+      async updateResetToken(email: string, resetToken: string): Promise<void> {
+        await this.userModel.updateOne({ email }, { resetToken }).exec();
+    }
 
+
+    async findByResetToken(token: string): Promise<UserDocument | null> {
+      try {
+        // Find user by reset token in the database
+        const user = await this.userModel.findOne({ resetToken: token });
+  
+        return user ;
+      } catch (error) {
+        console.error('Error finding user by reset token:', error);
+        throw error;
+      }
+    }
+  
+    async updatePassword(userId: string, newPassword: string): Promise<void> {
+      try {
+        // Update user's password in the database
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await this.userModel.findByIdAndUpdate(userId, { password: hashedPassword });
+  
+        console.log('Password updated successfully');
+      } catch (error) {
+        console.error('Error updating password:', error);
+        throw error;
+      }
+    }
 
 }
 

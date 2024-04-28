@@ -6,6 +6,7 @@ export interface User {
     username: string;
     email: string;
     password: string;
+    resetToken?:string;
     fullname: string;
     profilePic?: string;
     phone?: string;
@@ -43,6 +44,9 @@ const userSchema = new Schema<UserDocument>({
         },
     },
     password: {
+        type: String,
+    },
+    resetToken: {
         type: String,
     },
     fullname: {

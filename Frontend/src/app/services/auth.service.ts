@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SafeResourceUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
@@ -41,6 +41,7 @@ export class AuthService {
   private userToken: string | null = null;
   id!: string;
   private apiUrl:string = 'http://localhost:3000/user';
+  private Url:string = 'http://localhost:3000/admin';
   constructor(private http:HttpClient) { }
 
   createUser(user:User ): Observable<SignupResponse>{
@@ -60,7 +61,34 @@ export class AuthService {
     return this.http.get<IUser[]>(url)
   }
 
+  fetchAllUsers(): Observable<IUser[]> {
+    return this.http.get<IUser[]>(`${this.Url}/fetchUsers`)
+  }
+
   editProfile(userId: string, formData: FormData) {
     return this.http.put(`${this.apiUrl}/editProfile?id=${userId}`, formData);
   }
+  forgotPassword(email: string): Observable<any> {
+  return this.http.post(`${this.apiUrl}/reset`, {email});
+  }
+  
+
+  resetPassword(token: string, newPassword: string): Observable<any> {
+    const url = `${this.apiUrl}/forgot?token=${token}`;
+    return this.http.post<any>(url, { newPassword });
+  }
+
+//adminlogin
+  getadmin(userData: LoginRequest ): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.Url}/login`, userData);
+  }
+
+  blockUser(userId: string): Observable<any> {
+    return this.http.put<any>(`${this.Url}/block?id=${userId}`,userId);
+}
+
+unblockUser(userId: string): Observable<any> {
+  return this.http.put<any>(`${this.Url}/unblock?id=${userId}`,userId);
+}
+
 }

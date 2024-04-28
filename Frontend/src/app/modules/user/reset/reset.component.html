@@ -1,0 +1,14 @@
+<div class="container mx-auto max-w-md px-4 ">
+  <h2 class="text-2xl font-bold mb-6 text-center m-9 p-6">Reset Password</h2>
+  <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" (ngSubmit)="onSubmit()">
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="password">New Password</label>
+      <input type="password" id="password" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" [(ngModel)]="password" name="password" required>
+    </div>
+    <div class="mb-6">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="confirmPassword">Confirm Password</label>
+      <input type="password" id="confirmPassword" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+    </div>
+    <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" [disabled]="!password || !confirmPassword || password !== confirmPassword">Reset Password</button>
+  </form>
+</div>

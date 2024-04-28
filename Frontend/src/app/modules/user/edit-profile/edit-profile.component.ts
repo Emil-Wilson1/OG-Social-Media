@@ -5,8 +5,8 @@ import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { IUser } from '../../models/userModel';
-import { fetchUserAPI } from '../../store/user.action';
-import { SelectorData } from '../../store/user.selector';
+import { fetchUserAPI } from '../../store/user/user.action';
+import { SelectorData } from '../../store/user/user.selector';
 import { Router } from '@angular/router';
 
 @Component({

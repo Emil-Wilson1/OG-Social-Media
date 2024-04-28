@@ -6,6 +6,8 @@ import cookieParser from 'cookie-parser';
 import { mongooseConnection } from './src/config/mongoose';
 import { cloudinaryConfig } from './src/utils/cloudinary';
 import userRouter from './src/routes/userRouter';
+import { pgConnection } from './src/config/psql';
+import adminRouter from './src/routes/adminRouter';
 
 process.loadEnvFile()
 
@@ -14,6 +16,7 @@ process.loadEnvFile()
 const app=express()
 const server=http.createServer(app)
 
+pgConnection()
 mongooseConnection();
 cloudinaryConfig()
 
@@ -27,6 +30,7 @@ app.use(cors({
 
 
 app.use('/user', userRouter);
+app.use('/admin', adminRouter);
 
 const port = process.env.LISTENING_PORT;
 server.listen(port, ()=>{

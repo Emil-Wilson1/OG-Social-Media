@@ -1,0 +1,24 @@
+<!-- forgot-password.component.html -->
+<div class="bg-gray-100 min-h-screen flex flex-col justify-center items-center">
+  <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+    <h2 class="text-2xl font-semibold mb-6 text-center">Forgot Password</h2>
+    <form [formGroup]="forgotPasswordForm" (ngSubmit)="onSubmit()">
+      <div class="flex flex-col">
+        <label for="email" class="text-sm mb-1">Email</label>
+        <input type="email" id="email" formControlName="email"
+          class="border border-green-500 rounded-md p-2 mb-5 focus:outline-none focus:border-green-600"
+          placeholder="Enter your email">
+          <div class="mb-2" *ngIf="forgotPasswordForm.get('email')?.errors && (forgotPasswordForm.get('email')?.dirty || forgotPasswordForm.get('email')?.touched)">
+            <div *ngIf="forgotPasswordForm.get('email')?.hasError('required')" class="text-red-500">Email is required</div>
+            <div *ngIf="forgotPasswordForm.get('email')?.hasError('email')" class="text-red-500">Invalid email format</div>
+          </div>
+      </div>
+      <button type="submit"
+        class="bg-green-500 text-white rounded-md py-2 px-4 hover:bg-green-600 transition duration-300"
+        [disabled]="forgotPasswordForm.invalid">Send Reset Link</button>
+    </form>
+    <div class="mt-4 text-center">
+      <a routerLink="/login" class="text-green-500 hover:text-green-600">Back to Login</a>
+    </div>
+  </div>
+</div>

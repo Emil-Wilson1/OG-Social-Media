@@ -1,7 +1,9 @@
 export interface IUser {
+  _id:any;
   username: string;
   email: string;
   password?: string;
+  resetToken?:string;
   fullname: string;
   profilePic?: string;
   phone?: string;
