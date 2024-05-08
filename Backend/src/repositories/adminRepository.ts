@@ -21,14 +21,14 @@ export class AdminRepository {
         try {
           const newUser = new this.adminModel({
             email: email,
-            password: hashedPassword // Store the hashed password
+            password: hashedPassword 
           });
           
           const savedUser = await newUser.save();
           return savedUser;
         } catch (error) {
           console.error('Error inserting user:', error);
-          throw error; // Propagate the error to the caller
+          throw error; 
         }
       }
 

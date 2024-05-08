@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 interface User{
   email:string;
   password:string;
@@ -19,7 +20,8 @@ export class LoginComponent {
   errorMessage!: string;
   passMessage!:string;
   emailMessage!:string;
-
+  private subscription!: Subscription;
+  
   constructor(
     private formBuilder: FormBuilder,
     private userService: AuthService,
@@ -31,6 +33,13 @@ export class LoginComponent {
     });
   }
 
+
+  ngOnInit() {
+    if (this.userService.isLoggedIn) {
+      this.router.navigateByUrl('/home');
+    }
+  }
+
   onSubmit(): void {
     if (this.loginForm.invalid) {
       return;
@@ -38,24 +47,32 @@ export class LoginComponent {
 
     const { email, password } = this.loginForm.value;
 
-    this.userService.getUser({ email, password }).subscribe(
-      (response) => {
-        // Successful login, redirect to home page or dashboard
-        localStorage.setItem('userId',response.userId)
-        if(response.passMatch){
-          this.passMessage=response.passMatch
-        }else if(response.emailMatch){
-          this.emailMessage=response.emailMatch
-        }else{
-         
-          this.router.navigate(['/profile']);
-        }
-   
+    this.subscription=this.userService.getUser({ email, password }).subscribe({
+      next: (response) => {
+        localStorage.setItem('userId', response.userId);
+        localStorage.setItem('userToken', response.token);
+        this.router.navigate(['/home']);
       },
-      (error) => {
+      error: (error) => {
         console.error('Login failed:', error);
-        this.errorMessage = 'Invalid username or password';
+        if (error.status === 401) {
+          if (error.error.message === 'Email not found') {
+            this.emailMessage = 'Email not found';
+          } else if (error.error.message === 'Incorrect password') {
+            this.passMessage = 'Incorrect password';
+          }
+        } else {
+          this.errorMessage = 'Login failed';
+        }
       }
-    );
+    });
   }
+
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+
 }

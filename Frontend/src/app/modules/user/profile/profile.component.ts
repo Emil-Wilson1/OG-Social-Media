@@ -7,14 +7,15 @@ import { Store} from '@ngrx/store';
 import { Observable } from 'rxjs';
 import  { IUser } from '../../models/userModel';
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { RouterLinkActive } from '@angular/router';
+import { ActivatedRoute, Router, RouterLinkActive } from '@angular/router';
+import { SidebarComponent } from "../sidebar/sidebar.component";
 
 @Component({
-  selector: 'app-profile',
-  standalone: true,
-  imports: [CommonModule,AsyncPipe,RouterLinkActive],
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css'
+    selector: 'app-profile',
+    standalone: true,
+    templateUrl: './profile.component.html',
+    styleUrl: './profile.component.css',
+    imports: [CommonModule, AsyncPipe, RouterLinkActive, SidebarComponent]
 })
 export class ProfileComponent {
   user$!: Observable<IUser[]>; // Define the observable with User type

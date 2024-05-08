@@ -5,7 +5,7 @@ export interface IUser {
   password?: string;
   resetToken?:string;
   fullname: string;
-  profilePic?: string;
+  profilePic: string;
   phone?: string;
   bio?: string;
   chatList: string[]; // Assuming chatList contains user IDs or usernames

@@ -3,37 +3,40 @@
       <div class="bg-white px-4 py-4 rounded-lg shadow-md text-black w-full">
           <h1 class="mb-6 text-3xl text-center font-bold">Log In</h1>
 
-          <form  [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-          <input
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <input
               type="text"
-              class="block border border-gray-300 w-full p-3 rounded mb-4 focus:outline-none focus:border-green-500"
+              class="block border border-gray-300 w-full p-3 rounded mb-4 focus:outline-none"
               name="email"
               formControlName="email"
               placeholder="Email" />
-
-          <input
+              <div *ngIf="loginForm.get('email')?.errors && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)" class="text-red-500">
+                <div *ngIf="loginForm.get('email')?.errors?.['required']">Email is required.</div>
+                <div *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email address.</div>
+                
+              </div>
+              
+              
+          
+            <input
               type="password"
-              class="block border border-gray-300 w-full p-3 rounded mb-4 focus:outline-none focus:border-green-500"
+              class="block border border-gray-300 w-full p-3 rounded mb-4 focus:outline-none"
               name="password"
               formControlName="password"
               placeholder="Password" />
-
-
-
-          <button
+              <div *ngIf="loginForm.get('password')?.errors && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)" class="text-red-500">
+                <div *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</div>
+                <div *ngIf="loginForm.get('password')?.errors?.['pattern']">Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character </div>
+              </div>
+              
+          
+            <button
               type="submit"
-              class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded focus:outline-none focus:shadow-outline"
-          >Log In</button>
-</form>
-          <div class="text-center text-sm text-gray-600 mt-4">
-              <a class="no-underline border-b border-gray-600 text-gray-800" href="#">Forgot your password?</a>
-      </div>
-
-      <div class="text-gray-600 mt-3 mb-2 text-center">
-        Don't have an account yet?
-          <a class="no-underline border-b border-blue-500 text-blue-500" href="../login/">
-            Sign up here
-          </a>.
-      </div>
+              [disabled]="loginForm.invalid"
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded focus:outline-none focus:shadow-outline"
+            >Log In</button>
+          </form>
+          
+         
   </div>
 </div>

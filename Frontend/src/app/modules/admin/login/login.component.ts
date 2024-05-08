@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule,CommonModule,FormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -22,8 +23,8 @@ export class adminLoginComponent {
     private router: Router
   ) {
     this.loginForm = this.formBuilder.group({
-      email: ['', Validators.required],
-      password: ['', Validators.required]
+      email: ['', [Validators.required,Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6),Validators.pattern("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,}$")]]
     });
   }
 
@@ -36,7 +37,6 @@ export class adminLoginComponent {
 
     this.userService.getadmin({ email, password }).subscribe(
       (response) => {
-        // Successful login, redirect to home page or dashboard
         localStorage.setItem('userId',response.userId)
         if(response.passMatch){
           this.passMessage=response.passMatch
@@ -44,7 +44,7 @@ export class adminLoginComponent {
           this.emailMessage=response.emailMatch
         }else{
          
-          this.router.navigate(['/profile']);
+          this.router.navigate(['/users']);
         }
    
       },

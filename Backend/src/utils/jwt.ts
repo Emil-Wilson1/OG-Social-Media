@@ -13,9 +13,9 @@ export class JWTUtil {
     const token = jwt.sign({ userId }, secretKey, { expiresIn: '1h' });
     return token;
   }
-  generateRefreshToken(userId: string): string { // Optional for refresh functionality
+  generateRefreshToken(userId: string): string { 
     const payload: JWTPayload = { userId };
-    // Set a longer expiration for refresh token (e.g., 1 week)
+
     return jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '7d' });
   }
 }

@@ -50,8 +50,8 @@ export class UserRepository {
     async deleteOTP(email: string): Promise<void> {
         await this.tempUserModel.findOneAndUpdate(
           { email },
-          { $unset: { otp: 1 } }, // Unset the 'otp' field
-          { new: true } // Return the updated document after modification
+          { $unset: { otp: 1 } }, 
+          { new: true } 
         ).exec();
       }
 
@@ -86,7 +86,7 @@ export class UserRepository {
 
     async findByResetToken(token: string): Promise<UserDocument | null> {
       try {
-        // Find user by reset token in the database
+
         const user = await this.userModel.findOne({ resetToken: token });
   
         return user ;
@@ -98,7 +98,7 @@ export class UserRepository {
   
     async updatePassword(userId: string, newPassword: string): Promise<void> {
       try {
-        // Update user's password in the database
+
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         await this.userModel.findByIdAndUpdate(userId, { password: hashedPassword });
   

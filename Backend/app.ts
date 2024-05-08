@@ -8,6 +8,7 @@ import { cloudinaryConfig } from './src/utils/cloudinary';
 import userRouter from './src/routes/userRouter';
 import { pgConnection } from './src/config/psql';
 import adminRouter from './src/routes/adminRouter';
+import postRouter from './src/routes/postRouter';
 
 process.loadEnvFile()
 
@@ -29,7 +30,7 @@ app.use(cors({
   }))
 
 
-app.use('/user', userRouter);
+app.use('/user', userRouter,postRouter);
 app.use('/admin', adminRouter);
 
 const port = process.env.LISTENING_PORT;

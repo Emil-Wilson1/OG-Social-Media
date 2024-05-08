@@ -1,68 +1,61 @@
+<div class="felx justify-between">
+ 
+<app-sidebar></app-sidebar>
+  <div class="flex-1 p-8 ml-64 ">
+    <div *ngIf="(user$ | async) as user">
+      <div class="bg-white rounded-lg p-4  " *ngFor="let data of user">
+        <!-- Profile Card -->
+        <div class="flex items-center mb-6">
+          <div class="w-36 h-36 rounded-full overflow-hidden">
+            <img [src]="data.profilePic" alt="Profile" class="object-cover rounded-full w-36 h-36">
+          </div>
+          <div class="ml-4">
+            <h2 class="text-xl font-semibold">{{ data.fullname }}</h2>
+            <p class="text-gray-600">{{ data.username }}</p>
+          </div>
+        </div>
 
+        <!-- Bio -->
+        <p class="text-gray-800 mb-4">{{data.bio}}</p>
+        <button
+          class="bg-green-500 text-white py-2 px-4 mb-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50"><a
+            href="/editProfile">Edit Profile</a></button>
+        <div class="flex justify-around m-4">
+          <!-- My Posts Heading -->
+          <h3 class="text-lg font-semibold">My Posts</h3>
+          <h3 class="text-lg font-semibold">Saved Posts</h3>
+        </div>
+        <!-- Divider -->
+        <div class="bg-gray-300 h-px mb-6"></div>
 
-<div class="bg-green-400 min-h-screen flex items-center justify-center" *ngIf="(user$ | async) as user">
-  <div class="bg-white rounded-lg p-4 m-8 shadow-lg max-w-4xl w-full" *ngFor="let data of user">
-    <!-- Profile Card -->
-    <div class="flex items-center mb-6" >
-      <div class="w-36 h-36 rounded-full overflow-hidden" >
-        <img [src]="data.profilePic" alt="Profile" class="object-cover rounded-full w-36 h-36" >
-      </div>
-      <div class="ml-4" >
-        <h2 class="text-xl font-semibold">{{ data.fullname }}</h2>
-        <p class="text-gray-600">{{ data.username }}</p>
+        <!-- User Posts Grid -->
+        <div class="grid grid-cols-3 gap-4">
+          <!-- Sample Post 1 -->
+          <div class="bg-white rounded-lg overflow-hidden shadow-sm">
+            <img src="https://via.placeholder.com/300" alt="Post" class="w-full h-48 object-cover">
+            <div class="p-4">
+              <p class="text-gray-800">Awesome design concept!</p>
+            </div>
+          </div>
+          <!-- Sample Post 2 -->
+          <div class="bg-white rounded-lg overflow-hidden shadow-sm">
+            <img src="https://via.placeholder.com/300" alt="Post" class="w-full h-48 object-cover">
+            <div class="p-4">
+              <p class="text-gray-800">Exploring new color schemes.</p>
+            </div>
+          </div>
+          <!-- Sample Post 3 -->
+          <div class="bg-white rounded-lg overflow-hidden shadow-sm">
+            <img src="https://via.placeholder.com/300" alt="Post" class="w-full h-48 object-cover">
+            <div class="p-4">
+              <p class="text-gray-800">Innovative UI design techniques.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- No Posts Message -->
+        <!-- <p class="text-gray-600 text-center mt-8">No more posts to show.</p> -->
       </div>
     </div>
-
-    <!-- Bio -->
-    <p class="text-gray-800 mb-4">{{data.bio}}</p>
-    <button class="bg-green-500 text-white py-2 px-4 mb-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50" ><a href="/editProfile" >Edit Profile</a></button>
-    <div class="flex justify-between m-4">
-      <!-- My Posts Heading -->
-      <h3 class="text-lg font-semibold">My Posts</h3>
-      <h3 class="text-lg font-semibold">Saved Posts</h3>
-      <!-- Following Heading -->
-      <h3 class="text-lg font-semibold">Following</h3>
-      <!-- Followers Heading -->
-      <h3 class="text-lg font-semibold">Followers</h3>
-    </div>
-    <!-- Divider -->
-    <div class="bg-gray-300 h-px mb-6"></div>
-
-    <!-- User Posts Grid -->
-    <div class="grid grid-cols-3 gap-4">
-      <!-- Sample Post 1 -->
-      <div class="bg-white rounded-lg overflow-hidden shadow-sm">
-        <img src="https://via.placeholder.com/300" alt="Post" class="w-full h-48 object-cover">
-        <div class="p-4">
-          <p class="text-gray-800">Awesome design concept!</p>
-        </div>
-      </div>
-      <!-- Sample Post 2 -->
-      <div class="bg-white rounded-lg overflow-hidden shadow-sm">
-        <img src="https://via.placeholder.com/300" alt="Post" class="w-full h-48 object-cover">
-        <div class="p-4">
-          <p class="text-gray-800">Exploring new color schemes.</p>
-        </div>
-      </div>
-      <!-- Sample Post 3 -->
-      <div class="bg-white rounded-lg overflow-hidden shadow-sm">
-        <img src="https://via.placeholder.com/300" alt="Post" class="w-full h-48 object-cover">
-        <div class="p-4">
-          <p class="text-gray-800">Innovative UI design techniques.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- No Posts Message -->
-    <p class="text-gray-600 text-center mt-8">No more posts to show.</p>
   </div>
 </div>
-
-
-
-
-
-
-
-
-

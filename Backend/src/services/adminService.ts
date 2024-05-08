@@ -16,7 +16,7 @@ class AdminService {
       let user = await adminRepository.findByEmail(email);
       
       if (!user) {
-        // Register the user if they don't exist
+
         try {
           user = await this.registerUser(email, password);
           return JWTUtil.generateAccessToken(user._id);
@@ -42,16 +42,16 @@ class AdminService {
 
   async registerUser(email: string, password: string): Promise<IAdmin> {
     try {
-      // Hash the password
-      const hashedPassword = await bcrypt.hash(password, 10); // Salt rounds: 10
 
-      // Insert the user into the database with the hashed password
+      const hashedPassword = await bcrypt.hash(password, 10); 
+
+    
       const newUser = await adminRepository.insertUser(email, hashedPassword);
       
       return newUser;
     } catch (error) {
       console.error('Error registering user:', error);
-      throw error; // Propagate the error to the caller
+      throw error; 
     }
   }
 

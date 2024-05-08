@@ -32,11 +32,11 @@ export class ResetComponent {
       .subscribe(
         response => {
           console.log('Password reset successfully');
-          // Handle success, e.g., display a success message to the user
+          
         },
         error => {
           console.error('Error resetting password:', error);
-          // Handle error, e.g., display an error message to the user
+        
         }
       );
   }

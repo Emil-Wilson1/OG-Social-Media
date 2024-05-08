@@ -1,6 +1,6 @@
 <div class="bg-gray-100 min-h-screen flex flex-col">
   <div class="container max-w-md mx-auto flex-1 flex flex-col items-center justify-center px-3">
-      <div class="bg-white px-4 py-4 rounded-lg shadow-md text-black w-full">
+      <div class="bg-white px-4 py-4 rounded-lg shadow-md text-black w-96">
           <h1 class="mb-6 text-3xl text-center font-bold">Log In</h1>
 
           <form  [formGroup]="loginForm" (ngSubmit)="onSubmit()">
@@ -10,6 +10,11 @@
               name="email"
               formControlName="email"
               placeholder="Email" />
+              <div *ngIf="loginForm.controls['email'].touched && loginForm.controls['email'].errors">
+                <p *ngIf="loginForm.controls?.['email']?.hasError('required')" class="text-red-500">Email Required</p>
+                <p *ngIf="loginForm.controls?.['email']?.hasError('email')" class="text-red-500">Invalid Email Format</p>
+              </div>              
+              <p class="text-red-500">{{emailMessage}}</p>
 
           <input
               type="password"
@@ -17,7 +22,12 @@
               name="password"
               formControlName="password"
               placeholder="Password" />
-
+              <div *ngIf="loginForm.controls['password'].touched && loginForm.controls['password'].errors">
+                <p *ngIf="loginForm.controls?.['password']?.hasError('required')" class="text-red-500">Password Required</p>
+                <p *ngIf="loginForm.controls?.['password']?.hasError('pattern')" class="text-red-500">Invalid Password Format</p>
+              </div>
+              
+              <p class="text-red-500">{{passMessage}}</p>
 
 
           <button
@@ -26,12 +36,12 @@
           >Log In</button>
 </form>
           <div class="text-center text-sm text-gray-600 mt-4">
-              <a class="no-underline border-b border-gray-600 text-gray-800" href="#">Forgot your password?</a>
+              <a class="no-underline border-b border-gray-600 text-gray-800" href="/reset">Forgot your password?</a>
       </div>
 
       <div class="text-gray-600 mt-3 mb-2 text-center">
         Don't have an account yet?
-          <a class="no-underline border-b border-blue-500 text-blue-500" href="../login/">
+          <a class="no-underline border-b border-blue-500 text-blue-500" href="/signup">
             Sign up here
           </a>.
       </div>

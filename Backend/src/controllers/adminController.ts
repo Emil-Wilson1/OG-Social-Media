@@ -17,13 +17,13 @@ export const login = async (req: Request, res: Response) => {
       const userId = await authService.getUserIdFromToken(token);
       console.log("token decode:",userId);
       
-      res.status(201).json({ token,userId }); // Return token if authentication is successful
+      res.status(201).json({ token,userId }); 
     } else if ('emailMatch' in result) {
-      res.status(401).json({ message: 'Email not found' }); // Return email not found error
+      res.status(401).json({ message: 'Email not found' }); 
     } else if ('passMatch' in result) {
-      res.status(401).json({ message: 'Incorrect password' }); // Return incorrect password error
+      res.status(401).json({ message: 'Incorrect password' }); 
     } else {
-      res.status(500).json({ message: 'Login failed' }); // Fallback for generic error
+      res.status(500).json({ message: 'Login failed' }); 
     }
   } catch (error) {
     console.error('Error during login:', error);
@@ -45,7 +45,7 @@ export const fetchAllUsers = async (req: Request, res: Response) => {
 
 
 export const block = async (req: Request, res: Response) =>  {
-  const userId = req.query.id as string; // Assuming userId is the query parameter name
+  const userId = req.query.id as string; 
   if (!userId) {
     return res.status(400).json({ error: 'User ID is required' });
   }
@@ -61,7 +61,7 @@ export const block = async (req: Request, res: Response) =>  {
 
 
 export const unblock = async (req: Request, res: Response) =>  {
-  const userId = req.query.id as string; // Assuming userId is the query parameter name
+  const userId = req.query.id as string; 
   if (!userId) {
     return res.status(400).json({ error: 'User ID is required' });
   }

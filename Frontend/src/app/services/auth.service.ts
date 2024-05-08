@@ -44,6 +44,16 @@ export class AuthService {
   private Url:string = 'http://localhost:3000/admin';
   constructor(private http:HttpClient) { }
 
+
+  get isLoggedIn() {
+    if(localStorage.getItem('userToken')){
+      return true;
+  }else{
+    return false
+  }
+ }
+
+ 
   createUser(user:User ): Observable<SignupResponse>{
     return this.http.post<SignupResponse>(`${this.apiUrl}/signup`, user);
   }
@@ -61,9 +71,7 @@ export class AuthService {
     return this.http.get<IUser[]>(url)
   }
 
-  fetchAllUsers(): Observable<IUser[]> {
-    return this.http.get<IUser[]>(`${this.Url}/fetchUsers`)
-  }
+
 
   editProfile(userId: string, formData: FormData) {
     return this.http.put(`${this.apiUrl}/editProfile?id=${userId}`, formData);
@@ -78,7 +86,9 @@ export class AuthService {
     return this.http.post<any>(url, { newPassword });
   }
 
-//adminlogin
+
+
+
   getadmin(userData: LoginRequest ): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.Url}/login`, userData);
   }
@@ -89,6 +99,10 @@ export class AuthService {
 
 unblockUser(userId: string): Observable<any> {
   return this.http.put<any>(`${this.Url}/unblock?id=${userId}`,userId);
+}
+
+fetchAllUsers(): Observable<IUser[]> {
+  return this.http.get<IUser[]>(`${this.Url}/fetchUsers`)
 }
 
 }

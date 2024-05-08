@@ -1,10 +1,10 @@
-import nodemailer from 'nodemailer'; // Replace with your email sending module
+import nodemailer from 'nodemailer'; 
 
-// Create a transporter for sending emails (e.g., using SMTP)
+
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 587,
-  secure: false, // false for TLS, true for SSL
+  secure: false, 
   auth: {
     user: 'emilwilson67@gmail.com',
     pass: 'fiotgsmmqukncbvj'
@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 async function sendOTP(email:string, otp:number) {
   try {
-    // Send email with OTP
+
     await transporter.sendMail({
       from: 'emilwilson67@gmail.com',
       to: email,
@@ -31,7 +31,7 @@ async function sendOTP(email:string, otp:number) {
 
 async function sendReset(email:string, resetLink:string) {
   try {
-    // Send email with OTP
+
     await transporter.sendMail({
       from: 'emilwilson67@gmail.com',
       to: email,

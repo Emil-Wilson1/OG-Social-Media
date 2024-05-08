@@ -1,7 +1,6 @@
 import { UserManagementComponent } from './modules/admin/user-management/user-management.component';
 import { Routes } from '@angular/router';
 import { RegisterComponent } from './modules/user/register/register.component';
-import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './modules/user/login/login.component';
 import { VerifyComponent } from './modules/user/verify/verify.component';
 import { ProfileComponent } from './modules/user/profile/profile.component';
@@ -9,6 +8,8 @@ import { EditProfileComponent } from './modules/user/edit-profile/edit-profile.c
 import { adminLoginComponent } from './modules/admin/login/login.component';
 import { RestComponent } from './modules/user/rest/rest.component';
 import { ResetComponent } from './modules/user/reset/reset.component';
+import { authGuard } from './guards/auth.guard';
+import { HomeComponent } from './modules/user/home/home.component';
 
 export const routes: Routes = [
   {
@@ -20,16 +21,13 @@ export const routes: Routes = [
     component:LoginComponent
   }, 
   {
-    path:'home',
-    component:HomeComponent
-  },
-  {
     path:'verify',
     component:VerifyComponent
   }, 
   {
     path:'profile',
-    component:ProfileComponent
+    component:ProfileComponent,
+    canActivate: [authGuard],
   },
   {
     path:'editProfile',
@@ -50,5 +48,10 @@ export const routes: Routes = [
   {
     path:'users',
     component:UserManagementComponent
-  }
+  },
+  {
+    path:'home',
+    component:HomeComponent
+  },
+
 ];
