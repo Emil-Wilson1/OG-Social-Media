@@ -3,6 +3,16 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Post } from '../modules/models/postModel';
 
+
+interface ReportData {
+  reporterId: string;
+  reporterUsername: string;
+  reportType: string;
+  targetId: string;
+  details?: string;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,13 +29,23 @@ export class PostService {
     return this.http.get<Post[]>(`${this.apiUrl}/fetchPosts`)
   }
 
-  likePost(postId: string, userId: string): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${postId}/like`, { userId });
+  likePost(postId: string, userId: string): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${postId}/like`, { userId });
   }
 
+  unlikePost(postId: string, userId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${postId}/unlike`, { body: { userId } });
+  }
+
+  savePost(postId: string, userId: string): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${postId}/save`,{ userId } );
+  }
   
-  unlikePost(postId: string, userId: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${postId}/unlike`, { body:{ userId } });
+  unsavePost(postId: string, userId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${postId}/unsave`, { body:{ userId } });
   }
 
+  reportPost(reportData: ReportData): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/report`, reportData);
+  }
 }

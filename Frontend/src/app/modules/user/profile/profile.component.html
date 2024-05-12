@@ -1,6 +1,6 @@
 <div class="felx justify-between">
- 
-<app-sidebar></app-sidebar>
+
+  <app-sidebar></app-sidebar>
   <div class="flex-1 p-8 ml-64 ">
     <div *ngIf="(user$ | async) as user">
       <div class="bg-white rounded-lg p-4  " *ngFor="let data of user">
@@ -19,8 +19,8 @@
         <p class="text-gray-800 mb-4">{{data.bio}}</p>
         <button
           class="bg-green-500 text-white py-2 px-4 mb-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50"><a
-            href="/editProfile">Edit Profile</a></button>
-        <div class="flex justify-around m-4">
+            href="/editProfile" class="no-underline text-white">Edit Profile</a></button>
+        <div class="flex justify-around m-2">
           <!-- My Posts Heading -->
           <h3 class="text-lg font-semibold">My Posts</h3>
           <h3 class="text-lg font-semibold">Saved Posts</h3>
@@ -29,32 +29,21 @@
         <div class="bg-gray-300 h-px mb-6"></div>
 
         <!-- User Posts Grid -->
-        <div class="grid grid-cols-3 gap-4">
-          <!-- Sample Post 1 -->
-          <div class="bg-white rounded-lg overflow-hidden shadow-sm">
-            <img src="https://via.placeholder.com/300" alt="Post" class="w-full h-48 object-cover">
-            <div class="p-4">
-              <p class="text-gray-800">Awesome design concept!</p>
-            </div>
-          </div>
-          <!-- Sample Post 2 -->
-          <div class="bg-white rounded-lg overflow-hidden shadow-sm">
-            <img src="https://via.placeholder.com/300" alt="Post" class="w-full h-48 object-cover">
-            <div class="p-4">
-              <p class="text-gray-800">Exploring new color schemes.</p>
-            </div>
-          </div>
-          <!-- Sample Post 3 -->
-          <div class="bg-white rounded-lg overflow-hidden shadow-sm">
-            <img src="https://via.placeholder.com/300" alt="Post" class="w-full h-48 object-cover">
-            <div class="p-4">
-              <p class="text-gray-800">Innovative UI design techniques.</p>
-            </div>
+        <div class="grid grid-cols-3 gap-4" >
+          <div *ngFor="let post of posts$ | async">
+            <ng-container *ngIf="post.userId === userId">
+              <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
+                <img [src]="post.image" alt="Post" class="w-full h-48 object-cover" >
+              </div>
+            </ng-container>
           </div>
         </div>
+        
+        <!-- <div class="flex justify-center" *ngIf="show">
+          <app-posts></app-posts>
+        </div> -->
 
-        <!-- No Posts Message -->
-        <!-- <p class="text-gray-600 text-center mt-8">No more posts to show.</p> -->
+
       </div>
     </div>
   </div>

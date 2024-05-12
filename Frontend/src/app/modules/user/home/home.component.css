@@ -19,3 +19,8 @@
     left: 100%;
   }
 }
+
+
+.hidden {
+  display: none;
+}

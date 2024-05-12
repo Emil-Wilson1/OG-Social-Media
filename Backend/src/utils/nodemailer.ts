@@ -6,8 +6,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false, 
   auth: {
-    user: 'emilwilson67@gmail.com',
-    pass: 'fiotgsmmqukncbvj'
+    user: process.env.EMAIL,
+    pass: process.env.PASS
   }
 });
 
@@ -15,7 +15,7 @@ async function sendOTP(email:string, otp:number) {
   try {
 
     await transporter.sendMail({
-      from: 'emilwilson67@gmail.com',
+      from: process.env.EMAIL,
       to: email,
       subject: 'Your One-Time Password (OTP)',
       text: `Your OTP is: ${otp}`

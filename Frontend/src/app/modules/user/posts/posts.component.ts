@@ -1,60 +1,44 @@
-import {SelectorPostData} from './../../store/posts/post.selector';
-import 'hammerjs';
-import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component,  ElementRef,  HostListener,  ViewChild } from '@angular/core';
-import { SidebarComponent } from '../sidebar/sidebar.component';
+import { Component, ViewChild } from '@angular/core';
+import { ModalComponent } from '../modal/modal.component';
 import { PostService } from '../../../services/post.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { map, Observable, of, take } from 'rxjs';
-import { Post } from '../../models/postModel';
 import { select, Store } from '@ngrx/store';
+import { Post } from '../../models/postModel';
 import { fetchPostAPI } from '../../store/posts/post.action';
-import { ImageCropperComponent, ImageCropperModule } from 'ngx-image-cropper';
-import { ImageCroppedEvent } from 'ngx-image-cropper';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { ModalComponent } from "../modal/modal.component";
+import { SelectorPostData } from '../../store/posts/post.selector';
+import { map, Observable } from 'rxjs';
 import moment from 'moment';
+import { AsyncPipe, CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportPostComponent } from '../report-post/report-post.component';
-import { PostsComponent } from '../posts/posts.component';
+
 @Component({
-    selector: 'app-home',
-    standalone: true,
-    templateUrl: './home.component.html',
-    styleUrl: './home.component.css',
-    imports: [
-        SidebarComponent,
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        AsyncPipe,
-        ImageCropperModule,
-        ModalComponent,
-        ReportPostComponent,
-        PostsComponent 
-    ]
+  selector: 'app-posts',
+  standalone: true,
+  imports: [        CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AsyncPipe,
+    ModalComponent,
+    ReportPostComponent,
+    PostsComponent ],
+  templateUrl: './posts.component.html',
+  styleUrl: './posts.component.css'
 })
-export class HomeComponent {
-  description: string = '';
-  selectedFile!: File | null;
+export class PostsComponent {
   posts$!: Observable<Post[]>;
   userId: string = localStorage.getItem('userId') || '';
   isLiked: boolean = false;
-  likedPosts: string[] = [];
-  croppedImage: any = '';
-  imageChangedEvent: any = '';
+  likedPosts: string[] = [];;
   postCommentsCount: number = 0; // Initialize with a default value
   savedPosts: string[] = [];
 
-  @ViewChild(ImageCropperComponent) imageCropper!: ImageCropperComponent;
   @ViewChild(ModalComponent) modal!: ModalComponent;
   constructor(
     private postService: PostService,
-    private dialog: MatDialog,
     private store: Store<{ posts: Post[] }>,
-    private sanitizer: DomSanitizer
   ) {}
 
+  
   ngOnInit(): void {
     this.store.dispatch(fetchPostAPI());
     this.posts$ = this.store.pipe(select(SelectorPostData));
@@ -73,64 +57,12 @@ export class HomeComponent {
 
 
 
- 
-
   handleCommentsCountUpdated(commentsCount: number) {
     this.postCommentsCount = commentsCount;
     // You can perform any additional operations with the updated comments count here
   }
 
 
-  imageCropped(event: ImageCroppedEvent) {
-    if (event.blob) {
-      const imageFile = new File([event.blob], 'cropped-image.jpg', {
-        type: 'image/jpeg',
-      });
-      this.croppedImage = imageFile;
-    }
-  }
-  onFileSelected(event: any): void {
-    console.log('Selected file:', event.target.files[0]);
-    this.imageChangedEvent = event;
-  }
-
-  cropperReady() {
-    console.log('Cropper ready');
-  }
-
-  loadImageFailed() {
-    console.log('Load image failed');
-    // Show an error message or handle the failure case
-  }
-
-  uploadPost(fileInput: HTMLInputElement) {
-    if (!this.croppedImage) {
-      console.error('No image selected or processed');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('image', this.croppedImage);
-    formData.append('description', this.description);
-    const userId = localStorage.getItem('userId') || '';
-
-    this.postService.uploadPost(userId, formData).subscribe({
-      next: (response) => {
-        console.log('Post uploaded successfully', response);
-        this.store.dispatch(fetchPostAPI());
-        this.selectedFile = null;
-        this.description = '';
-        this.croppedImage = null;
-        this.imageChangedEvent = null;
-        fileInput.value = '';
-        // Handle success, show a success message, etc.
-      },
-      error: (error) => {
-        console.error('Failed to upload post', error);
-        // Handle error, show an error message, etc.
-      },
-    });
-  }
 
   likePost(postId: string): void {
     this.postService.likePost(postId, this.userId).subscribe({
@@ -279,5 +211,4 @@ export class HomeComponent {
       return createdAtDate.format('MMM DD, YYYY'); // Fallback to a standard date format
     }
   }
-
 }

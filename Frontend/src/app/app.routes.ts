@@ -1,3 +1,4 @@
+import { SearchComponent } from './modules/user/search/search.component';
 import { UserManagementComponent } from './modules/admin/user-management/user-management.component';
 import { Routes } from '@angular/router';
 import { RegisterComponent } from './modules/user/register/register.component';
@@ -53,5 +54,9 @@ export const routes: Routes = [
     path:'home',
     component:HomeComponent
   },
+  {
+    path:'search',
+    component:SearchComponent
+  }
 
 ];

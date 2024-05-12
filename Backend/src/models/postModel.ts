@@ -7,6 +7,7 @@ interface PostModel extends Document {
   date: Date;
   likes: Types.ObjectId[];
   saved: Types.ObjectId[];
+  comments:Types.ObjectId[];
   hidden: boolean;
   blocked: boolean;
   adminBlock: boolean;
@@ -32,10 +33,6 @@ const postSchema = new Schema<PostDocument>({
     trim: true,
     maxLength: 100,
   },
-  date: {
-    type: Date,
-    default: Date.now,
-  },
   likes: {
     type: [{ type: Schema.Types.ObjectId, ref: "User" }],
     default: [],
@@ -44,6 +41,10 @@ const postSchema = new Schema<PostDocument>({
     type: [{ type: Schema.Types.ObjectId, ref: "User" }],
     default: [],
   },
+  comments: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Comment'
+}],
   hidden: {
     type: Boolean,
     default: false,

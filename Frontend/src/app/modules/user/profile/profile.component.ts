@@ -3,34 +3,53 @@ import { AuthService } from './../../../services/auth.service';
 
 import { SelectorData } from '../../store/user/user.selector';
 import { Component } from '@angular/core';
-import { Store} from '@ngrx/store';
+import { select, Store} from '@ngrx/store';
 import { Observable } from 'rxjs';
 import  { IUser } from '../../models/userModel';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLinkActive } from '@angular/router';
 import { SidebarComponent } from "../sidebar/sidebar.component";
+import { fetchPostAPI } from '../../store/posts/post.action';
+import { SelectorPostData } from '../../store/posts/post.selector';
+import { Post } from '../../models/postModel';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ModalComponent } from '../modal/modal.component';
+import { PostsComponent } from '../posts/posts.component';
 
 @Component({
     selector: 'app-profile',
     standalone: true,
     templateUrl: './profile.component.html',
     styleUrl: './profile.component.css',
-    imports: [CommonModule, AsyncPipe, RouterLinkActive, SidebarComponent]
+    imports: [CommonModule, AsyncPipe, RouterLinkActive, SidebarComponent,
+
+      FormsModule,
+      ReactiveFormsModule,
+      ModalComponent,
+      PostsComponent
+    ]
 })
 export class ProfileComponent {
   user$!: Observable<IUser[]>; // Define the observable with User type
-  constructor(private store: Store<{ user: IUser[] }>) {
+  posts$!: Observable<Post[]>;
+  show:boolean=false
+  userId: string = localStorage.getItem('userId') || '';
+  constructor(private store: Store<{ user: IUser[] }>, private stored: Store<{ posts: Post[] }>) {
   }
 
   ngOnInit(): void {
     this.store.dispatch(fetchUserAPI());
     this.user$ = this.store.select(SelectorData);
+    this.stored.dispatch(fetchPostAPI());
+    this.posts$ = this.stored.pipe(select(SelectorPostData));
     this.user$.subscribe((data: any) => {
       console.log(data)
     });
   }
 
-
+open(){
+  this.show=true
+}
 }
 
 

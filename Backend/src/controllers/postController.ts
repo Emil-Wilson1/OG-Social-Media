@@ -5,7 +5,9 @@ import postRepository from "../repositories/postRepositories";
 import userService from "../services/userService";
 import userRepository from "../repositories/userRepository";
 import postUserModel from "../models/postModel";
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+import reportUserModel, { ReportAttrs, ReportDoc } from "../models/reportModel";
+
 
 interface AuthenticatedRequest extends Request {
   user: {
@@ -134,19 +136,68 @@ export const unlikePost = async (req: Request, res: Response) => {
 
 
 
+export const savedPost = async (req: Request, res: Response) => {
+  const { postId } = req.params;
+  const { userId } = req.body;
 
-// // Define your route handler function
-// export const toggleLike = async (req: Request, res: Response) => {
-//   try {
-//     const { postId } = req.body;
-//     const userId = (req as any).user._id; // Assert req to any and access the user property
+  try {
+    const post = await postUserModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    if (!post.saved.includes(userId)) {
+      post.saved.push(userId);
+      await post.save();
+    }
+    res.status(200).json({ message: 'Post saved successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to save post: ' + error});
+  }
+};
 
-//     const updatedPost = await postService.likePost(postId, userId);
-//     res.status(200).json(updatedPost);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Internal server error', error: error });
-//   }
-// };
+
+export const unsavedPost = async (req: Request, res: Response) =>{
+  const { postId } = req.params;
+  const { userId } = req.body;
+  try {
+    const post = await postUserModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    const index = post.saved.indexOf(userId);
+    if (index === -1) {
+      return res.status(400).json({ message: 'Post is not liked by the user' });
+    }
+    post.saved.splice(index, 1);
+    await post.save();
+
+    res.status(200).json({ message: 'Post unliked successfully' });
+  } catch (error) {
+    throw new Error("Failed to unsave post: " + error);
+  }
+}
+
+
+export const reportPost= async (req: Request, res: Response) => {
+  try {
+    const reportData: ReportAttrs = {
+      reporterId: req.body.reporterId,
+      reporterUsername: req.body.reporterUsername,
+      reportType: req.body.reportType,
+      targetId: req.body.targetId,
+      details: req.body.details,
+    };
+
+    const newReport = new reportUserModel(reportData);
+    const savedReport = await newReport.save();
+    res.status(201).json(savedReport);
+  } catch (err) {
+    res.status(400).json({ error:err});
+  }
+};
+
+
 
 
 

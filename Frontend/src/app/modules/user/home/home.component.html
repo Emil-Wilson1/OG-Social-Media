@@ -8,48 +8,46 @@
         <h2 class="text-white font-bold">New Post</h2>
       </div>
       <div class="p-4">
-        <input type="file" (change)="onFileSelected($event)">
+        <input type="file" #fileInput (change)="onFileSelected($event)">
+        <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
+          (imageCropped)="imageCropped($event)" (cropperReady)="cropperReady()"
+          (loadImageFailed)="loadImageFailed()"></image-cropper>
+
         <textarea placeholder="Write a caption..." [(ngModel)]="description"
           class="w-full border border-gray-300 rounded-md p-2"></textarea>
-        <button (click)="uploadPost()"
+        <button (click)="uploadPost(fileInput )"
           class="mt-4 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300">Upload</button>
       </div>
     </div>
 
     <!-- Posts Section -->
-    <div class="bg-white p-8 rounded-lg shadow-md max-w-4xl mt-4" *ngFor="let data of posts$ | async">
-      <!-- User Info with Three-Dot Menu -->
+    <!-- <div class="bg-white p-8 rounded-lg shadow-md max-w-4xl mt-4"
+      *ngFor="let data of (posts$ | async)?.slice()?.reverse()">
+
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center space-x-2">
           <img [src]="data.proImg" alt="User Avatar" class="w-12 h-12 object-cover rounded-full">
           <div>
             <p class="text-gray-800 font-semibold">{{ data.user }}</p>
-            <p class="text-gray-500 text-sm">Posted 2 hours ago</p>
+            <p class="text-gray-500 text-sm">{{formatCreatedAt(data.createdAt)}}</p>
           </div>
         </div>
         <div class="text-gray-500 cursor-pointer">
-          <!-- Three-dot menu icon -->
-          <button class="hover:bg-gray-50 rounded-full p-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="7" r="1" />
-              <circle cx="12" cy="12" r="1" />
-              <circle cx="12" cy="17" r="1" />
-            </svg>
-          </button>
+
+          <app-report-post [username]="data.user" [target]="data._id"></app-report-post>
         </div>
       </div>
-      <!-- Message -->
+
       <div class="mb-4">
         <p class="text-gray-800">{{data.description}} </p>
       </div>
-      <!-- Image -->
+
       <div class="mb-4">
         <img [src]="data.image" alt="Post Image" class="w-full h-70 object-contain rounded-md">
       </div>
-      <!-- Like and Comment Section -->
+
       <div class="flex items-center justify-between text-gray-500">
-        <!-- home.component.html -->
+
         <button class="flex justify-center items-center gap-2 px-2 hover:bg-gray-50 rounded-full p-1"
           (click)="isPostLiked(data._id) ? unlikePost(data._id) : likePost(data._id)"
           [ngClass]="{'text-green-500': isPostLiked(data._id), 'text-gray-500': !isPostLiked(data._id)}">
@@ -59,7 +57,8 @@
           </svg>
           <span>{{ getLikeCount(data._id) | async }} Likes</span>
         </button>
-        <button class="flex justify-center items-center gap-2 px-2 hover:bg-gray-50 rounded-full p-1 text-green-500">
+        <button class="flex justify-center items-center gap-2 px-2 hover:bg-gray-50 rounded-full p-1 text-green-500"
+          (click)="modal.openModal()">
           <svg width="22px" height="22px" viewBox="0 0 24 24" class="w-5 h-5 fill-current"
             xmlns="http://www.w3.org/2000/svg">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -70,18 +69,25 @@
               </path>
             </g>
           </svg>
-          <span>3 Comment</span>
+          <span>{{postCommentsCount}} Comments</span>
         </button>
-        <!-- Save icon -->
-        <button class="text-green-500 hover:text-green-600 transition duration-300">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <app-modal [postId]="data._id" (commentsCountUpdated)="handleCommentsCountUpdated($event)" #modal></app-modal>
+
+        <button class="flex justify-center items-center gap-2 px-2 hover:bg-gray-50 rounded-full p-1"
+          (click)=" isPostSaved(data._id) ? unsavePost(data._id) : savePost(data._id)"
+          [ngClass]="{'text-green-500': isPostSaved(data._id), 'text-gray-500': !isPostSaved(data._id)}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
+            [ngClass]="{ 'fill-current': isPostSaved(data._id), 'fill-none': !isPostSaved(data._id) }"
+            viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
           </svg>
         </button>
       </div>
 
-    </div>
+    </div> -->
+
+    <app-posts></app-posts>
 
 
 

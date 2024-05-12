@@ -1,0 +1,81 @@
+<div class="relative">
+  <button class="hover:bg-gray-200 rounded-full p-2 transition-colors duration-100" (click)="toggleOptions()"
+    #optionsButton>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="7" r="1" />
+      <circle cx="12" cy="12" r="1" />
+      <circle cx="12" cy="17" r="1" />
+    </svg>
+  </button>
+
+  <div class="absolute right-0 mt-2 bg-white shadow-lg rounded-lg py-2 z-10 divide-y divide-gray-200"
+    [ngClass]="{ hidden: !optionsOpen }" (click)="$event.stopPropagation()">
+    <!-- <button class="flex items-center w-44 px-4 py-2 hover:bg-gray-100 transition-colors duration-200 no-underline"
+      (click)="showConfirmation = true">
+      <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20"
+        fill="currentColor">
+        <path fill-rule="evenodd"
+          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+          clip-rule="evenodd" />
+      </svg>
+      <span class="text-red-400">Delete</span>
+    </button> -->
+    <button class="flex items-center w-44 px-4 py-2 hover:bg-gray-100 transition-colors duration-200 no-underline"
+      (click)="showReportModal = true">
+      <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20"
+        fill="currentColor">
+        <path fill-rule="evenodd"
+          d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+          clip-rule="evenodd" />
+      </svg>
+      <span class="text-red-400">Report</span>
+    </button>
+  </div>
+
+  <!-- <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20" *ngIf="showConfirmation"
+    (click)="showConfirmation = false">
+    <div class="bg-white rounded-lg p-6 max-w-sm mx-auto" (click)="$event.stopPropagation()">
+      <h3 class="text-lg font-semibold mb-4">Are you sure?</h3>
+      <div class="flex justify-end">
+        <button class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 mr-2"
+          (click)="showConfirmation = false">
+          Cancel
+        </button>
+        <button class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
+          Yes
+        </button>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20" *ngIf="showReportModal"
+    (click)="showReportModal = false">
+    <div class="bg-white rounded-lg p-6 max-w-sm mx-auto" (click)="$event.stopPropagation()">
+      <h3 class="text-lg font-semibold mb-4">Report Post</h3>
+      <div class="mb-4">
+        <label class="flex items-center mb-2">
+          <input type="radio" name="reportOption" value="inappropriateContent" class="mr-2"   [(ngModel)]="selectedReportOption"/>
+          <span>Inappropriate content</span>
+        </label>
+        <label class="flex items-center mb-2">
+          <input type="radio" name="reportOption" value="spam" class="mr-2"   [(ngModel)]="selectedReportOption"/>
+          <span>Spam or scam</span>
+        </label>
+        <label class="flex items-center mb-2">
+          <input type="radio" name="reportOption" value="violence" class="mr-2"   [(ngModel)]="selectedReportOption"/>
+          <span>Violence or dangerous organizations</span>
+        </label>
+      </div>
+      <div class="flex justify-end">
+        <button class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 mr-2"
+          (click)="showReportModal = false">
+          Cancel
+        </button>
+        <button class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600" (click)="submitReport()">
+          Report
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
