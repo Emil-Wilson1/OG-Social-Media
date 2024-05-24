@@ -1,6 +1,6 @@
 import { createReducer, on } from "@ngrx/store";
 import { fetchUserAPISuccess } from "./user.action";
-import { IUser } from "../../models/userModel";
+import { IUser } from "../../../models/userModel";
 
 
 

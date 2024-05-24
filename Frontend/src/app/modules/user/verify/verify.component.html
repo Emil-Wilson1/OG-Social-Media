@@ -38,7 +38,7 @@
               <button
                 type="submit"
                 [disabled]="verifyForm.invalid || remainingTime === 0 || otpInvalid"
-                class="flex items-center justify-center w-full border rounded-xl outline-none py-5 bg-green-500 border-none text-white text-sm shadow-sm hover:bg-green-600 transition-colors duration-300"
+                class="flex items-center justify-center w-full h-10 border rounded outline-none bg-green-500 border-none text-white text-sm shadow-sm hover:bg-green-600 transition-colors duration-300"
               >
                 Verify Account
               </button>
@@ -46,7 +46,7 @@
 
             <div class="flex items-center justify-center text-sm font-medium text-gray-500 space-x-1">
               <!-- Resend code link -->
-              <p>Didn't receive code?</p> <button   [disabled]="verifyForm.invalid || remainingTime === 0 || otpInvalid" class="flex items-center text-blue-600" (click)="resendCode()">Resend</button>
+              <p>Didn't receive code?</p> <button   [disabled]="remainingTime > 0" class="flex items-center text-blue-600" (click)="resendCode()">Resend</button>
             </div>
           </div>
         </form>

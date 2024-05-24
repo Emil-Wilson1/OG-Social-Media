@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { Post } from "../../models/postModel";
+import { Post } from "../../../models/postModel";
 
 
 export const fetchPostAPI = createAction(

@@ -4,17 +4,18 @@ import { AuthService } from './../../../services/auth.service';
 import { SelectorData } from '../../store/user/user.selector';
 import { Component } from '@angular/core';
 import { select, Store} from '@ngrx/store';
-import { Observable } from 'rxjs';
-import  { IUser } from '../../models/userModel';
+import { map, Observable } from 'rxjs';
+import  { IUser } from '../../../models/userModel';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLinkActive } from '@angular/router';
 import { SidebarComponent } from "../sidebar/sidebar.component";
 import { fetchPostAPI } from '../../store/posts/post.action';
 import { SelectorPostData } from '../../store/posts/post.selector';
-import { Post } from '../../models/postModel';
+import { Post } from '../../../models/postModel';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalComponent } from '../modal/modal.component';
 import { PostsComponent } from '../posts/posts.component';
+import { MyPostsComponent } from '../my-posts/my-posts.component';
 
 @Component({
     selector: 'app-profile',
@@ -22,11 +23,11 @@ import { PostsComponent } from '../posts/posts.component';
     templateUrl: './profile.component.html',
     styleUrl: './profile.component.css',
     imports: [CommonModule, AsyncPipe, RouterLinkActive, SidebarComponent,
-
+      PostsComponent,
       FormsModule,
       ReactiveFormsModule,
       ModalComponent,
-      PostsComponent
+      MyPostsComponent
     ]
 })
 export class ProfileComponent {
@@ -38,7 +39,7 @@ export class ProfileComponent {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(fetchUserAPI());
+    this.store.dispatch(fetchUserAPI({ id: this.userId }));
     this.user$ = this.store.select(SelectorData);
     this.stored.dispatch(fetchPostAPI());
     this.posts$ = this.stored.pipe(select(SelectorPostData));
@@ -49,6 +50,13 @@ export class ProfileComponent {
 
 open(){
   this.show=true
+}
+
+
+getUserPosts(userId: string): Observable<any> {
+  return this.posts$.pipe(
+    map(posts => posts.filter(post => post.userId === userId))
+  );
 }
 }
 

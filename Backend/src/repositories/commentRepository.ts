@@ -22,7 +22,6 @@ export class CommentRepository {
       }
 
 
-
       
     async addComment(userId: string, postId: string, content: string): Promise<CommentDocument> {
       try {
@@ -45,6 +44,12 @@ export class CommentRepository {
       throw new Error(`Failed to delete comment: ${error}`);
     }
   }
+
+
+  async getCommentsForPost(postId: string): Promise<CommentDocument[]> {
+    return await this.commentModel.find({ postId });
+  }
+
 }
 
 

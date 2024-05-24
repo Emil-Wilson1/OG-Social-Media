@@ -1,5 +1,4 @@
 <div class="felx justify-between">
-
   <app-sidebar></app-sidebar>
   <div class="flex-1 p-8 ml-64 ">
     <div *ngIf="(user$ | async) as user">
@@ -29,19 +28,18 @@
         <div class="bg-gray-300 h-px mb-6"></div>
 
         <!-- User Posts Grid -->
-        <div class="grid grid-cols-3 gap-4" >
-          <div *ngFor="let post of posts$ | async">
-            <ng-container *ngIf="post.userId === userId">
-              <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
-                <img [src]="post.image" alt="Post" class="w-full h-48 object-cover" >
-              </div>
-            </ng-container>
+        <div class="grid grid-cols-3 gap-4" *ngIf="!show">
+          <div *ngFor="let post of getUserPosts(userId) | async">
+            <ng-container></ng-container>
+            <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
+              <img [src]="post.image" alt="Post" class="w-full h-48 object-cover" (click)="open()">
+            </div>
           </div>
         </div>
-        
-        <!-- <div class="flex justify-center" *ngIf="show">
-          <app-posts></app-posts>
-        </div> -->
+
+        <div class="flex justify-center" *ngIf="show">
+          <app-my-posts></app-my-posts>
+        </div>
 
 
       </div>

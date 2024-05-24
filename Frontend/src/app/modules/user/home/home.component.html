@@ -8,7 +8,14 @@
         <h2 class="text-white font-bold">New Post</h2>
       </div>
       <div class="p-4">
-        <input type="file" #fileInput (change)="onFileSelected($event)">
+        <label for="fileInput"
+          class="bg-green-500 hover:bg-green-800 text-white font-bold py-2 px-4 rounded cursor-pointer">
+          Choose a file
+          <input id="fileInput" type="file" class="hidden" #fileInput (change)="onFileSelected($event)">
+        </label>
+        <button *ngIf="imageChangedEvent" (click)="cancelImageSelection()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          Cancel
+        </button>
         <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
           (imageCropped)="imageCropped($event)" (cropperReady)="cropperReady()"
           (loadImageFailed)="loadImageFailed()"></image-cropper>
@@ -119,3 +126,6 @@
   </aside>
 
 </div>
+
+
+

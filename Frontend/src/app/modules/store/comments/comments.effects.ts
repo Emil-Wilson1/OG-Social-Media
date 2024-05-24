@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as CommentActions from './comments.actions';
-import  {Comment } from './../../models/commentModel'; // Import your comment service
+import  {Comment } from '../../../models/commentModel'; // Import your comment service
 import { CommentService } from '../../../services/comment.service';
 
 @Injectable()

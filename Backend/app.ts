@@ -9,6 +9,7 @@ import userRouter from './src/routes/userRouter';
 import { pgConnection } from './src/config/psql';
 import adminRouter from './src/routes/adminRouter';
 import postRouter from './src/routes/postRouter';
+import protect from './src/middlewares/authMiddleware';
 
 process.loadEnvFile()
 
@@ -30,7 +31,7 @@ app.use(cors({
   }))
 
 
-app.use('/user', userRouter,postRouter);
+app.use('/user',userRouter,postRouter);
 app.use('/admin', adminRouter);
 
 const port = process.env.LISTENING_PORT;

@@ -1,15 +1,21 @@
+import reportUserModel,{ ReportDoc } from './../models/reportModel';
 
 import { Model } from 'mongoose';
 import AdminModel, { IAdmin } from '../models/adminModel';
 import User, { UserDocument } from '../models/userModel';
+import Post,{ PostDocument } from '../models/postModel';
 
 export class AdminRepository {
     private adminModel: Model<IAdmin>;
     private userModel: Model<UserDocument>;
+    private reportModel:Model<ReportDoc>
+    private postUserModel: Model<PostDocument>;
 
     constructor() {
         this.adminModel = AdminModel;
         this.userModel = User;
+        this.reportModel=reportUserModel
+        this.postUserModel = Post;
 
     }
  
@@ -54,6 +60,22 @@ export class AdminRepository {
         }
       }
 
+
+      async updateActionTaken(id: string): Promise<void> {
+        await this.reportModel.findByIdAndUpdate(id, { actionTaken: true });
+    }
+
+    async updateAction(id: string): Promise<void> {
+      await this.reportModel.findByIdAndUpdate(id, { actionTaken: false});
+  }
+
+  async blockPostById(postId: string): Promise<void> {
+    await this.postUserModel.findByIdAndUpdate(postId, { adminBlock: true });
+}
+
+async unblockPostById(postId: string): Promise<void> {
+  await this.postUserModel.findByIdAndUpdate(postId, { adminBlock: false});
+}
 }
 
 export default new AdminRepository()

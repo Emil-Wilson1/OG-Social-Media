@@ -1,14 +1,52 @@
-<div class="container mx-auto max-w-md px-4 ">
-  <h2 class="text-2xl font-bold mb-6 text-center m-9 p-6">Reset Password</h2>
-  <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" (ngSubmit)="onSubmit()">
+<h2 class="text-2xl font-bold text-center m-0 p-6">Reset Password</h2>
+<div class="container mx-auto max-w-md px-4 mt-3 flex justify-center">
+  <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 max-w-md w-full" (ngSubmit)="onSubmit()" #resetForm="ngForm">
     <div class="mb-4">
       <label class="block text-gray-700 text-sm font-bold mb-2" for="password">New Password</label>
-      <input type="password" id="password" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" [(ngModel)]="password" name="password" required>
+      <input 
+      type="password" 
+      id="password" 
+      class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+      [(ngModel)]="password" 
+      name="password" 
+      #passwordCtrl="ngModel" 
+      required 
+      minlength="8"
+      pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+    />
+    
+    <div *ngIf="passwordCtrl.invalid && (passwordCtrl.dirty || passwordCtrl.touched)" class="text-red-500 text-xs mt-1">
+      <div *ngIf="passwordCtrl.errors?.['required']">Password is required.</div>
+      <div *ngIf="passwordCtrl.errors?.['minlength']">Password must be at least 8 characters long.</div>
+      <div *ngIf="passwordCtrl.errors?.['pattern']">Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.</div>
+    </div>
+    
     </div>
     <div class="mb-6">
       <label class="block text-gray-700 text-sm font-bold mb-2" for="confirmPassword">Confirm Password</label>
-      <input type="password" id="confirmPassword" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+      <input 
+      type="password" 
+      id="confirmPassword" 
+      class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+      [(ngModel)]="confirmPassword" 
+      name="confirmPassword" 
+      #confirmPasswordCtrl="ngModel" 
+      required 
+      [pattern]="password"
+    />
+    
+    <div *ngIf="confirmPasswordCtrl.invalid && (confirmPasswordCtrl.dirty || confirmPasswordCtrl.touched)" class="text-red-500 text-xs mt-1">
+      <div *ngIf="confirmPasswordCtrl.errors?.['required']">Confirmation is required.</div>
+      <div *ngIf="confirmPasswordCtrl.errors?.['pattern']">Passwords do not match.</div>
     </div>
-    <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" [disabled]="!password || !confirmPassword || password !== confirmPassword">Reset Password</button>
+        
+    </div>
+    <button 
+      type="submit" 
+      class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+      [disabled]="!resetForm.form.valid"
+    >
+      Reset Password
+    </button>
   </form>
 </div>

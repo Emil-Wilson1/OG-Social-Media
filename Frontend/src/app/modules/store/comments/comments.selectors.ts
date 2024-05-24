@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import  {Comment } from './../../models/commentModel';
+import  {Comment } from '../../../models/commentModel';
 
 export interface CommentState {
   comment: Comment | null;

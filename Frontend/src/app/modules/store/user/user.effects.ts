@@ -16,9 +16,9 @@ export class userEffects {
     loadUserProfile$ = createEffect(() =>
         this.actions$.pipe(
             ofType(fetchUserAPI),
-            switchMap(() => {
+            switchMap((action) => {
                const userId: string | null = localStorage.getItem('userId') || '';
-                return this.userService.fetchUserById(userId)
+                return this.userService.fetchUserById(action.id)
                     .pipe(
                         map((data) => fetchUserAPISuccess({ user: data }))
                     )

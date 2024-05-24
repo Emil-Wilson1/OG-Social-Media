@@ -1,17 +1,15 @@
 import { SearchComponent } from './modules/user/search/search.component';
-import { UserManagementComponent } from './modules/admin/user-management/user-management.component';
 import { Routes } from '@angular/router';
 import { RegisterComponent } from './modules/user/register/register.component';
 import { LoginComponent } from './modules/user/login/login.component';
 import { VerifyComponent } from './modules/user/verify/verify.component';
-import { ProfileComponent } from './modules/user/profile/profile.component';
+//import { ProfileComponent } from './modules/user/profile/profile.component';
 import { EditProfileComponent } from './modules/user/edit-profile/edit-profile.component';
-import { adminLoginComponent } from './modules/admin/login/login.component';
 import { RestComponent } from './modules/user/rest/rest.component';
 import { ResetComponent } from './modules/user/reset/reset.component';
 import { authGuard } from './guards/auth.guard';
-import { HomeComponent } from './modules/user/home/home.component';
-
+import { OtherProfileComponent } from './modules/user/other-profile/other-profile.component';
+//import  HomeComponent  from './modules/user/home/home.component';
 export const routes: Routes = [
   {
     path:'signup',
@@ -26,13 +24,19 @@ export const routes: Routes = [
     component:VerifyComponent
   }, 
   {
-    path:'profile',
-    component:ProfileComponent,
+    path: 'profile',
+    loadComponent: () => import('./modules/user/profile/profile.component').then(m => m.ProfileComponent),
     canActivate: [authGuard],
   },
   {
+    path:'',
+    loadComponent: () => import('./modules/user/home/home.component').then(m => m.HomeComponent),
+    canActivate: [authGuard]
+  },
+  {
     path:'editProfile',
-    component:EditProfileComponent
+    component:EditProfileComponent,
+    canActivate: [authGuard]
   },
   {
     path:'reset',
@@ -43,20 +47,15 @@ export const routes: Routes = [
     component:ResetComponent
   },
   {
-    path:'adminLogin',
-    component:adminLoginComponent
-  },
-  {
-    path:'users',
-    component:UserManagementComponent
-  },
-  {
-    path:'home',
-    component:HomeComponent
-  },
-  {
     path:'search',
-    component:SearchComponent
+    component:SearchComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path:'user',
+    component:OtherProfileComponent
   }
+
+
 
 ];

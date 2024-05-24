@@ -6,8 +6,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false, 
   auth: {
-    user: process.env.EMAIL,
-    pass: process.env.PASS
+    user: 'emilwilson67@gmail.com',
+    pass: 'fiotgsmmqukncbvj'
   }
 });
 
@@ -15,7 +15,7 @@ async function sendOTP(email:string, otp:number) {
   try {
 
     await transporter.sendMail({
-      from: process.env.EMAIL,
+      from: 'emilwilson67@gmail.com',
       to: email,
       subject: 'Your One-Time Password (OTP)',
       text: `Your OTP is: ${otp}`
@@ -36,7 +36,7 @@ async function sendReset(email:string, resetLink:string) {
       from: 'emilwilson67@gmail.com',
       to: email,
       subject: 'Reset Password',
-      text: `Click the link to reset your password: ${resetLink}`
+      text: `Click the link to reset your password: ${resetLink}\n Link is only valid for  5 minutes`
     });
 
     console.log(`Reset link sent to ${email}`);

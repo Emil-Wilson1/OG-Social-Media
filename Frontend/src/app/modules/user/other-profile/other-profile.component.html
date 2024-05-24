@@ -1,0 +1,59 @@
+<div class="felx justify-between">
+  <app-sidebar></app-sidebar>
+  <div class="flex-1 p-8 ml-64">
+    <div *ngIf="(user$ | async) as user">
+      <div class="bg-white rounded-lg p-4" *ngFor="let data of user">
+        <!-- Profile Card -->
+        <div class="flex items-center mb-6">
+          <div class="w-36 h-36 rounded-full overflow-hidden">
+            <img [src]="data.profilePic" alt="Profile" class="object-cover rounded-full w-36 h-36">
+          </div>
+          <div class="ml-4">
+            <h2 class="text-xl font-semibold">{{ data.fullname }}</h2>
+            <p class="text-gray-600">{{ data.username }}</p>
+            <!-- Following and Followers Count -->
+            <div class="flex space-x-4 mt-2">
+              <div>
+                <span class="font-semibold">0</span> Following
+              </div>
+              <div>
+                <span class="font-semibold">0</span> Followers
+              </div>
+            </div>
+            <!-- Follow Button -->
+            <button
+              class="bg-green-500 text-white py-1 px-3 mt-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50"
+              
+            >
+             Follow
+            </button>
+          </div>
+        </div>
+        <!-- Bio -->
+        <p class="text-gray-800 mb-4">{{ data.bio }}</p>
+        <button class="bg-green-500 text-white py-2 px-4 mb-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50">
+          <a href="/editProfile" class="no-underline text-white">Edit Profile</a>
+        </button>
+        <div class="flex justify-around m-2">
+          <!-- My Posts Heading -->
+          <h3 class="text-lg font-semibold">My Posts</h3>
+          <h3 class="text-lg font-semibold">Saved Posts</h3>
+        </div>
+        <!-- Divider -->
+        <div class="bg-gray-300 h-px mb-6"></div>
+        <!-- User Posts Grid -->
+        <div class="grid grid-cols-3 gap-4" *ngIf="!show">
+          <div *ngFor="let post of getUserPosts(userId) | async">
+            <ng-container></ng-container>
+            <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
+              <img [src]="post.image" alt="Post" class="w-full h-48 object-cover" (click)="open()">
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-center" *ngIf="show">
+          <app-my-posts></app-my-posts>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

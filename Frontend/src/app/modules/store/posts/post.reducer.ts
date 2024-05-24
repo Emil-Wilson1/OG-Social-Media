@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { Post } from "../../models/postModel";
+import { Post } from "../../../models/postModel";
 import { fetchPostAPISuccess} from "./post.action";
 
 export const initalState: Post[] = []

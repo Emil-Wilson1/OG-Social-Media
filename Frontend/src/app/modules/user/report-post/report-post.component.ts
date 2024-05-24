@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PostService } from '../../../services/post.service';
+import { Subscription } from 'rxjs';
 export interface Reporter {
   reporterId: string; // Assuming reporterId is a string
   reporterUsername: string;
@@ -20,15 +21,21 @@ export interface Reporter {
 export class ReportPostComponent {
   @ViewChild('optionsButton', { static: true }) optionsButton!: ElementRef;
   selectedReportOption: string = '';
-  showReportModal = false
+  showReportModal = false;
   optionsOpen = false;
   showConfirmation = false;
-  userId:string=localStorage.getItem('userId') || ''
+  userId: string = localStorage.getItem('userId') || '';
   @Input() username!: string;
   @Input() target!: string;
+  private subscriptions: Subscription = new Subscription();
+
+  constructor(private postService: PostService) {}
 
 
-  constructor(private postService: PostService){}
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
   toggleOptions() {
     this.optionsOpen = !this.optionsOpen;
   }
@@ -43,7 +50,6 @@ export class ReportPostComponent {
     }
   }
 
-
   submitReport() {
     const reportData: Reporter = {
       reporterId: this.userId,
@@ -53,16 +59,16 @@ export class ReportPostComponent {
       details: 'your_details',
     };
 
-    this.postService.reportPost(reportData).subscribe(
-      (response) => {
+    const sub = this.postService.reportPost(reportData).subscribe({
+      next: (response) => {
         console.log(response.message);
-        // Close the modal or display a success message
         this.showReportModal = false;
       },
-      (error) => {
+      error: (error) => {
         console.error('Failed to report post:', error);
-        // Display an error message
       }
-    );
+    });
+
+    this.subscriptions.add(sub);
   }
 }

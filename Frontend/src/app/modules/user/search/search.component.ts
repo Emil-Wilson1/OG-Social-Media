@@ -1,7 +1,12 @@
 import { Component } from '@angular/core';
 import { SidebarComponent } from '../sidebar/sidebar.component';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { map, Observable } from 'rxjs';
+import { IUser } from '../../../models/userModel';
+import { Store } from '@ngrx/store';
+import { fetchUserAPI } from '../../store/admin/admin.action';
+import { userSelectorData } from '../../store/admin/admin.selector';
 interface User {
   name: string;
   profilePic: string;
@@ -9,33 +14,43 @@ interface User {
 @Component({
   selector: 'app-search',
   standalone: true,
-  imports: [SidebarComponent,CommonModule],
+  imports: [SidebarComponent,CommonModule,FormsModule,ReactiveFormsModule],
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
 })
 export class SearchComponent {
   searchForm: FormGroup;
-  users: User[] = [
-    { name: 'John Doe', profilePic: 'https://via.placeholder.com/40' },
-    { name: 'Jane Smith', profilePic: 'https://via.placeholder.com/40' },
-    { name: 'Bob Johnson', profilePic: 'https://via.placeholder.com/40' },
-    // Add more users as needed
-  ];
-  filteredUsers: User[] = this.users;
+  users$: Observable<IUser[]>;
+  filteredUsers$: Observable<IUser[]>;
+  searchTerm: string = '';
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private store: Store<{ allUser: IUser[] }>) {
     this.searchForm = this.fb.group({
       searchTerm: ''
     });
 
-    this.searchForm.get('searchTerm')?.valueChanges.subscribe(searchTerm => {
-      this.filterUsers(searchTerm);
+    this.users$ = this.store.select(userSelectorData);
+    this.filteredUsers$ = this.users$;
+
+    this.searchForm.get('searchTerm')?.valueChanges.subscribe(term => {
+      this.searchTerm = term;
+      this.filterUsers(term);
     });
   }
 
+  ngOnInit(): void {
+    this.store.dispatch(fetchUserAPI());
+  }
+
   filterUsers(searchTerm: string) {
-    this.filteredUsers = this.users.filter(user =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    this.filteredUsers$ = this.users$.pipe(
+      map(users =>
+        users.filter(user =>
+          user.username.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      )
     );
   }
+
+
 }

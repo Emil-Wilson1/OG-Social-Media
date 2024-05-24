@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-rest',
@@ -13,10 +15,12 @@ import { RouterLink } from '@angular/router';
 })
 export class RestComponent {
   forgotPasswordForm!: FormGroup;
+  private subscription: Subscription = new Subscription();
 
   constructor(
     private formBuilder: FormBuilder,
-    private forgotPasswordService: AuthService
+    private forgotPasswordService: AuthService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -31,16 +35,21 @@ export class RestComponent {
     }
 
     const email = this.forgotPasswordForm.value.email;
-    this.forgotPasswordService.forgotPassword(email).subscribe(
-      response => {
-        alert('Reset password link sent successfully!')
+    const sub = this.forgotPasswordService.forgotPassword(email).subscribe({
+      next: response => {
+        this.toastr.success('Reset password link sent successfully!');
         console.log('Reset password link sent successfully!', response);
-       
       },
-      error => {
+      error: error => {
+        this.toastr.error('Error resetting password.');
         console.error('Error resetting password:', error);
-        
       }
-    );
+    });
+
+    this.subscription.add(sub);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

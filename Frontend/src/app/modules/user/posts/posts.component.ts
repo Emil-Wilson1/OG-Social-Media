@@ -2,123 +2,123 @@ import { Component, ViewChild } from '@angular/core';
 import { ModalComponent } from '../modal/modal.component';
 import { PostService } from '../../../services/post.service';
 import { select, Store } from '@ngrx/store';
-import { Post } from '../../models/postModel';
+import { Post } from '../../../models/postModel';
 import { fetchPostAPI } from '../../store/posts/post.action';
 import { SelectorPostData } from '../../store/posts/post.selector';
-import { map, Observable } from 'rxjs';
+import { map, Observable, Subscription } from 'rxjs';
 import moment from 'moment';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportPostComponent } from '../report-post/report-post.component';
+import { AuthService } from '../../../services/auth.service';
+import { Route, Router, Routes } from '@angular/router';
 
 @Component({
   selector: 'app-posts',
   standalone: true,
-  imports: [        CommonModule,
+  imports: [
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     AsyncPipe,
     ModalComponent,
     ReportPostComponent,
-    PostsComponent ],
+    PostsComponent,
+  ],
   templateUrl: './posts.component.html',
-  styleUrl: './posts.component.css'
+  styleUrl: './posts.component.css',
 })
 export class PostsComponent {
   posts$!: Observable<Post[]>;
   userId: string = localStorage.getItem('userId') || '';
   isLiked: boolean = false;
-  likedPosts: string[] = [];;
-  postCommentsCount: number = 0; // Initialize with a default value
+  likedPosts: string[] = [];
+  postCommentsCount: number = 0;
   savedPosts: string[] = [];
+  private subscriptions: Subscription = new Subscription();
 
   @ViewChild(ModalComponent) modal!: ModalComponent;
   constructor(
     private postService: PostService,
-    private store: Store<{ posts: Post[] }>,
+    private userService:AuthService,
+    private router:Router,
+    private store: Store<{ posts: Post[] }>
   ) {}
 
-  
   ngOnInit(): void {
     this.store.dispatch(fetchPostAPI());
     this.posts$ = this.store.pipe(select(SelectorPostData));
     this.posts$.subscribe((posts) => {
-        this.savedPosts = posts
+      this.savedPosts = posts
         .filter((post) => post.saved.includes(this.userId))
         .map((post) => post._id);
-        //console.log(postId);
-      });
+      //console.log(postId);
+    });
     this.posts$.subscribe((posts) => {
       this.likedPosts = posts
         .filter((post) => post.likes.includes(this.userId))
         .map((post) => post._id);
     });
   }
-
-
-
+  goToUserProfile(userId: string): void {
+    this.userService.changeUserId(userId);
+    // Navigate to another component if needed
+    this.router.navigate(['/user']);
+  }
   handleCommentsCountUpdated(commentsCount: number) {
     this.postCommentsCount = commentsCount;
-    // You can perform any additional operations with the updated comments count here
   }
 
-
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
 
   likePost(postId: string): void {
-    this.postService.likePost(postId, this.userId).subscribe({
+    const sub = this.postService.likePost(postId, this.userId).subscribe({
       next: () => {
-        // Add post ID to likedPosts array
         this.likedPosts.push(postId);
         this.posts$ = this.posts$.pipe(
-          map((posts) => {
-            return posts.map((post) => {
-              if (post._id === postId) {
-                return {
-                  ...post,
-                  likes: [...post.likes, this.userId], // Add user ID to likes array
-                };
-              }
-              return post;
-            });
-          })
+          map((posts) =>
+            posts.map((post) =>
+              post._id === postId
+                ? { ...post, likes: [...post.likes, this.userId] }
+                : post
+            )
+          )
         );
       },
       error: (error) => {
         console.error('Failed to like post', error);
-        // Handle error, show an error message, etc.
       },
     });
+    this.subscriptions.add(sub);
   }
 
   unlikePost(postId: string): void {
-    this.postService.unlikePost(postId, this.userId).subscribe({
+    const sub = this.postService.unlikePost(postId, this.userId).subscribe({
       next: () => {
-        // Remove post ID from likedPosts array
         this.likedPosts = this.likedPosts.filter((id) => id !== postId);
-        
         this.posts$ = this.posts$.pipe(
-          map((posts) => {
-            return posts.map((post) => {
-              if (post._id === postId) {
-                return {
-                  ...post,
-                  likes: post.likes.filter((id) => id !== this.userId), // Remove user ID from likes array
-                };
-              }
-              return post;
-            });
-          })
+          map((posts) =>
+            posts.map((post) =>
+              post._id === postId
+                ? {
+                    ...post,
+                    likes: post.likes.filter((id) => id !== this.userId),
+                  }
+                : post
+            )
+          )
         );
       },
       error: (error) => {
         console.error('Failed to unlike post', error);
-        // Handle error, show an error message, etc.
       },
     });
+    this.subscriptions.add(sub);
   }
 
   isPostLiked(postId: string): boolean {
-    // Check if the post is liked by the user
     return this.likedPosts.includes(postId);
   }
 
@@ -132,73 +132,61 @@ export class PostsComponent {
   }
 
   savePost(postId: string): void {
-    this.postService.savePost(postId, this.userId).subscribe({
+    const sub = this.postService.savePost(postId, this.userId).subscribe({
       next: () => {
-        // Add post ID to savedPosts array
         this.savedPosts.push(postId);
         this.posts$ = this.posts$.pipe(
-          map((posts) => {
-            return posts.map((post) => {
-              if (post._id === postId) {
-                return {
-                  ...post,
-                  saved: [...post.saved, this.userId], // Add user ID to saved array
-                };
-              }
-              return post;
-            });
-          })
+          map((posts) =>
+            posts.map((post) =>
+              post._id === postId
+                ? { ...post, saved: [...post.saved, this.userId] }
+                : post
+            )
+          )
         );
       },
       error: (error) => {
         console.error('Failed to save post', error);
-        // Handle error, show an error message, etc.
       },
     });
+    this.subscriptions.add(sub);
   }
-  
+
   unsavePost(postId: string): void {
-    this.postService.unsavePost(postId, this.userId).subscribe({
+    const sub = this.postService.unsavePost(postId, this.userId).subscribe({
       next: () => {
-        // Remove post ID from savedPosts array
         this.savedPosts = this.savedPosts.filter((id) => id !== postId);
         this.posts$ = this.posts$.pipe(
-          map((posts) => {
-            return posts.map((post) => {
-              if (post._id === postId) {
-                return {
-                  ...post,
-                  saved: post.saved.filter((id) => id !== this.userId), // Remove user ID from saved array
-                };
-              }
-              return post;
-            });
-          })
+          map((posts) =>
+            posts.map((post) =>
+              post._id === postId
+                ? {
+                    ...post,
+                    saved: post.saved.filter((id) => id !== this.userId),
+                  }
+                : post
+            )
+          )
         );
       },
       error: (error) => {
         console.error('Failed to unsave post', error);
-        // Handle error, show an error message, etc.
       },
     });
+    this.subscriptions.add(sub);
   }
 
   isPostSaved(postId: string): boolean {
     return this.savedPosts.includes(postId);
   }
 
-  
   formatCreatedAt(createdAt: any): any {
-    // Parse the createdAt string using moment.js
     const createdAtDate = moment(createdAt);
-
-    // Calculate the difference between the createdAt date and the current date
     const now = moment();
     const diffInMinutes = now.diff(createdAtDate, 'minutes');
     const diffInHours = now.diff(createdAtDate, 'hours');
     const diffInDays = now.diff(createdAtDate, 'days');
 
-    // Choose the appropriate format based on the time difference
     if (diffInMinutes == 0) {
       return `Just now`;
     } else if (diffInMinutes < 60) {
@@ -208,7 +196,7 @@ export class PostsComponent {
     } else if (diffInDays < 7) {
       return `${diffInDays} days ago`;
     } else {
-      return createdAtDate.format('MMM DD, YYYY'); // Fallback to a standard date format
+      return createdAtDate.format('MMM DD, YYYY');
     }
   }
 }

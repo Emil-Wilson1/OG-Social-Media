@@ -3,7 +3,8 @@ import { AuthService } from './../../../services/auth.service';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {  Router } from '@angular/router';
-import * as CryptoJS from 'crypto-js';
+import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 
 interface User {
   email: string;
@@ -20,62 +21,72 @@ interface User {
 })
 export class RegisterComponent {
   submit: boolean = false;
-
+  errorMessage!: string;
   inCorrect: boolean = false;
-   constructor(private fb:FormBuilder,private auth:AuthService,private route:Router){}
+  private registerSub?: Subscription;
 
-   registerForm=this.fb.group({
-    fullname:['',[Validators.required]],
-    email:['',[Validators.email,Validators.required]],
-    username:['',[Validators.required]],
-    password:['',
-    [
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private route: Router,
+    private toastr: ToastrService
+  ) {}
+
+  registerForm = this.fb.group({
+    fullname: ['', [Validators.required]],
+    email: ['', [Validators.email, Validators.required]],
+    username: ['', [Validators.required]],
+    password: ['', [
       Validators.required,
-      Validators.pattern( '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,}$')
+      Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,}$')
     ]],
-    cpassword:['',[Validators.required]]
-   });
+    cpassword: ['', [Validators.required]]
+  });
 
-   onSubmit(){
+  ngOnDestroy(): void {
+    this.registerSub?.unsubscribe();
+  }
+
+  onSubmit(): void {
     this.submit = true;
-    const {fullname,email,username,password,cpassword}=this.registerForm.value
+    const { fullname, email, username, password, cpassword } = this.registerForm.value;
     if (cpassword === password) {
       if (fullname && email && password && username) {
         this.registerUser();
       }
-   }
-}
-registerUser(): void {
-  if (this.registerForm.valid) {
-    const formValue = this.registerForm.value;
+    }
+  }
 
-    const fullname: string = formValue.fullname ?? ''; 
-    const email: string = formValue.email ?? ''; 
-    const username: string = formValue.username ?? ''; 
-    const password: string = formValue.password ?? ''; 
+  registerUser(): void {
+    if (this.registerForm.valid) {
+      const formValue = this.registerForm.value;
 
-    const user: User = {
-      fullname,
-      email,
-      username,
-      password,
-    };
-    this.auth.createUser(user).subscribe({
-      next: (response) => {
-        localStorage.setItem('userEmail',response.email)
-        alert('Registration Completed!');
-        this.route.navigate(['/verify']);
-      },
-      error: (error: any) => {
-        console.log('Error registering user:', error);
-        if (error.status === 400 && error.error.message === 'Email address is already in use') {
-          alert('Email address is already in use. Please use a different email.');
-        } else {
-          alert('Registration failed. Please try again.');
+      const fullname: string = formValue.fullname ?? ''; 
+      const email: string = formValue.email ?? ''; 
+      const username: string = formValue.username ?? ''; 
+      const password: string = formValue.password ?? ''; 
+
+      const user: User = {
+        fullname,
+        email,
+        username,
+        password,
+      };
+
+      this.registerSub = this.auth.signup(user).subscribe({
+        next: (response) => {
+          localStorage.setItem('userEmail', response.email);
+          this.toastr.success('Registration Completed!');
+          this.route.navigate(['/verify']);
+          this.errorMessage = "";
+        },
+        error: (error: any) => {
+          this.errorMessage = error.error.error;
+          this.toastr.error(this.errorMessage);
+          console.log('Error registering user:', error);
         }
-      }
-    });
+      });
+    }
   }
 }
 
-}

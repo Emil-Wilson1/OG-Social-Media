@@ -1,7 +1,8 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { Post } from '../modules/models/postModel';
+import { Post } from '../models/postModel';
+import { environment } from '../../environments/environment.development';
 
 
 interface CommentResponse {
@@ -15,7 +16,7 @@ interface CommentResponse {
   providedIn: 'root'
 })
 export class CommentService {
-  private apiUrl:string = 'http://localhost:3000/user';
+  private apiUrl:string = environment.apiUrl;
   constructor(private http:HttpClient) { }
 
   fetchCommentsById(postId: string): Observable<Comment[]> {

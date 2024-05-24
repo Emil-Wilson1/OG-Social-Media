@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { IUser } from "../../models/userModel";
+import { IUser } from "../../../models/userModel";
 
 
 export const fetchUserAPI = createAction(

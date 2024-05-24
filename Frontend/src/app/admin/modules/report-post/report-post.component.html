@@ -1,0 +1,61 @@
+<div class="bg-gray-100 flex">
+  <!-- Sidebar -->
+  <div class="bg-gray-800 text-gray-100 w-64 flex-none min-h-screen">
+    <div class="p-6">
+      <h1 class="text-2xl font-bold">Admin</h1>
+      <ul class="mt-6">
+        <li class="mb-4">
+          <a href="#" class="block text-gray-300 hover:bg-gray-700 px-4 py-2 rounded">Dashboard</a>
+        </li>
+        <li class="mb-4">
+          <a href="/users" class="block text-gray-300 hover:bg-gray-700 px-4 py-2 rounded">User Management</a>
+        </li>
+        <li class="mb-4">
+          <a href="/reportPost" class="block text-gray-300 hover:bg-gray-700 px-4 py-2 rounded">Reports</a>
+        </li>
+        <li class="mb-4">
+          <a href="#" class="block text-gray-300 hover:bg-gray-700 px-4 py-2 rounded"(click)="logout()">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="flex-1 m-6">
+    <div class="container mx-auto px-4 py-8">
+      <h1 class="text-xl font-extrabold mb-4">Reports</h1>
+      <div class="-mx-4 overflow-x-auto">
+        <table class="min-w-full bg-white rounded-lg overflow-hidden shadow-lg">
+          <thead class="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+            <tr>
+              <th class="py-3 px-4 text-left">Name</th>
+              <th class="py-3 px-4 text-left">Date</th>
+              <th class="py-3 px-4 text-left">Type</th>
+              <th class="py-3 px-4 text-center">Status</th>
+              <th class="py-3 px-4 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700">
+            <tr *ngFor="let user of reportedUsers" class="hover:bg-gray-100 transition duration-300 ease-in-out">
+              <td class="py-3 px-4 text-left flex items-center">
+                <img class="w-10 h-10 rounded-full mr-2" *ngIf="user.post" [src]="user.post.image" alt="Post Image">
+                <span class="font-semibold">{{ user.reporterUsername }}</span>
+              </td>
+              <td class="py-3 px-4 text-left">{{ user.createdAt | date:'dd/MM/yyyy' }}</td>
+              <td class="py-3 px-4 text-left">{{ user.reportType }}</td>
+              <td class="py-3 px-4 text-center">
+                <span class="px-2 py-1 rounded-full" [ngClass]="{'bg-green-200 text-green-800': !user.actionTaken, 'bg-red-200 text-red-800': user.actionTaken}">
+                  {{ user.actionTaken ? 'Blocked' : 'Pending' }}
+                </span>
+              </td>
+              <td class="py-3 px-4 text-center">
+                <button *ngIf="!user.actionTaken" (click)="blockPost(user.targetId, user._id)" class="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300 ease-in-out">Block</button>
+                <button *ngIf="user.actionTaken" (click)="unblockPost(user.targetId, user._id)" class="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300 ease-in-out">Unblock</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

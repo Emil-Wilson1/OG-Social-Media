@@ -20,6 +20,7 @@ export class LoginComponent {
   errorMessage!: string;
   passMessage!:string;
   emailMessage!:string;
+  blockMessage!:string;
   private subscription!: Subscription;
   
   constructor(
@@ -36,7 +37,7 @@ export class LoginComponent {
 
   ngOnInit() {
     if (this.userService.isLoggedIn) {
-      this.router.navigateByUrl('/home');
+      this.router.navigateByUrl('');
     }
   }
 
@@ -50,8 +51,9 @@ export class LoginComponent {
     this.subscription=this.userService.getUser({ email, password }).subscribe({
       next: (response) => {
         localStorage.setItem('userId', response.userId);
-        localStorage.setItem('userToken', response.token);
-        this.router.navigate(['/home']);
+        localStorage.setItem('userToken', response.accessToken);
+        localStorage.setItem('refreshToken', response.refreshToken);
+        this.router.navigate(['']);
       },
       error: (error) => {
         console.error('Login failed:', error);
@@ -61,9 +63,14 @@ export class LoginComponent {
           } else if (error.error.message === 'Incorrect password') {
             this.passMessage = 'Incorrect password';
           }
+        } else if (error.status === 403) {
+          if (error.error.message === 'User is blocked') {
+            this.blockMessage = 'User is blocked';
+          }
         } else {
           this.errorMessage = 'Login failed';
         }
+      
       }
     });
   }

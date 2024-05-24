@@ -1,37 +1,11 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SafeResourceUrl } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
-import { IUser } from '../modules/models/userModel';
-interface User {
-  email: string;
-  username: string;
-  otp?:number;
-  fullname: string;
-  password: string;
-}
+import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs';
+import { IUser } from '../models/userModel';
+import { environment } from '../../environments/environment.development';
+import { LoginRequest, LoginResponse, User, verifyRes } from '../models/interface';
 
-interface LoginRequest {
-  email: string ;
-  password: string ;
-}
-
-interface LoginResponse {
-  token: string;
-  passMatch:string;
-  emailMatch:string;
-  userId:string;
-}
-interface SignupResponse {
-  message: string;
-  email:string;
-  token:string;
-}
-
-
-interface verifyRes{
-  message:string
-}
 
 
 @Injectable({
@@ -40,8 +14,8 @@ interface verifyRes{
 export class AuthService {
   private userToken: string | null = null;
   id!: string;
-  private apiUrl:string = 'http://localhost:3000/user';
-  private Url:string = 'http://localhost:3000/admin';
+  private apiUrl: string = environment.apiUrl;
+  private Url:string = environment.Url;
   constructor(private http:HttpClient) { }
 
 
@@ -52,11 +26,23 @@ export class AuthService {
     return false
   }
  }
+ private userIdSource = new BehaviorSubject<string>('');
+ currentUserId = this.userIdSource.asObservable();
 
+
+ changeUserId(userId: string) {
+   this.userIdSource.next(userId);
+ }
  
-  createUser(user:User ): Observable<SignupResponse>{
-    return this.http.post<SignupResponse>(`${this.apiUrl}/signup`, user);
+  // createUser(user:User ): Observable<SignupResponse>{
+  //   return this.http.post<SignupResponse>(`${this.apiUrl}/signup`, user);
+  // }
+
+  signup(user:User): Observable<any> {
+    const body = user;
+    return this.http.post(`${this.apiUrl}/signup`, body);
   }
+
 
   getUser(userData: LoginRequest ): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, userData);
@@ -66,6 +52,12 @@ export class AuthService {
     const verifyUser = { email, enteredOTP };
     return this.http.post<verifyRes>(`${this.apiUrl}/verify`, verifyUser);
   }
+
+  resendOtp(email: string): Observable<verifyRes> {
+    const otpResend= { email};
+    return this.http.post<verifyRes>(`${this.apiUrl}/resend`, otpResend);
+  }
+
   fetchUserById(userId: string): Observable<IUser[]> {
     const url = `${this.apiUrl}/profile?id=${userId}`; // Update with your endpoint
     return this.http.get<IUser[]>(url)
@@ -86,23 +78,23 @@ export class AuthService {
     return this.http.post<any>(url, { newPassword });
   }
 
+  refreshAccessToken(refreshToken: string): Observable<{ newToken: string }> {
+    const headers = new HttpHeaders({
+      'X-Refresh-Token': refreshToken
+    });
 
-
-
-  getadmin(userData: LoginRequest ): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.Url}/login`, userData);
+    return this.http.post<{ newToken: string }>(`${this.apiUrl}/refresh-token`, null, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Error refreshing access token:', error);
+          return throwError(error);
+        })
+      );
   }
+  
 
-  blockUser(userId: string): Observable<any> {
-    return this.http.put<any>(`${this.Url}/block?id=${userId}`,userId);
-}
 
-unblockUser(userId: string): Observable<any> {
-  return this.http.put<any>(`${this.Url}/unblock?id=${userId}`,userId);
-}
+ 
 
-fetchAllUsers(): Observable<IUser[]> {
-  return this.http.get<IUser[]>(`${this.Url}/fetchUsers`)
-}
 
 }

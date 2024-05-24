@@ -9,7 +9,7 @@ export class EmailMaskPipe implements PipeTransform {
     if (!value) return value;
 
     const [username, domain] = value.split('@');
-    const maskedUsername = username.slice(0, -5) + '****'; // Mask the username
+    const maskedUsername = username.slice(0, -5) + '****'; 
 
     return `${maskedUsername}@${domain}`;
   }

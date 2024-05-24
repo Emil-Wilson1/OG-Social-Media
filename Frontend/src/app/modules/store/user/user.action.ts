@@ -1,10 +1,11 @@
 import { createAction, props } from "@ngrx/store";
-import { IUser } from "../../models/userModel";
+import { IUser } from "../../../models/userModel";
 
 
 
 export const fetchUserAPI = createAction(
-    '[Profile API] User Profile API'
+    '[Profile API] User Profile API',
+    props<{ id: string }>()
 
 )
 export const fetchUserAPISuccess = createAction(

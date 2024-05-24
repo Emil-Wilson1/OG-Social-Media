@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import Post,{ PostDocument } from '../models/postModel';
 import report,{ ReportAttrs, ReportDoc } from '../models/reportModel';
 
@@ -18,6 +18,10 @@ export class PostRepository {
         this.reportUserModel=report
     }
 
+    async findPostById(postId: string): Promise<any> {
+      return await this.postUserModel.findById(postId).populate('comments');
+    }
+
     async createPost(postData: Partial<PostDocument>): Promise<PostDocument | null> {
       try {
         const post = await this.postUserModel.create(postData);
@@ -28,10 +32,12 @@ export class PostRepository {
         throw new Error('Failed to create post');
       }
     } 
+
+    
     
     async getAllPosts() {
       try {
-        const posts = await this.postUserModel.find();
+        const posts = await this.postUserModel.find({adminBlock:false});
         return posts;
       } catch (error) {
         console.error(error);
@@ -42,22 +48,31 @@ export class PostRepository {
 
 
 
-    async createReport(reportData: ReportDoc): Promise<ReportResponse> {
+    async deletePostById(postId: string): Promise<void> {
       try {
-          const newReport = new this.reportUserModel(reportData);
-          const response = await newReport.save();
-          return {
-              status: 200,
-              message: "Report created successfully",
-              data: response
-          };
+        console.log("entered in deletePost repository:",postId);
+        await this.postUserModel.deleteOne({_id:postId});
       } catch (error) {
-          return {
-              status: 500,
-              error_code: "DB_FETCH_ERROR",
-              message: "Error saving to DB",
-              data: error
-          };
+        throw new Error(`Failed to delete post: ${error}`);
+      }
+     
+    }
+    async editPostDescription(postId: string, newDescription: string): Promise<PostDocument | null> {
+      try {
+        const updatedPost = await this.postUserModel.findByIdAndUpdate(postId, { description: newDescription }, { new: true });
+        return updatedPost;
+      } catch (error) {
+        console.error("Error editing post description:", error);
+        throw new Error("Failed to edit post description");
+      }
+    }
+    async getReportedUsers(): Promise<ReportAttrs[]> {
+      try {
+          const users = await this.reportUserModel.find().exec();
+          return users; 
+      } catch (error) {
+          console.error('Error fetching reported users:', error);
+          throw error; 
       }
   }
 }

@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Comment } from './../../models/commentModel'; // Import your Comment model
+import { Comment } from '../../../models/commentModel'; // Import your Comment model
 
 export const loadCommentById = createAction(
   '[Comment] Load Comment By Id',

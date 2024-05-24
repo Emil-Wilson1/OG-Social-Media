@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AdminService } from '../../services/admin.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -16,10 +17,11 @@ export class adminLoginComponent {
   errorMessage!: string;
   passMessage!:string;
   emailMessage!:string;
+  private loginSubscription!: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
-    private userService: AuthService,
+    private adminService: AdminService,
     private router: Router
   ) {
     this.loginForm = this.formBuilder.group({
@@ -28,6 +30,7 @@ export class adminLoginComponent {
     });
   }
 
+
   onSubmit(): void {
     if (this.loginForm.invalid) {
       return;
@@ -35,25 +38,33 @@ export class adminLoginComponent {
 
     const { email, password } = this.loginForm.value;
 
-    this.userService.getadmin({ email, password }).subscribe(
-      (response) => {
-        localStorage.setItem('userId',response.userId)
-        if(response.passMatch){
-          this.passMessage=response.passMatch
-        }else if(response.emailMatch){
-          this.emailMessage=response.emailMatch
-        }else{
-         
+    if (this.loginSubscription) {
+      this.loginSubscription.unsubscribe();
+    }
+
+    this.loginSubscription = this.adminService.getadmin({ email, password }).subscribe({
+      next: (response) => {
+        localStorage.setItem('adminToken', response.token);
+        if (response.passMatch) {
+          this.passMessage = response.passMatch;
+        } else if (response.emailMatch) {
+          this.emailMessage = response.emailMatch;
+        } else {
           this.router.navigate(['/users']);
         }
-   
       },
-      (error) => {
+      error: (error) => {
         console.error('Login failed:', error);
         this.errorMessage = 'Invalid username or password';
       }
-    );
+    });
   }
-}
 
+  ngOnDestroy(): void {
+    if (this.loginSubscription) {
+      this.loginSubscription.unsubscribe();
+    }
+  }
+
+}
 

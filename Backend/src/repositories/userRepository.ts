@@ -24,6 +24,16 @@ export class UserRepository {
         return await this.userModel.findOne({ email }).exec();
     }
 
+    async findByUsername(username: string): Promise<UserDocument | null> {
+      return await this.userModel.findOne({ username }).exec();
+  }
+
+  async findUserBlocked(email: string): Promise<boolean> {
+    const user = await this.userModel.findOne({ email }).exec();
+    return user ? user.blocked : false;
+  }
+
+
     async findByEmailTemp(email: string): Promise<tempUserDocument | null> {
         return await this.tempUserModel.findOne({ email }).exec();
     }
@@ -81,6 +91,15 @@ export class UserRepository {
       }
       async updateResetToken(email: string, resetToken: string): Promise<void> {
         await this.userModel.updateOne({ email }, { resetToken }).exec();
+    }
+
+    async removeResetToken(email: string, resetToken: string): Promise<void> {
+      // Assuming your user schema has a `resetToken` field
+      const user = await this.findByEmail(email);
+      if (user && user.resetToken === resetToken) {
+        user.resetToken = '';
+        await user.save(); // Save changes to the database
+      }
     }
 
 

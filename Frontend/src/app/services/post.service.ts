@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { Post } from '../modules/models/postModel';
+import { catchError, map, Observable, throwError } from 'rxjs';
+import { Post } from '../models/postModel';
+import { environment } from '../../environments/environment.development';
 
 
 interface ReportData {
@@ -17,7 +18,7 @@ interface ReportData {
   providedIn: 'root'
 })
 export class PostService {
-  private apiUrl:string = 'http://localhost:3000/user';
+  private apiUrl:string = environment.apiUrl;
   constructor(private http:HttpClient) { }
 
 
@@ -48,4 +49,20 @@ export class PostService {
   reportPost(reportData: ReportData): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/report`, reportData);
   }
+
+  deletePost(postId: string): Observable<void> {
+    const url = `${this.apiUrl}/postDeleted/${postId}`;
+    return this.http.delete<void>(url);
+  }
+
+  updatePostDescription(postId: string, newDescription: string): Observable<any> {
+    const url = `${this.apiUrl}/updatePostDescription`;
+    const body = { postId, newDescription };
+    return this.http.put<any>(url, body);
+  }
+  
+fetchReportedUsers(): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/reportedUsers`);
+}
+
 }
