@@ -1,4 +1,4 @@
-import { resendOTP } from './../controllers/userController';
+import { followUser, resendOTP, unfollowUser } from './../controllers/userController';
 
 
 import express, { Router } from 'express';
@@ -18,5 +18,7 @@ router.put('/editProfile',protect, upload.single('profilePic'),editProfile)
 router.post('/reset', forgotPassword);
 router.post('/forgot', resetPassword);
 router.post('/resend', resendOTP);
+router.post('/follow/:userId', followUser);
+router.post('/unfollow/:userId', unfollowUser);
 
 export default router;

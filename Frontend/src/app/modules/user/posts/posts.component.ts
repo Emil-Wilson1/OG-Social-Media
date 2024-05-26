@@ -62,8 +62,7 @@ export class PostsComponent {
   }
   goToUserProfile(userId: string): void {
     this.userService.changeUserId(userId);
-    // Navigate to another component if needed
-    this.router.navigate(['/user']);
+    this.router.navigate(['/user'], { queryParams: { userId: userId } });
   }
   handleCommentsCountUpdated(commentsCount: number) {
     this.postCommentsCount = commentsCount;

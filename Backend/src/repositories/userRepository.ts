@@ -128,6 +128,16 @@ export class UserRepository {
       }
     }
 
+
+    async followUser(followerId: string, userId: string): Promise<void> {
+      await this.userModel.findByIdAndUpdate(followerId, { $push: { following: userId } });
+      await this.userModel.findByIdAndUpdate(userId, { $push: { followers: followerId } });
+    }
+  
+    async unfollowUser(followerId: string, userId: string): Promise<void> {
+      await this.userModel.findByIdAndUpdate(followerId, { $pull: { following: userId } });
+      await this.userModel.findByIdAndUpdate(userId, { $pull: { followers: followerId } });
+    }
 }
 
 export default new UserRepository()

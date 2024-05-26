@@ -14,6 +14,8 @@ export interface User {
     gender?:string;
     chatList: Types.ObjectId[];
     savedPosts: Types.ObjectId[];
+    followers: Types.ObjectId[];  
+    following: Types.ObjectId[];
     online: boolean;
     blocked: boolean;
     verified: boolean;
@@ -64,6 +66,14 @@ const userSchema = new Schema<UserDocument>({
         type: String,
         trim: true,
         minlength: 10,
+    },
+    followers: {
+        type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+        default: []
+    },
+    following: {
+        type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+        default: []
     },
     bio: {
         type: String,

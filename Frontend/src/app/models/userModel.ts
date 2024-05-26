@@ -8,6 +8,8 @@ export interface IUser {
   profilePic: string;
   phone?: string;
   bio?: string;
+  followers: string[]; // Assuming the likes are stored as user IDs
+  following: string[];
   chatList: string[]; // Assuming chatList contains user IDs or usernames
   savedPosts: string[]; // Assuming savedPosts contains post IDs or references
   online: boolean;

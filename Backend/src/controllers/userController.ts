@@ -49,7 +49,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
   const { fullname, email, username, password } = req.body;
   try {
     await authService.signup(fullname, email, username, password);
-    res.status(HttpStatusCode.CREATED).json({ message: 'User created successfully',email:email});
+    res.status(HttpStatusCode.CREATED).json({ message: 'User created successfully', email: email });
   } catch (error) {
     console.error('Error signing up user:', error);
     let statusCode = HttpStatusCode.INTERNAL_SERVER_ERROR;
@@ -327,5 +327,39 @@ export const resetPassword = async (req: Request, res: Response) => {
     res.status(HttpStatusCode.OK).json({ message: "Password reset successfully" });
   } catch (error) {
     res.status(HttpStatusCode.BAD_REQUEST).json({ error });
+  }
+};
+
+
+
+export const followUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const { followerId } = req.body;
+
+    await authService.followUser(followerId, userId);
+
+    res.status(HttpStatusCode.OK).json({ success: true, message: "User followed successfully" });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: "Something went wrong" });
+  }
+};
+
+export const unfollowUser = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const { followerId } = req.body;
+
+    await authService.unfollowUser(followerId, userId);
+
+    res.status(HttpStatusCode.OK).json({ message: "User unfollowed successfully" });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: "Something went wrong" });
   }
 };

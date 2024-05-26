@@ -6,7 +6,18 @@ import { IUser } from '../models/userModel';
 import { environment } from '../../environments/environment.development';
 import { LoginRequest, LoginResponse, User, verifyRes } from '../models/interface';
 
+export interface FollowUserRequest {
+  followerId: string;
+}
 
+export interface FollowUserResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface UnfollowUserResponse {
+  message: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -93,8 +104,15 @@ export class AuthService {
   }
   
 
+  followUser(userId: string, followerId: string): Observable<FollowUserResponse> {
+    const url = `${this.apiUrl}/follow/${userId}`;
+    const body: FollowUserRequest = { followerId };
+    return this.http.post<FollowUserResponse>(url, body)
+  }
 
- 
-
-
+  unfollowUser(userId: string, followerId: string): Observable<UnfollowUserResponse> {
+    const url = `${this.apiUrl}/unfollow/${userId}`;
+    const body: FollowUserRequest = { followerId };
+    return this.http.post<UnfollowUserResponse>(url, body)
+  }
 }

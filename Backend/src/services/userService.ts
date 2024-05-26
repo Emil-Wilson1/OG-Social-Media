@@ -238,14 +238,21 @@ class AuthService {
     }
   }
 
-
-
   async resetPassword(token: string, newPassword: string): Promise<void> {
     const user = await userRepository.findByResetToken(token);
     if (!user) {
       throw new Error('Invalid or expired token');
     }
     await userRepository.updatePassword(user.id, newPassword);
+  }
+
+
+  async followUser(followerId: string, userId: string): Promise<void> {
+    await userRepository.followUser(followerId, userId);
+  }
+
+  async unfollowUser(followerId: string, userId: string): Promise<void> {
+    await userRepository.unfollowUser(followerId, userId);
   }
 
 }

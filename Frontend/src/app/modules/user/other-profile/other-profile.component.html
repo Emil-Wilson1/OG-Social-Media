@@ -14,18 +14,23 @@
             <!-- Following and Followers Count -->
             <div class="flex space-x-4 mt-2">
               <div>
-                <span class="font-semibold">0</span> Following
+                <span class="font-semibold">{{ data.followers.length }}</span> Followers
               </div>
               <div>
-                <span class="font-semibold">0</span> Followers
+                <span class="font-semibold">{{ followedUsers.length }}</span> Following
               </div>
             </div>
+            
             <!-- Follow Button -->
             <button
               class="bg-green-500 text-white py-1 px-3 mt-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50"
-              
+              (click)="toggleFollow(data._id)"
+              [ngClass]="{
+                'bg-red-500': isUserFollowed(data._id),
+                'hover:bg-red-600': isUserFollowed(data._id)
+              }"
             >
-             Follow
+              {{ isUserFollowed(data._id) ? 'Unfollow' : 'Follow' }}
             </button>
           </div>
         </div>
