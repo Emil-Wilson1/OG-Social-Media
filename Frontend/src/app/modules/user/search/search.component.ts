@@ -5,18 +5,21 @@ import { CommonModule } from '@angular/common';
 import { map, Observable } from 'rxjs';
 import { IUser } from '../../../models/userModel';
 import { Store } from '@ngrx/store';
-import { fetchUserAPI } from '../../store/admin/admin.action';
+import { fetchUsersAPI } from '../../store/admin/admin.action';
 import { userSelectorData } from '../../store/admin/admin.selector';
+import { AuthService } from '../../../services/auth.service';
+import { Router } from '@angular/router';
+import { SuggestionsComponent } from "../suggestions/suggestions.component";
 interface User {
   name: string;
   profilePic: string;
 }
 @Component({
-  selector: 'app-search',
-  standalone: true,
-  imports: [SidebarComponent,CommonModule,FormsModule,ReactiveFormsModule],
-  templateUrl: './search.component.html',
-  styleUrl: './search.component.css'
+    selector: 'app-search',
+    standalone: true,
+    templateUrl: './search.component.html',
+    styleUrl: './search.component.css',
+    imports: [SidebarComponent, CommonModule, FormsModule, ReactiveFormsModule, SuggestionsComponent]
 })
 export class SearchComponent {
   searchForm: FormGroup;
@@ -24,7 +27,10 @@ export class SearchComponent {
   filteredUsers$: Observable<IUser[]>;
   searchTerm: string = '';
 
-  constructor(private fb: FormBuilder, private store: Store<{ allUser: IUser[] }>) {
+  constructor(private fb: FormBuilder, 
+    private store: Store<{ allUser: IUser[] }>,
+    private userService:AuthService,
+    private router:Router,) {
     this.searchForm = this.fb.group({
       searchTerm: ''
     });
@@ -39,7 +45,7 @@ export class SearchComponent {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(fetchUserAPI());
+    this.store.dispatch(fetchUsersAPI());
   }
 
   filterUsers(searchTerm: string) {
@@ -50,6 +56,11 @@ export class SearchComponent {
         )
       )
     );
+  }
+
+  goToUserProfile(userId: string): void {
+    this.userService.changeUserId(userId);
+    this.router.navigate(['/user'], { queryParams: { userId: userId } });
   }
 
 

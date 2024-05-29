@@ -5,14 +5,15 @@ import { IUser } from '../../../models/userModel';
 import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { fetchUserAPI } from '../../../modules/store/admin/admin.action';
+import { fetchUsersAPI } from '../../../modules/store/admin/admin.action';
 import { userSelectorData } from '../../../modules/store/admin/admin.selector';
 import { AdminService } from '../../services/admin.service';
+import { NgxPaginationModule, PaginatePipe } from 'ngx-pagination';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,NgxPaginationModule],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.css',
 })
@@ -21,6 +22,7 @@ export class UserManagementComponent {
   private blockUserSubscription!: Subscription;
   private unblockUserSubscription!: Subscription;
   userId!: string;
+  page: number = 1;
   constructor(
     private store: Store<{ allUser: IUser[] }>,
     private adminService:AdminService,
@@ -28,7 +30,7 @@ export class UserManagementComponent {
   ) {}
 
   ngOnInit(): void {
-    this.store.dispatch(fetchUserAPI());
+    this.store.dispatch(fetchUsersAPI());
     this.users$ = this.store.select(userSelectorData);
     console.log(this.users$);
   }
@@ -43,7 +45,7 @@ export class UserManagementComponent {
       this.blockUserSubscription = this.adminService.blockUser(userId).subscribe({
         next: (response) => {
           console.log('User blocked successfully:', response);
-          this.store.dispatch(fetchUserAPI());
+          this.store.dispatch(fetchUsersAPI());
         },
         error: (error) => {
           console.error('Error blocking user:', error);
@@ -61,7 +63,7 @@ export class UserManagementComponent {
       this.unblockUserSubscription = this.adminService.unblockUser(userId).subscribe({
         next: (response) => {
           console.log('User unblocked successfully:', response);
-          this.store.dispatch(fetchUserAPI());
+          this.store.dispatch(fetchUsersAPI());
         },
         error: (error) => {
           console.error('Error unblocking user:', error);

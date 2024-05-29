@@ -20,9 +20,9 @@ interface User {
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
+  registerForm!: FormGroup;
   submit: boolean = false;
-  errorMessage!: string;
-  inCorrect: boolean = false;
+  errorMessage: string = '';
   private registerSub?: Subscription;
 
   constructor(
@@ -32,61 +32,62 @@ export class RegisterComponent {
     private toastr: ToastrService
   ) {}
 
-  registerForm = this.fb.group({
-    fullname: ['', [Validators.required]],
-    email: ['', [Validators.email, Validators.required]],
-    username: ['', [Validators.required]],
-    password: ['', [
-      Validators.required,
-      Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,}$')
-    ]],
-    cpassword: ['', [Validators.required]]
-  });
+  ngOnInit(): void {
+    this.registerForm = this.fb.group({
+      fullname: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      password: ['', [
+        Validators.required,
+        Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,}$')
+      ]],
+      cpassword: ['', [Validators.required]]
+    }, { validator: this.passwordMatchValidator });
+  }
 
   ngOnDestroy(): void {
     this.registerSub?.unsubscribe();
   }
 
+  passwordMatchValidator(form: FormGroup) {
+    return form.controls['password'].value === form.controls['cpassword'].value ? null : { mismatch: true };
+  }
+
   onSubmit(): void {
     this.submit = true;
-    const { fullname, email, username, password, cpassword } = this.registerForm.value;
-    if (cpassword === password) {
-      if (fullname && email && password && username) {
-        this.registerUser();
-      }
+    if (this.registerForm.valid) {
+      this.registerUser();
+    } else {
+      this.errorMessage = 'Please correct the errors in the form.';
     }
   }
 
   registerUser(): void {
-    if (this.registerForm.valid) {
-      const formValue = this.registerForm.value;
+    const formValue = this.registerForm.value;
+    const user = {
+      fullname: formValue.fullname,
+      email: formValue.email,
+      username: formValue.username,
+      password: formValue.password,
+    };
 
-      const fullname: string = formValue.fullname ?? ''; 
-      const email: string = formValue.email ?? ''; 
-      const username: string = formValue.username ?? ''; 
-      const password: string = formValue.password ?? ''; 
+    this.registerSub = this.auth.signup(user).subscribe({
+      next: (response) => {
+        localStorage.setItem('userEmail', response.email);
+        this.toastr.success('Registration Completed!');
+        this.route.navigate(['/verify']);
+        this.errorMessage = '';
+      },
+      error: (error) => {
+        this.errorMessage = error.error.error;
+        this.toastr.error(this.errorMessage);
+        console.log('Error registering user:', error);
+      }
+    });
+  }
 
-      const user: User = {
-        fullname,
-        email,
-        username,
-        password,
-      };
-
-      this.registerSub = this.auth.signup(user).subscribe({
-        next: (response) => {
-          localStorage.setItem('userEmail', response.email);
-          this.toastr.success('Registration Completed!');
-          this.route.navigate(['/verify']);
-          this.errorMessage = "";
-        },
-        error: (error: any) => {
-          this.errorMessage = error.error.error;
-          this.toastr.error(this.errorMessage);
-          console.log('Error registering user:', error);
-        }
-      });
-    }
+  get formControls() {
+    return this.registerForm.controls;
   }
 }
 

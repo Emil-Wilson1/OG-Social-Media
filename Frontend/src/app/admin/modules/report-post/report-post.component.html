@@ -36,7 +36,7 @@
             </tr>
           </thead>
           <tbody class="text-gray-700">
-            <tr *ngFor="let user of reportedUsers" class="hover:bg-gray-100 transition duration-300 ease-in-out">
+            <tr *ngFor="let user of reportedUsers | paginate: { itemsPerPage: 5, currentPage: page };" class="hover:bg-gray-100 transition duration-300 ease-in-out">
               <td class="py-3 px-4 text-left flex items-center">
                 <img class="w-10 h-10 rounded-full mr-2" *ngIf="user.post" [src]="user.post.image" alt="Post Image">
                 <span class="font-semibold">{{ user.reporterUsername }}</span>
@@ -55,6 +55,7 @@
             </tr>
           </tbody>
         </table>
+        <pagination-controls (pageChange)="page = $event"></pagination-controls>
       </div>
     </div>
   </div>

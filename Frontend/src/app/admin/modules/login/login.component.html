@@ -26,7 +26,6 @@
               placeholder="Password" />
               <div *ngIf="loginForm.get('password')?.errors && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)" class="text-red-500">
                 <div *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</div>
-                <div *ngIf="loginForm.get('password')?.errors?.['pattern']">Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character </div>
               </div>
               
           

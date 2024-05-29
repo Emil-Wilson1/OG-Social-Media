@@ -181,7 +181,7 @@ export const verifyOTP = async (req: Request, res: Response) => {
 
 
 export const fetchUserById = async (req: Request, res: Response) => {
-  const id = req.query.id as string;
+  const { id } = req.query as { id: string };
   console.log(id);
   try {
     if (!id || typeof id !== 'string') {

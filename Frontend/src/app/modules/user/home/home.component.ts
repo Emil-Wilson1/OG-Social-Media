@@ -17,6 +17,7 @@ import { ModalComponent } from '../modal/modal.component';
 import moment from 'moment';
 import { ReportPostComponent } from '../report-post/report-post.component';
 import { PostsComponent } from '../posts/posts.component';
+import { SuggestionsComponent } from '../suggestions/suggestions.component';
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -32,6 +33,7 @@ import { PostsComponent } from '../posts/posts.component';
     ModalComponent,
     ReportPostComponent,
     PostsComponent,
+    SuggestionsComponent 
   ],
 })
 export class HomeComponent {

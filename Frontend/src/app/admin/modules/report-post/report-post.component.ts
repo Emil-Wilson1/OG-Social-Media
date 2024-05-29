@@ -4,7 +4,7 @@ import { Observable, Subscription } from 'rxjs';
 import { IUser } from '../../../models/userModel';
 import { select, Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { fetchUserAPI } from '../../../modules/store/admin/admin.action';
+import { fetchUsersAPI } from '../../../modules/store/admin/admin.action';
 import { userSelectorData } from '../../../modules/store/admin/admin.selector';
 import { CommonModule, DatePipe } from '@angular/common';
 import { PostService } from '../../../services/post.service';
@@ -12,17 +12,19 @@ import { Post } from '../../../models/postModel';
 import { fetchPostAPI } from '../../../modules/store/posts/post.action';
 import { SelectorPostData } from '../../../modules/store/posts/post.selector';
 import { AdminService } from '../../services/admin.service';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-report-post',
   standalone: true,
-  imports: [CommonModule,DatePipe],
+  imports: [CommonModule,DatePipe,NgxPaginationModule],
   templateUrl: './report-post.component.html',
   styleUrl: './report-post.component.css'
 })
 export class ReportPostComponent {
   reportedUsers: any[] = []; 
   posts$!: Observable<Post[]>;
+  page: number = 1;
   private fetchReportedUsersSubscription!: Subscription;
   private fetchPostDetailsSubscription!: Subscription;
   private blockPostSubscription!: Subscription;

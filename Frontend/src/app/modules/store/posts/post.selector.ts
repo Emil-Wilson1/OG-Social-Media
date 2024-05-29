@@ -22,6 +22,15 @@ export const selectUserPosts = createSelector(
   }
 );
 
+export const selectSavedPosts = createSelector(
+  postSelectorState,
+  (state: Post[]) => {
+    // You can access the 'userId' prop from the outer scope
+    const userId =localStorage.getItem('userId') || ''; // Replace with the actual value or how you get it
+    return state.filter(post => post.saved.includes(userId))
+  }
+);
+
 // export const selectPostLikesLengthAndUserLiked = createSelector(
 //   SelectorPostData,
 //   (_state: Post[], props: { userId: string }) => {

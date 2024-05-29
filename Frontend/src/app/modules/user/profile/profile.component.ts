@@ -1,5 +1,5 @@
 import { fetchUserAPI } from '../../store/user/user.action';
-import { AuthService } from './../../../services/auth.service';
+
 
 import { SelectorData } from '../../store/user/user.selector';
 import { Component } from '@angular/core';
@@ -16,6 +16,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalComponent } from '../modal/modal.component';
 import { PostsComponent } from '../posts/posts.component';
 import { MyPostsComponent } from '../my-posts/my-posts.component';
+import { SavedPostsComponent } from '../saved-posts/saved-posts.component';
+import { fetchUsersAPI } from '../../store/admin/admin.action';
+import { userSelectorData } from '../../store/admin/admin.selector';
 
 @Component({
     selector: 'app-profile',
@@ -27,37 +30,90 @@ import { MyPostsComponent } from '../my-posts/my-posts.component';
       FormsModule,
       ReactiveFormsModule,
       ModalComponent,
-      MyPostsComponent
+      MyPostsComponent,
+      SavedPostsComponent
     ]
 })
 export class ProfileComponent {
-  user$!: Observable<IUser[]>; // Define the observable with User type
+  user$!: Observable<IUser[]>;
   posts$!: Observable<Post[]>;
-  show:boolean=false
+  show: boolean=false
   userId: string = localStorage.getItem('userId') || '';
-  constructor(private store: Store<{ user: IUser[] }>, private stored: Store<{ posts: Post[] }>) {
-  }
+  notSaved:boolean=false
+  showMyPost: boolean = false;
+  showSavedPost: boolean = false;
+  selectedPost: any = null;
+  modalOpen: boolean = false;
+  modalTitle: string = '';
+  modalUsers: IUser[] = [];
+  users$!: Observable<IUser[]>;
+
+  constructor(
+    private store: Store<{ user: IUser[] }>,
+    private postStore: Store<{ posts: Post[] }>
+  ) {}
 
   ngOnInit(): void {
     this.store.dispatch(fetchUserAPI({ id: this.userId }));
-    this.user$ = this.store.select(SelectorData);
-    this.stored.dispatch(fetchPostAPI());
-    this.posts$ = this.stored.pipe(select(SelectorPostData));
-    this.user$.subscribe((data: any) => {
-      console.log(data)
+    this.user$ = this.store.pipe(select(SelectorData));
+    this.postStore.dispatch(fetchPostAPI());
+    this.posts$ = this.postStore.pipe(select(SelectorPostData));
+    this.store.dispatch(fetchUsersAPI());
+    this.users$ = this.store.select(userSelectorData);
+  }
+
+  toggleShow(showSaved: boolean): void {
+    this.show = showSaved;
+    this.showMyPost = false;
+    this.showSavedPost = false;
+    this.selectedPost = null;
+  }
+
+
+  openPost(type: string, post: any) {
+    this.selectedPost = post;
+    if (type === 'my') {
+      this.showMyPost = true;
+      this.showSavedPost = false;
+    } else if (type === 'saved') {
+      this.showMyPost = false;
+      this.showSavedPost = true;
+    }
+  }
+
+
+
+  getUserPosts(userId: string): Observable<Post[]> {
+    return this.posts$.pipe(
+      map(posts => posts.filter(post => post.userId === userId))
+    );
+  }
+
+  getSavedPosts(userId: string): Observable<Post[]> {
+    return this.posts$.pipe(
+      map(posts => posts.filter(post => post.saved.includes(userId)))
+    );
+  }
+
+  openModal(userIds: string[], title: string): void {
+    console.log("User IDs:", userIds);
+    this.users$.subscribe({
+      next: (users) => {
+        console.log("Original Users:", users);
+        this.modalUsers = users.filter(user => userIds.includes(user._id));
+        console.log("Modal Users:", this.modalUsers);
+        this.modalTitle = title; 
+        this.modalOpen = true; 
+      },
+      error: (error) => {
+        console.error("Error fetching users:", error);
+      }
     });
   }
 
-open(){
-  this.show=true
-}
-
-
-getUserPosts(userId: string): Observable<any> {
-  return this.posts$.pipe(
-    map(posts => posts.filter(post => post.userId === userId))
-  );
-}
+  closeModal(): void {
+    this.modalOpen = false;
+  }
 }
 
 

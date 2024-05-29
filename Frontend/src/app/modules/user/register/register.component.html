@@ -4,39 +4,64 @@
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <input
         type="text"
-        class="block border border-gray-300 w-full p-3 rounded mb-4 focus:outline-none focus:border-green-500"
+        class="block border border-gray-300 w-full p-3 rounded mb-1 focus:outline-none focus:border-green-500"
         name="fullname"
         formControlName="fullname"
         placeholder="Full Name"
       />
+      <div *ngIf="formControls['fullname'].invalid && (formControls['fullname'].dirty || formControls['fullname'].touched)" class="text-red-600 mb-4">
+        <div *ngIf="formControls['fullname'].errors?.['required']">Full Name is required.</div>
+        <div *ngIf="formControls['fullname'].errors?.['minlength']">Full Name must be at least 3 characters long.</div>
+      </div>
+    
       <input
         type="text"
-        class="block border border-gray-300 w-full p-3 rounded mb-4 focus:outline-none focus:border-green-500"
+        class="block border border-gray-300 w-full p-3 rounded mb-1 focus:outline-none focus:border-green-500"
         name="email"
         formControlName="email"
         placeholder="Email"
       />
+      <div *ngIf="formControls['email'].invalid && (formControls['email'].dirty || formControls['email'].touched)" class="text-red-600 mb-4">
+        <div *ngIf="formControls['email'].errors?.['required']">Email is required.</div>
+        <div *ngIf="formControls['email'].errors?.['email']">Invalid email address.</div>
+      </div>
+    
       <input
         type="text"
-        class="block border border-gray-300 w-full p-3 rounded mb-4 focus:outline-none focus:border-green-500"
+        class="block border border-gray-300 w-full p-3 rounded mb-1 focus:outline-none focus:border-green-500"
         name="username"
         formControlName="username"
         placeholder="Username"
       />
+      <div *ngIf="formControls['username'].invalid && (formControls['username'].dirty || formControls['username'].touched)" class="text-red-600 mb-4">
+        <div *ngIf="formControls['username'].errors?.['required']">Username is required.</div>
+        <div *ngIf="formControls['username'].errors?.['minlength']">Username must be at least 3 characters long.</div>
+      </div>
+    
       <input
         type="password"
-        class="block border border-gray-300 w-full p-3 rounded mb-4 focus:outline-none focus:border-green-500"
+        class="block border border-gray-300 w-full p-3 rounded mb-1 focus:outline-none focus:border-green-500"
         name="password"
         formControlName="password"
         placeholder="Password"
       />
+      <div *ngIf="formControls['password'].invalid && (formControls['password'].dirty || formControls['password'].touched)" class="text-red-600 mb-4">
+        <div *ngIf="formControls['password'].errors?.['required']">Password is required.</div>
+        <div *ngIf="formControls['password'].errors?.['pattern']">Password must be at least 8 characters long, including uppercase, lowercase, numbers, and special characters.</div>
+      </div>
+    
       <input
         type="password"
-        class="block border border-gray-300 w-full p-3 rounded mb-6 focus:outline-none focus:border-green-500"
+        class="block border border-gray-300 w-full p-3 rounded mb-1 focus:outline-none focus:border-green-500"
         name="cpassword"
         formControlName="cpassword"
         placeholder="Confirm Password"
       />
+      <div *ngIf="formControls['cpassword'].invalid && (formControls['cpassword'].dirty || formControls['cpassword'].touched)" class="text-red-600 mb-4">
+        <div *ngIf="formControls['cpassword'].errors?.['required']">Confirm Password is required.</div>
+        <div *ngIf="registerForm.errors?.['mismatch']">Passwords do not match.</div>
+      </div>
+    
       <button
         type="submit"
         class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded focus:outline-none focus:shadow-outline"
@@ -44,13 +69,14 @@
         Create Account
       </button>
     </form>
+    <div *ngIf="errorMessage" class="text-red-600 mt-4">{{ errorMessage }}</div>
     <div class="text-center text-sm text-gray-600 mt-4">
       By signing up, you agree to the
       <a class="no-underline border-b border-gray-600 text-gray-800" href="#">Terms of Service</a> and
       <a class="no-underline border-b border-gray-600 text-gray-800" href="#">Privacy Policy</a>
     </div>
   </div>
-  <div *ngIf="errorMessage" class="text-red-600 mt-4">{{ errorMessage }}</div>
+
   <div class="text-gray-600 mt-3 mb-2 text-center">
     Already have an account?
     <a class="no-underline border-b border-blue-500 text-blue-500" href="/login"> Log in </a>.

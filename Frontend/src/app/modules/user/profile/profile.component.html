@@ -13,36 +13,87 @@
             <p class="text-gray-600">{{ data.username }}</p>
           </div>
         </div>
-
         <!-- Bio -->
-        <p class="text-gray-800 mb-4">{{data.bio}}</p>
+        <p class="text-gray-800 mb-2">{{data.bio}}</p>
+          <div class="flex space-x-4 mt-2">
+              <div (click)="openModal(data.followers, 'Followers')" class="cursor-pointer">
+                <span class="font-semibold">{{ data.followers.length }}</span> Followers
+              </div>
+              <div (click)="openModal(data.following, 'Following')" class="cursor-pointer">
+                <span class="font-semibold">{{ data.following.length }}</span> Following
+              </div>
+            </div>
+
         <button
           class="bg-green-500 text-white py-2 px-4 mb-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50"><a
             href="/editProfile" class="no-underline text-white">Edit Profile</a></button>
-        <div class="flex justify-around m-2">
-          <!-- My Posts Heading -->
-          <h3 class="text-lg font-semibold">My Posts</h3>
-          <h3 class="text-lg font-semibold">Saved Posts</h3>
-        </div>
-        <!-- Divider -->
-        <div class="bg-gray-300 h-px mb-6"></div>
-
-        <!-- User Posts Grid -->
-        <div class="grid grid-cols-3 gap-4" *ngIf="!show">
-          <div *ngFor="let post of getUserPosts(userId) | async">
-            <ng-container></ng-container>
-            <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
-              <img [src]="post.image" alt="Post" class="w-full h-48 object-cover" (click)="open()">
+            <div class="flex justify-around m-2">
+              <!-- My Posts Heading -->
+              <h3 class="text-lg font-semibold cursor-pointer" (click)="toggleShow(false)">My Posts</h3>
+              <h3 class="text-lg font-semibold cursor-pointer" (click)="toggleShow(true)">Saved Posts</h3>
             </div>
-          </div>
-        </div>
+            
+            <!-- Divider -->
+            <div class="bg-gray-300 h-px mb-6"></div>
+            
+ <!-- User Posts Grid -->
+<div class="grid grid-cols-3 gap-4" *ngIf="!showMyPost && !showSavedPost && !show">
+  <div *ngFor="let post of getUserPosts(userId) | async">
+    <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
+      <img [src]="post.image" alt="Post" class="w-full h-48 object-cover cursor-pointer" (click)="openPost('my', post)">
+    </div>
+  </div>
+</div>
 
-        <div class="flex justify-center" *ngIf="show">
-          <app-my-posts></app-my-posts>
-        </div>
+<!-- Saved Posts Grid -->
+<div class="grid grid-cols-3 gap-4" *ngIf="!showMyPost && !showSavedPost && show">
+  <div *ngFor="let post of getSavedPosts(userId) | async">
+    <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
+      <img [src]="post.image" alt="Post" class="w-full h-48 object-cover cursor-pointer" (click)="openPost('saved', post)">
+    </div>
+  </div>
+</div>
+            
+   
+            
+<!-- My Posts Component -->
+<div class="flex justify-center" *ngIf="showMyPost">
+  <app-my-posts [post]="selectedPost"></app-my-posts>
+</div>
 
+<!-- Saved Posts Component -->
+<div class="flex justify-center" *ngIf="showSavedPost">
+  <app-saved-posts [post]="selectedPost"></app-saved-posts>
+</div>
+          
 
       </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div *ngIf="modalOpen" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center">
+  <div class="bg-white rounded-lg p-4 w-1/3">
+    <div class="flex justify-between items-center border-b pb-2">
+      <h2 class="text-lg font-semibold">{{ modalTitle }}</h2>
+      <button class="text-red-500" (click)="closeModal()">X</button>
+    </div>
+    <div class="mt-4">
+      <div *ngIf="modalUsers.length > 0; else noUsersFound">
+        <div *ngFor="let user of modalUsers" class="flex items-center space-x-4 mb-2">
+          <img [src]="user.profilePic || 'https://via.placeholder.com/40'" class="w-10 h-10 rounded-full" alt="Profile Picture">
+          <div>
+            <p class="font-semibold mb-0">{{ user.fullname }}</p>
+            <p class="text-sm text-gray-500">{{ user.username }}</p>
+          </div>
+        </div>
+      </div>
+      <ng-template #noUsersFound>
+        <div class="text-center text-gray-500">No users found</div>
+      </ng-template>
     </div>
   </div>
 </div>

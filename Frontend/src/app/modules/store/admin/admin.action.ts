@@ -2,7 +2,7 @@ import { createAction, props } from "@ngrx/store";
 import { IUser } from "../../../models/userModel";
 
 
-export const fetchUserAPI = createAction(
+export const fetchUsersAPI = createAction(
     "[User API] Fetch User API"
 )
 

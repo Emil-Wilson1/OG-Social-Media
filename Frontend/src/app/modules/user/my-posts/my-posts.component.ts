@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, EventEmitter, input, Input, Output, ViewChild } from '@angular/core';
 import { map, Observable, Subscription } from 'rxjs';
 import { Post } from '../../../models/postModel';
 import { ModalComponent } from '../modal/modal.component';
@@ -7,6 +7,7 @@ import { select, Store } from '@ngrx/store';
 import { fetchPostAPI } from '../../store/posts/post.action';
 import {
   SelectorPostData,
+  selectSavedPosts,
   selectUserPosts,
 } from '../../store/posts/post.selector';
 import moment from 'moment';
@@ -37,6 +38,7 @@ export class MyPostsComponent {
   likedPosts: string[] = [];
   postCommentsCount: number = 0; 
   savedPosts: string[] = [];
+  @Input() post: any; 
   private subscriptions: Subscription = new Subscription();
 
   @ViewChild(ModalComponent) modal!: ModalComponent;
@@ -47,7 +49,7 @@ export class MyPostsComponent {
 
   ngOnInit(): void {
     this.store.dispatch(fetchPostAPI());
-    this.posts$ = this.store.pipe(select(selectUserPosts));
+      this.posts$ = this.store.pipe(select(selectUserPosts));
     this.posts$.subscribe((posts) => {
       this.savedPosts = posts
         .filter((post) => post.saved.includes(this.userId))
