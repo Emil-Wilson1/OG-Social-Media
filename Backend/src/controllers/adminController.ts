@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import authService from '../services/userService';
 import adminService from '../services/adminService';
-import adminRepository from '../repositories/adminRepository';
 import { HttpStatusCode } from '../types/httpStatus';
 
 
@@ -30,19 +29,6 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-
-
-// export const fetchAllUsers = async (req: Request, res: Response) => {
-//   try {
-//     const userDatas = await adminRepository.getAllUsers();
-//     res.status(200).json({ users: userDatas });
-//   } catch (error) {
-//     console.log(error);
-//     res.json({ error });
-//   }
-// };
-
-
 export const fetchAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await adminService.fetchAllUsers();
@@ -58,20 +44,6 @@ export const fetchAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-
-// export const block = async (req: Request, res: Response) =>  {
-//   const userId = req.query.id as string; 
-//   if (!userId) {
-//     return res.status(400).json({ error: 'User ID is required' });
-//   }
-//   try {
-//     await adminRepository.blockUser(userId);
-//     res.status(200).json({ message: 'User blocked successfully' });
-//   } catch (error) {
-//     console.error('Error blocking user:', error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// };
 
 
 export const block = async (req: Request, res: Response) => {
@@ -105,22 +77,6 @@ export const unblock = async (req: Request, res: Response) =>  {
   }
 };
 
-// export const blockPost= async (req: Request, res: Response) => {
-//   const { postId, reportId } = req.params;
-  
-//   try {
-//       await Promise.all([
-//         adminRepository.updateActionTaken(reportId),
-//         adminRepository.blockPostById(postId)
-//       ]);
-//       res.status(200).json({ message: 'Post blocked successfully.' });
-//   } catch (error) {
-//       console.error('Error blocking post:', error);
-//       res.status(500).json({ error: 'An error occurred while blocking the post.' });
-//   }
-// }
-
-
 export const blockPost = async (req: Request, res: Response) => {
   const { postId, reportId } = req.params;
 
@@ -133,25 +89,9 @@ export const blockPost = async (req: Request, res: Response) => {
   }
 };
 
-// export const unblockPost= async (req: Request, res: Response) => {
-//   const { postId, reportId } = req.params;
-  
-//   try {
-//       await Promise.all([
-//         adminRepository.updateAction(reportId),
-//         adminRepository.unblockPostById(postId)
-//       ]);
-//       res.status(200).json({ message: 'Post unblocked successfully.' });
-//   } catch (error) {
-//       console.error('Error unblocking post:', error);
-//       res.status(500).json({ error: 'An error occurred while unblocking the post.' });
-//   }
-// }
-
 
 export const unblockPost = async (req: Request, res: Response) => {
   const { postId, reportId } = req.params;
-
   try {
     await adminService.unblockPost(postId, reportId);
     res.status(HttpStatusCode.OK).json({ message: 'Post unblocked successfully.' });
@@ -161,19 +101,5 @@ export const unblockPost = async (req: Request, res: Response) => {
   }
 };
 
-
-// export const unblock = async (req: Request, res: Response) =>  {
-//   const userId = req.query.id as string; 
-//   if (!userId) {
-//     return res.status(400).json({ error: 'User ID is required' });
-//   }
-//   try {
-//     await adminRepository.unblockUser(userId);
-//     res.status(200).json({ message: 'User unblocked successfully' });
-//   } catch (error) {
-//     console.error('Error unblocking user:', error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// };
 
 

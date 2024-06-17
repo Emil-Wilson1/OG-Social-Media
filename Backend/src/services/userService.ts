@@ -11,25 +11,6 @@ import { UserProfileUpdate } from '../types/interfaces';
 
 class AuthService {
 
-  // async signup(fullname:string,email: string, username: string, password: string): Promise<string | null> {
-  //     try {
-
-  //       const hashedPassword = await bcrypt.hash(password, 10);
-  //       const user = await userRepository.createUser(fullname,email,username, hashedPassword);
-  //       if (!user) {
-  //         throw new Error('User creation failed');
-  //       }
-
-  //       // Generate JWT token
-  //       // const token = jwt.sign({ userId: user._id }, process.env.JWT_KEY_SECRET || '', { expiresIn: '1h' });
-  //       const token=JWTUtil.generateAccessToken(user._id)
-  //       return token;
-  //     } catch (error) {
-  //       console.error('Error in signup:', error);
-  //       return null;
-  //     }
-  //   }
-
 
   constructor(private userRepository: UserRepository, private mailer: { sendOTP: (email: string, otp: number) => Promise<void> }) { }
 
@@ -254,6 +235,17 @@ class AuthService {
   async unfollowUser(followerId: string, userId: string): Promise<void> {
     await userRepository.unfollowUser(followerId, userId);
   }
+
+  async togglePrivacy(userId: string): Promise<UserDocument | null> {
+    const user = await this.userRepository.findUserById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const newPrivacyStatus = !user.isPrivate;
+    return this.userRepository.updatePrivacy(userId, newPrivacyStatus);
+  }
+
 
 }
 

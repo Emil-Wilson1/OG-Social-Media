@@ -3,7 +3,7 @@
 export interface Post {
   _id: string;
   userId: string;
-  image: string;
+  images: string[];
   description: string;
   likes: string[]; // Assuming the likes are stored as user IDs
   saved: string[];

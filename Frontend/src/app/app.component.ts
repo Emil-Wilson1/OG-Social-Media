@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { MyPostsComponent } from "./modules/user/my-posts/my-posts.component";
 import { SidebarComponent } from "./modules/user/sidebar/sidebar.component";
+import { AuthService } from './services/auth.service';
 
 
 @Component({
@@ -15,5 +16,9 @@ import { SidebarComponent } from "./modules/user/sidebar/sidebar.component";
 })
 export class AppComponent {
   title = 'Frontend';
+ 
+
+
+
 
 }

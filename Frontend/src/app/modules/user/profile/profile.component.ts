@@ -19,6 +19,7 @@ import { MyPostsComponent } from '../my-posts/my-posts.component';
 import { SavedPostsComponent } from '../saved-posts/saved-posts.component';
 import { fetchUsersAPI } from '../../store/admin/admin.action';
 import { userSelectorData } from '../../store/admin/admin.selector';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
     selector: 'app-profile',
@@ -47,10 +48,15 @@ export class ProfileComponent {
   modalTitle: string = '';
   modalUsers: IUser[] = [];
   users$!: Observable<IUser[]>;
+  isPrivate: boolean = false; // Assuming you have a way to determine the initial privacy setting
+
+
+
 
   constructor(
     private store: Store<{ user: IUser[] }>,
-    private postStore: Store<{ posts: Post[] }>
+    private postStore: Store<{ posts: Post[] }>,
+    private privacyService:AuthService
   ) {}
 
   ngOnInit(): void {
@@ -60,6 +66,20 @@ export class ProfileComponent {
     this.posts$ = this.postStore.pipe(select(SelectorPostData));
     this.store.dispatch(fetchUsersAPI());
     this.users$ = this.store.select(userSelectorData);
+  }
+
+  togglePrivacy(): void {
+    this.privacyService.togglePrivacy(this.userId).subscribe(
+      (response: any) => {
+        console.log(response); // Log the response from the backend
+        // Update the component's state or UI based on the response
+        this.isPrivate = response.updatedUser.isPrivate; // Assuming the response contains the updated privacy setting
+      },
+      (error: any) => {
+        console.error(error); // Log any errors
+        // Handle errors, e.g., display an error message to the user
+      }
+    );
   }
 
   toggleShow(showSaved: boolean): void {

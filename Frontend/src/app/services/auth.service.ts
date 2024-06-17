@@ -1,10 +1,25 @@
-
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs';
 import { IUser } from '../models/userModel';
 import { environment } from '../../environments/environment.development';
 import { LoginRequest, LoginResponse, User, verifyRes } from '../models/interface';
+import { io, Socket } from 'socket.io-client';
+
+// notification.model.ts
+export interface Notification {
+  userId: string;
+  receiverId: {
+    _id: string;
+    fullname: string;
+  };
+  type: "like" | "comment" | "mention" | "birthday";
+  sourceId: string;
+  message?: string;
+  createdAt: Date;
+  read: boolean;
+}
+
 
 export interface FollowUserRequest {
   followerId: string;
@@ -25,10 +40,12 @@ export interface UnfollowUserResponse {
 export class AuthService {
   private userToken: string | null = null;
   id!: string;
+  userId=localStorage.getItem('userId')
   private apiUrl: string = environment.apiUrl;
   private Url:string = environment.Url;
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient) { 
 
+  }
 
   get isLoggedIn() {
     if(localStorage.getItem('userToken')){
@@ -40,6 +57,9 @@ export class AuthService {
  private userIdSource = new BehaviorSubject<string>('');
  currentUserId = this.userIdSource.asObservable();
 
+ getNotifications(): Observable<{ notifications: Notification[] }> {
+  return this.http.get<{ notifications: Notification[] }>(`${this.apiUrl}/notifications/${this.userId}`);
+}
 
  changeUserId(userId: string) {
    this.userIdSource.next(userId);
@@ -115,4 +135,15 @@ export class AuthService {
     const body: FollowUserRequest = { followerId };
     return this.http.post<UnfollowUserResponse>(url, body)
   }
+
+
+  togglePrivacy(userId: string): Observable<any> {
+    const url = `${this.apiUrl}/${userId}/togglePrivacy`;
+    return this.http.put(url, {});
+  }
+
+
+
+
+
 }

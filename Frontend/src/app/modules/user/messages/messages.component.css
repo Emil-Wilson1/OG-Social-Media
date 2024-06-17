@@ -1,0 +1,9 @@
+@media (max-width: 767px) {
+  .md\:ml-64 {
+    margin-left: 0;
+  }
+
+  .md\:pr-80 {
+    padding-right: 0;
+  }
+}

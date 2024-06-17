@@ -76,6 +76,7 @@ export class AdminRepository {
 async unblockPostById(postId: string): Promise<void> {
   await this.postUserModel.findByIdAndUpdate(postId, { adminBlock: false});
 }
+
 }
 
 export default new AdminRepository()

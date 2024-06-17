@@ -77,8 +77,4 @@ export class PostRepository {
   }
 }
 
-
-
-
-
 export default new PostRepository()

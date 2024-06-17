@@ -37,6 +37,6 @@ export const appConfig: ApplicationConfig = {
     provideState({name:'users',reducer: userReducer}),
     provideState({name:'posts',reducer: postReducer}),
     provideAnimationsAsync(),
-    provideToastr()
+    provideToastr(), provideAnimationsAsync()
   ]
 };

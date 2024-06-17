@@ -138,6 +138,28 @@ export class UserRepository {
       await this.userModel.findByIdAndUpdate(followerId, { $pull: { following: userId } });
       await this.userModel.findByIdAndUpdate(userId, { $pull: { followers: followerId } });
     }
+
+
+    async findUsersWithUpcomingBirthdays(): Promise<UserDocument[]> {
+      const today = new Date();
+      const tomorrow = new Date();
+      tomorrow.setDate(today.getDate() + 1);
+  
+      return User.find({
+        birthdate: {
+          $gte: new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 0, 0, 0),
+          $lt: new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 23, 59, 59)
+        }
+      }).exec();
+    }
+
+    async updatePrivacy(userId: string, isPrivate: boolean): Promise<UserDocument | null> {
+      return this.userModel.findByIdAndUpdate(
+        userId,
+        { isPrivate },
+        { new: true }
+      ).exec();
+    }
 }
 
 export default new UserRepository()

@@ -54,7 +54,7 @@
           <div *ngFor="let post of getUserPosts(userId) | async">
             <ng-container></ng-container>
             <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
-              <img [src]="post.image" alt="Post" class="w-full h-48 object-cover" (click)="open()">
+              <img [src]="post.images" alt="Post" class="w-full h-48 object-cover" (click)="open()">
             </div>
           </div>
         </div>
@@ -79,7 +79,7 @@
         <div *ngFor="let user of modalUsers" class="flex items-center space-x-4 mb-2">
           <img [src]="user.profilePic || 'https://via.placeholder.com/40'" class="w-10 h-10 rounded-full" alt="Profile Picture">
           <div>
-            <p class="font-semibold mb-0">{{ user.fullname }}</p>
+            <p class="font-semibold mb-0 cursor-pointer" (click)="goToUserProfile(user._id)" >{{ user.fullname }}</p>
             <p class="text-sm text-gray-500">{{ user.username }}</p>
           </div>
         </div>

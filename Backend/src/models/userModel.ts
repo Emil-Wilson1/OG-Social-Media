@@ -19,6 +19,8 @@ export interface User {
     online: boolean;
     blocked: boolean;
     verified: boolean;
+    birthdate: Date;
+    isPrivate: boolean;
 }
 
 export interface UserDocument extends User, Document {}
@@ -51,6 +53,7 @@ const userSchema = new Schema<UserDocument>({
     resetToken: {
         type: String,
     },
+    birthdate: { type: Date, required: true },
     fullname: {
         type: String,
         required: true,
@@ -102,6 +105,10 @@ const userSchema = new Schema<UserDocument>({
         default: false,
     },
     verified: {
+        type: Boolean,
+        default: false,
+    },
+    isPrivate: {
         type: Boolean,
         default: false,
     },

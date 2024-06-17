@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ModalComponent } from '../modal/modal.component';
 import { PostService } from '../../../services/post.service';
 import { select, Store } from '@ngrx/store';
@@ -72,6 +72,16 @@ export class PostsComponent {
     this.postCommentsCount = commentsCount;
   }
 
+
+  currentIndex: number = 0;
+
+  prevImage(imagesLength: number) {
+    this.currentIndex = (this.currentIndex === 0) ? (imagesLength - 1) : (this.currentIndex - 1);
+  }
+
+  nextImage(imagesLength: number) {
+    this.currentIndex = (this.currentIndex === imagesLength - 1) ? 0 : (this.currentIndex + 1);
+  }
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }

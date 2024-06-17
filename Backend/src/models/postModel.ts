@@ -2,7 +2,7 @@ import mongoose, { Schema, Document, Model, Types } from "mongoose";
 
 interface PostModel extends Document {
   userId: Types.ObjectId;
-  image: string;
+  images: string[]; 
   description?: string;
   date: Date;
   likes: Types.ObjectId[];
@@ -23,10 +23,10 @@ const postSchema = new Schema<PostDocument>({
     ref: "User",
     required: true,
   },
-  image: {
-    type: String,
+  images: {
+    type: [String],  
     required: true,
-    trim: true,
+    
   },
   description: {
     type: String,

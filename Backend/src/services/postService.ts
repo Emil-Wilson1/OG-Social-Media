@@ -14,6 +14,8 @@ class postService {
     try {
       const result = await cloudinary.v2.uploader.upload(file.path);
       console.log("cloudinary image:", result);
+      console.log("url of Image",result.secure_url);
+      
       return result.secure_url;
     } catch (error) {
       throw new Error("Error uploading image to Cloudinary");
@@ -23,7 +25,7 @@ class postService {
   async createPost(postData: {
     userId: string;
     description: string;
-    image: string;
+    images: string[];
   }) {
     const newPost = new this.postUserModel(postData);
     await newPost.save();
@@ -69,33 +71,6 @@ class postService {
       throw error; // Rethrow the error
     }
   }
-
-  // async likePost(postId: string, userId: string) {
-  //   try {
-  //     const post = await this.postUserModel.findById(postId);
-  //     if (!post) {
-  //       throw new Error("Post not found");
-  //     }
-
-  //     const userObjectId = new mongoose.Types.ObjectId(userId);
-
-  //     if (
-  //       post.likes.some(
-  //         (likeId) => likeId.toString() === userObjectId.toString()
-  //       )
-  //     ) {
-  //       post.likes = post.likes.filter(
-  //         (likeId) => likeId.toString() !== userObjectId.toString()
-  //       );
-  //     } else {
-  //       post.likes.push(userObjectId);
-  //     }
-
-  //     return await post.save();
-  //   } catch (error) {
-  //     throw new Error("Eroor");
-  //   }
-  // }
 
 
   async unlikePost(postId: string, userId: string): Promise<void> {

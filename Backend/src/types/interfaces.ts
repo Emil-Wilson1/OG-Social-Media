@@ -1,8 +1,8 @@
 export interface Comment {
     userId: string;
     content: string;
-    userName?: string; // Optional, will be added later
-    profilePic?: string; // Optional, will be added later
+    userName?: string; 
+    profilePic?: string; 
   }
 
 

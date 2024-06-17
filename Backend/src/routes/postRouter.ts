@@ -7,7 +7,7 @@ import protect from '../middlewares/authMiddleware';
 
 const router:Router = express.Router();
 
-router.post('/posts',protect,upload.single('image'),createPost);
+router.post('/posts', protect, upload.array('images', 4), createPost);
 router.get('/fetchPosts',protect,getAllPosts);
 router.put('/:postId/like',protect,likePost);
 router.delete('/:postId/unlike',protect, unlikePost);

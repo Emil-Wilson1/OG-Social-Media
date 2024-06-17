@@ -24,6 +24,7 @@ interface User {
 export class SearchComponent {
   searchForm: FormGroup;
   users$: Observable<IUser[]>;
+  userId:string=localStorage.getItem('userId') || ''
   filteredUsers$: Observable<IUser[]>;
   searchTerm: string = '';
 
@@ -59,8 +60,12 @@ export class SearchComponent {
   }
 
   goToUserProfile(userId: string): void {
+    if(userId!==this.userId){
     this.userService.changeUserId(userId);
     this.router.navigate(['/user'], { queryParams: { userId: userId } });
+    }else{
+      this.router.navigate(['/profile']);
+    }
   }
 
 

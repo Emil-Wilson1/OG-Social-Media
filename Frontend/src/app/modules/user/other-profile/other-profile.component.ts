@@ -11,7 +11,7 @@ import { SelectorPostData } from '../../store/posts/post.selector';
 import { SelectorData } from '../../store/user/user.selector';
 import { AuthService } from '../../../services/auth.service';
 import { fetchUserAPI } from '../../store/user/user.action';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { userSelectorData } from '../../store/admin/admin.selector';
 import { fetchUsersAPI } from '../../../modules/store/admin/admin.action';
 @Component({
@@ -38,7 +38,8 @@ export class OtherProfileComponent {
     private store: Store<{ user: IUser[] }>, 
     private stored: Store<{ posts: Post[] }>,
     private userService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router:Router
   ) { }
 
   ngOnInit(): void {
@@ -157,6 +158,16 @@ export class OtherProfileComponent {
   
   getMutualConnectionsIds(user: IUser): string[] {
     return user.following.filter(followedUserId => followedUserId !== this.currentUser && user.following.includes(followedUserId));
+  }
+
+  goToUserProfile(userId: string): void {
+    this.modalOpen = false;
+    if(userId!==this.userId){
+    this.userService.changeUserId(userId);
+    this.router.navigate(['/user'], { queryParams: { userId: userId } });
+    }else{
+      this.router.navigate(['/profile']);
+    }
   }
 }
 

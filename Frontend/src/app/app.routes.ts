@@ -9,6 +9,8 @@ import { RestComponent } from './modules/user/rest/rest.component';
 import { ResetComponent } from './modules/user/reset/reset.component';
 import { authGuard } from './guards/auth.guard';
 import { OtherProfileComponent } from './modules/user/other-profile/other-profile.component';
+import { NotificationsComponent } from './modules/user/notifications/notifications.component';
+import { MessagesComponent } from './modules/user/messages/messages.component';
 //import  HomeComponent  from './modules/user/home/home.component';
 export const routes: Routes = [
   {
@@ -54,6 +56,13 @@ export const routes: Routes = [
   {
     path:'user',
     component:OtherProfileComponent
+  },
+  {
+    path:'notifications',
+    component:NotificationsComponent
+  },  {
+    path:'messages',
+    component:MessagesComponent
   }
 
 
