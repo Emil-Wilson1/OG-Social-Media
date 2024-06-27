@@ -21,6 +21,7 @@ export interface User {
     verified: boolean;
     birthdate: Date;
     isPrivate: boolean;
+    followRequests:Types.ObjectId[];
 }
 
 export interface UserDocument extends User, Document {}
@@ -112,6 +113,10 @@ const userSchema = new Schema<UserDocument>({
         type: Boolean,
         default: false,
     },
+    followRequests:{
+        type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+        default: []
+    } 
 }, {
     timestamps: true
 });

@@ -23,13 +23,11 @@
             
             <!-- Follow Button -->
             <button
-              class="bg-green-500 text-white py-1 px-3 mt-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50"
-              (click)="isUserFollowed(data._id) ? unfollowUser(data._id) : followUser(data._id)"
-
-            >
-              {{ isUserFollowed(data._id) ? 'Unfollow' : 'Follow' }}
-            </button>
-
+            class="bg-green-500 text-white py-1 px-3 mt-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50"
+            (click)="followOrUnfollowUser(data._id)"
+          >
+            {{ getButtonText(data._id) }}
+          </button>
 
           </div>
         </div>
@@ -54,7 +52,7 @@
           <div *ngFor="let post of getUserPosts(userId) | async">
             <ng-container></ng-container>
             <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
-              <img [src]="post.images" alt="Post" class="w-full h-48 object-cover" (click)="open()">
+              <img [src]="post.images[0]" alt="Post" class="w-full h-48 object-cover" (click)="open()">
             </div>
           </div>
         </div>

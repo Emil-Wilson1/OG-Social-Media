@@ -1,19 +1,18 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import {  ChangeDetectorRef, Component } from '@angular/core';
 import { SuggestionsComponent } from "../suggestions/suggestions.component";
 import { SidebarComponent } from "../sidebar/sidebar.component";
 import { CommonModule } from '@angular/common';
 import { SocketService } from '../../../services/socket.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../../services/auth.service';
 // notification.model.ts
 export interface Notification {
   userId: string;
-  receiverId: {
+  receiverId:string;
+  type: "like" | "comment" | "mention" | "birthday" | "follow";
+  sourceId: {
     _id: string;
     fullname: string;
-  };
-  type: "like" | "comment" | "mention" | "birthday";
-  sourceId: string;
+  }; 
   message?: string; // Ensure message is defined as string or remove the "?" if it's always present
   createdAt: Date;
   read: boolean;
@@ -39,11 +38,12 @@ export class NotificationsComponent {
 
   ngOnInit(): void {
     // Listen for notifications from Socket.IO
-    this.socketService.listenForNotifications().subscribe((data: Notification) => {
+    this.socketService.listenForNotifications().subscribe((data: any) => {
+      console.log('Received notification:', data);
         this.notifications.unshift(data);
+        console.log('New follow notification:', data);
         this.updateNotificationCount();
         this.cdr.detectChanges(); // Trigger change detection
-      
     });
 
     // Fetch notifications from backend on initialization
@@ -61,11 +61,15 @@ export class NotificationsComponent {
       if (data && data.notifications && Array.isArray(data.notifications)) {
         // Ensure to clear existing notifications to avoid duplication
         this.notifications = data.notifications
-          .filter((notification: Notification) => notification.type === 'birthday')
           .map((notification: Notification) => {
-            notification.message = `It's ${notification.receiverId.fullname}'s birthday tomorrow!`; // Use populated fullname
+            if (notification.type === 'birthday') {
+              notification.message = `It's ${notification.sourceId.fullname}'s birthday tomorrow!`;
+            } else if (notification.type === 'follow') {
+              notification.message = `${notification.sourceId.fullname} started following you!`;
+            }
             return notification;
-          }).concat(this.notifications); // Add to the beginning
+          })
+          .concat(this.notifications); // Add to the beginning
         this.updateNotificationCount();
         this.cdr.detectChanges(); // Trigger change detection
       } else {
@@ -77,6 +81,8 @@ export class NotificationsComponent {
   updateNotificationCount(): void {
     this.birthdayNotificationCount = this.notifications.filter(notification => notification.type === 'birthday').length;
   }
+
+ 
 }
 
 

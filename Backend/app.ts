@@ -13,6 +13,7 @@ import { pgConnection } from './src/config/psql';
 import adminRouter from './src/routes/adminRouter';
 import socketIo_Config from './src/sockets/socket';
 import { startBirthdayCron } from './src/utils/birthdayCron';
+import chatRouter from './src/routes/chatRouter';
 
 // Create an Express app
 const app = express();
@@ -41,10 +42,11 @@ app.use(cors({
 }));
 
 // Routes
-app.use('/user', userRouter,postRouter);
+app.use('/user', userRouter,postRouter,chatRouter);
 app.use('/admin', adminRouter);
 
 import './src/utils/birthdayCron'
+
 
 // Start the server
 
@@ -55,3 +57,5 @@ server.listen(port, () => {
 
 // Start birthday cron job
 startBirthdayCron(io);
+
+

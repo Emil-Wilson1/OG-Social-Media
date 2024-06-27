@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import authService from "../services/userService";
 import { HttpStatusCode } from "../types/httpStatus";
+import notificationRepository from "../repositories/notificationRepository";
 
 
 export const signup = async (req: Request, res: Response): Promise<void> => {
@@ -189,8 +190,22 @@ export const followUser = async (
     const { followerId } = req.body;
 
     await authService.followUser(followerId, userId);
-
     res.status(HttpStatusCode.OK).json({ success: true, message: "User followed successfully" });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: "Something went wrong" });
+  }
+};
+
+
+export const sendFollowRequest = async (req:Request, res:Response):Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const { followerId } = req.body;
+
+    await authService.sendFollowReq(followerId, userId);
+    console.log("nbvjkdnjbnkjd");
+    
+    res.status(HttpStatusCode.OK).json({ success: true, message: "Follow request sent successfully" });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: "Something went wrong" });
   }

@@ -2,7 +2,8 @@ import { addComment, deleteComment, fetchUserDetailsForComments, getCommentsForP
 import { createPost, deletePost,  fetchReportedUsers,  getAllPosts, likePost, reportPost, savedPost, unlikePost, unsavedPost, updatePostDescription } from './../controllers/postController';
 import express, { Router } from 'express';
 import { upload } from '../utils/multer';
-import protect from '../middlewares/authMiddleware';
+import { protect } from '../middlewares/authMiddleware';
+
 
 
 const router:Router = express.Router();

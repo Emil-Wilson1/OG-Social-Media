@@ -34,7 +34,10 @@
           </button>
             <div class="flex justify-around m-2">
               <!-- My Posts Heading -->
-              <h3 class="text-lg font-semibold cursor-pointer" (click)="toggleShow(false)">My Posts</h3>
+              <!-- <h3 class="text-lg font-semibold cursor-pointer" (click)="toggleShow(false)">My Posts</h3> -->
+              <h3 class="text-lg font-semibold cursor-pointer" (click)="toggleShow(false)">
+                My Posts ({{ userPostCount }})
+              </h3>
               <h3 class="text-lg font-semibold cursor-pointer" (click)="toggleShow(true)">Saved Posts</h3>
             </div>
             
@@ -45,7 +48,7 @@
 <div class="grid grid-cols-3 gap-4" *ngIf="!showMyPost && !showSavedPost && !show">
   <div *ngFor="let post of getUserPosts(userId) | async">
     <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
-      <img [src]="post.images" alt="Post" class="w-full h-48 object-cover cursor-pointer" (click)="openPost('my', post)">
+      <img [src]="post.images[0]" alt="Post" class="w-full h-48 object-cover cursor-pointer" (click)="openPost('my', post)">
     </div>
   </div>
 </div>
@@ -54,7 +57,7 @@
 <div class="grid grid-cols-3 gap-4" *ngIf="!showMyPost && !showSavedPost && show">
   <div *ngFor="let post of getSavedPosts(userId) | async">
     <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
-      <img [src]="post.images" alt="Post" class="w-full h-48 object-cover cursor-pointer" (click)="openPost('saved', post)">
+      <img [src]="post.images[0]" alt="Post" class="w-full h-48 object-cover cursor-pointer" (click)="openPost('saved', post)">
     </div>
   </div>
 </div>

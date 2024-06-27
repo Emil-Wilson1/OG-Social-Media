@@ -8,6 +8,7 @@ import cloudinary from 'cloudinary';
 import generateOTP from '../utils/generateOtp';
 import User, { UserDocument } from '../models/userModel';
 import { UserProfileUpdate } from '../types/interfaces';
+import notificationRepository from '../repositories/notificationRepository';
 
 class AuthService {
 
@@ -232,8 +233,31 @@ class AuthService {
     await userRepository.followUser(followerId, userId);
   }
 
+async sendFollowReq(followerId: string, userId: string): Promise<void> {
+  const userToFollow = await userRepository.findUserById(followerId);
+  if (!userToFollow) {
+    throw new Error("User to follow not found");
+  }
+  
+  if (userToFollow.isPrivate) {
+    // Add followerId to followRequests
+    await userRepository.addFollowRequest(followerId, userId);
+    // Send notification for follow request
+    await notificationRepository.saveNotification(userId, followerId, 'follow_request');
+  }
+}
+
+
   async unfollowUser(followerId: string, userId: string): Promise<void> {
     await userRepository.unfollowUser(followerId, userId);
+  }
+
+  async acceptFollowRequest(followerId: string, userId: string): Promise<void> {
+    await userRepository.acceptFollowRequest(followerId, userId);
+  }
+  
+  async rejectFollowRequest(followerId: string, userId: string): Promise<void> {
+    await userRepository.rejectFollowRequest(followerId, userId);
   }
 
   async togglePrivacy(userId: string): Promise<UserDocument | null> {

@@ -16,7 +16,8 @@ export const startBirthdayCron = (io:any) => {
 
 
       user.followers.forEach(async followerId => {
-        await notificationRepository.saveNotification(followerId,user._id,'birthday');
+        const folllow=followerId.toString()
+        await notificationRepository.saveNotification(folllow,user._id,'birthday');
       });
     });
   };

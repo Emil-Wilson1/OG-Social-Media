@@ -1,0 +1,18 @@
+<!-- video-call-modal.component.html -->
+<div *ngIf="show" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white p-8 mt-14 rounded-lg shadow-lg">
+    <div class="flex flex-col gap-4 items-center justify-center mb-4">
+      <span class="text-lg font-semibold">Incoming call from</span>
+      <img [src]="caller.profile || '/default-profile.png'" alt="{{ caller.name }}" class="w-12 h-12 rounded-full">
+      <span class="text-lg font-semibold">{{ caller.name }}</span>
+    </div>
+    <div class="flex justify-center space-x-4">
+      <button (click)="rejectCall()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+        Reject
+      </button>
+      <button (click)="acceptCall()" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+        Accept
+      </button>
+    </div>
+  </div>
+</div>

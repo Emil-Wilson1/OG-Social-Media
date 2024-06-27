@@ -15,6 +15,7 @@ export interface IUser {
   online: boolean;
   blocked: boolean;
   verified: boolean;
+  isPrivate:boolean;
 }
 
 

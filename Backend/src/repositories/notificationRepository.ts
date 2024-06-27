@@ -8,11 +8,11 @@ export class NotificationRepository {
         this.notificationsModel = Notifications;
     }
 
-    async saveNotification(userId:  mongoose.Types.ObjectId, followerId: mongoose.Types.ObjectId, type: string): Promise<INotification | null> {
+    async saveNotification(userId:  string, followerId: string, type: string): Promise<INotification | null> {
         try {
           const newNotification = new this.notificationsModel({
             sourceId: followerId, 
-            receiverId: new mongoose.Types.ObjectId(userId),
+            receiverId:userId,
             type: type,
           });
           const savedNotification = await newNotification.save();
@@ -24,7 +24,7 @@ export class NotificationRepository {
     
       async findNotifications(userId: string): Promise<INotification[]> {
         try {
-          const notifications = await this.notificationsModel.find({}).sort({createdAt: -1}).populate('receiverId', 'fullname')
+          const notifications = await this.notificationsModel.find({}).sort({createdAt: -1}).populate('sourceId', 'fullname')
           console.log(notifications,"Repositoy");
           return notifications;
          

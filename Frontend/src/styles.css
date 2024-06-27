@@ -1,6 +1,7 @@
 /* Import ngx-photo-editor CSS */
 /* Import other global styles */
 @import 'ngx-toastr/toastr';
+@import '@ctrl/ngx-emoji-mart/picker';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -4,6 +4,7 @@ import User, { UserDocument } from '../models/userModel';
 import bcrypt from 'bcryptjs';
 
 import tempUser,{ tempUserDocument } from '../models/tempUserModel';
+import { log } from 'console';
 
 export class UserRepository {
     private userModel: Model<UserDocument>;
@@ -159,6 +160,22 @@ export class UserRepository {
         { isPrivate },
         { new: true }
       ).exec();
+    }
+
+    async addFollowRequest(followerId: string, userId: string): Promise<void> {
+     await this.userModel.findByIdAndUpdate(userId, { $push: { followRequests: followerId } }); 
+    }
+
+    async acceptFollowRequest(followerId: string, userId: string): Promise<void> {
+      await this.userModel.findByIdAndUpdate(userId, {
+        $push: { followers: followerId },
+        $pull: { followRequests: followerId }
+      });
+      await User.findByIdAndUpdate(followerId, { $push: { following: userId } });
+    }
+    
+    async rejectFollowRequest(followerId: string, userId: string): Promise<void> {
+      await this.userModel.findByIdAndUpdate(userId, { $pull: { followRequests: followerId } });
     }
 }
 

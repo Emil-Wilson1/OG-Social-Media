@@ -49,7 +49,7 @@ export class ProfileComponent {
   modalUsers: IUser[] = [];
   users$!: Observable<IUser[]>;
   isPrivate: boolean = false; // Assuming you have a way to determine the initial privacy setting
-
+ userPostCount: number = 0;
 
 
 
@@ -66,8 +66,13 @@ export class ProfileComponent {
     this.posts$ = this.postStore.pipe(select(SelectorPostData));
     this.store.dispatch(fetchUsersAPI());
     this.users$ = this.store.select(userSelectorData);
+    this.updateUserPostCount();
   }
-
+  updateUserPostCount(): void {
+    this.posts$.subscribe(posts => {
+      this.userPostCount = posts.filter(post => post.userId === this.userId).length;
+    });
+  }
   togglePrivacy(): void {
     this.privacyService.togglePrivacy(this.userId).subscribe(
       (response: any) => {

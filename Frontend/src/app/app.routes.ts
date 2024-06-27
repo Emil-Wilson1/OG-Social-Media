@@ -11,6 +11,7 @@ import { authGuard } from './guards/auth.guard';
 import { OtherProfileComponent } from './modules/user/other-profile/other-profile.component';
 import { NotificationsComponent } from './modules/user/notifications/notifications.component';
 import { MessagesComponent } from './modules/user/messages/messages.component';
+import { VideoCallComponent } from './modules/user/video-call/video-call.component';
 //import  HomeComponent  from './modules/user/home/home.component';
 export const routes: Routes = [
   {
@@ -60,10 +61,16 @@ export const routes: Routes = [
   {
     path:'notifications',
     component:NotificationsComponent
-  },  {
+  },  
+  {
     path:'messages',
     component:MessagesComponent
-  }
+  },
+  {
+    path: 'videocall/:roomId/:userId',
+    component: VideoCallComponent
+  },
+
 
 
 

@@ -6,19 +6,19 @@ import { environment } from '../../environments/environment.development';
 import { LoginRequest, LoginResponse, User, verifyRes } from '../models/interface';
 import { io, Socket } from 'socket.io-client';
 
-// notification.model.ts
 export interface Notification {
   userId: string;
-  receiverId: {
+  receiverId:string;
+  type: "like" | "comment" | "mention" | "birthday";
+  sourceId: {
     _id: string;
     fullname: string;
-  };
-  type: "like" | "comment" | "mention" | "birthday";
-  sourceId: string;
-  message?: string;
+  }; 
+  message?: string; // Ensure message is defined as string or remove the "?" if it's always present
   createdAt: Date;
   read: boolean;
 }
+
 
 
 export interface FollowUserRequest {
@@ -136,7 +136,9 @@ export class AuthService {
     return this.http.post<UnfollowUserResponse>(url, body)
   }
 
-
+  sendFollowRequest(followerId: string, userId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${userId}/follow-requests`, { followerId });
+  }
   togglePrivacy(userId: string): Observable<any> {
     const url = `${this.apiUrl}/${userId}/togglePrivacy`;
     return this.http.put(url, {});
