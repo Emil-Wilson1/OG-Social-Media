@@ -30,6 +30,7 @@ class AuthService {
         throw new Error('User creation failed');
       }
       const otp = generateOTP();
+      console.log(otp)
       const savedOTP = await this.userRepository.saveOTP(email, otp);
       if (!savedOTP) {
         throw new Error('Failed to save OTP');

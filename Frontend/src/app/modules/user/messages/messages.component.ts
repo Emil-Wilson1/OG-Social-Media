@@ -227,6 +227,7 @@ export class MessagesComponent {
   }
 
 
+ 
   loadMessages(): void {
     if (this.receiverId) {
       this.messageService.getMessages(this.userId, this.receiverId)
@@ -234,17 +235,20 @@ export class MessagesComponent {
           take(1),
           takeUntil(this.unsubscribe$)
         )
-        .subscribe(
-          (response: any) => {
+        .subscribe({
+          next: (response: any) => {
             this.messages = [...response.sentMessages, ...response.receivedMessages];
-            console.log(this.messages,"Check it");
+            console.log(this.messages, "Check it");
             // Sort messages by timestamp
             this.messages.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
           },
-          (error: any) => {
+          error: (error: any) => {
             console.error('Error fetching messages:', error);
+          },
+          complete: () => {
+            console.log('Message loading complete');
           }
-        );
+        });
     }
   }
 
