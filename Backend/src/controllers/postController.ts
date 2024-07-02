@@ -61,7 +61,7 @@ export const createPost = async (req: Request, res: Response) => {
     }
 
     await postService.createPost({
-      userId: user._id,
+      userId: user._id as string,
       description,
       images,
     });
