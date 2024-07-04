@@ -5,6 +5,7 @@ import adminRepository from '../repositories/adminRepository';
 import { IAdmin } from '../models/adminModel';
 
 
+
 class AdminService {
 
     defaultEmail = 'admin@gmail.com';
@@ -13,7 +14,7 @@ class AdminService {
 
   async login(email: string = this.defaultEmail, password: string = this.defaultPassword): Promise<string | { passMatch: string } | { emailMatch: string }> {
     try {
-      let user = await adminRepository.findByEmail(email);
+      let user:any = await adminRepository.findByEmail(email);
       
       if (!user) {
 

@@ -9,7 +9,6 @@ import { mongooseConnection } from './src/config/mongoose';
 import { cloudinaryConfig } from './src/utils/cloudinary';
 import userRouter from './src/routes/userRouter';
 import postRouter from './src/routes/postRouter';
-import { pgConnection } from './src/config/psql';
 import adminRouter from './src/routes/adminRouter';
 import socketIo_Config from './src/sockets/socket';
 import { startBirthdayCron } from './src/utils/birthdayCron';
@@ -28,7 +27,6 @@ const io = new SocketServer(server, {
 socketIo_Config(io);
 
 // Initialize database connections
-pgConnection();
 mongooseConnection();
 cloudinaryConfig();
 
