@@ -54,7 +54,7 @@ const userSchema = new Schema<UserDocument>({
     resetToken: {
         type: String,
     },
-    birthdate: { type: Date, required: true },
+    birthdate: { type: Date},
     fullname: {
         type: String,
         required: true,

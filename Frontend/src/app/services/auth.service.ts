@@ -65,9 +65,7 @@ export class AuthService {
    this.userIdSource.next(userId);
  }
  
-  // createUser(user:User ): Observable<SignupResponse>{
-  //   return this.http.post<SignupResponse>(`${this.apiUrl}/signup`, user);
-  // }
+
 
   signup(user:User): Observable<any> {
     const body = user;
