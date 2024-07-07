@@ -2,7 +2,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommentService } from '../../../services/comment.service';
-import moment from 'moment';
+import { parseISO, format } from 'date-fns';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -123,12 +123,12 @@ export class ModalComponent {
 
 
   formatCreatedAt(createdAt: string): string {
-    const createdAtDate = moment(createdAt);
+    const createdAtDate = parseISO(createdAt);
 
-    const now = moment();
-    const diffInMinutes = now.diff(createdAtDate, 'minutes');
-    const diffInHours = now.diff(createdAtDate, 'hours');
-    const diffInDays = now.diff(createdAtDate, 'days');
+    const now = new Date();
+    const diffInMinutes = Math.floor((now.getTime() - createdAtDate.getTime()) / 60000);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
 
     if (diffInMinutes == 0) {
       return `Just now`;
@@ -139,7 +139,7 @@ export class ModalComponent {
     } else if (diffInDays < 7) {
       return `${diffInDays} days ago`;
     } else {
-      return createdAtDate.format('MMM DD, YYYY'); 
+      return format(createdAtDate, 'MMM dd, yyyy');
     }
   }
 }

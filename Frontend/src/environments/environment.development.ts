@@ -1,11 +1,6 @@
 export const environment = {
-  apiUrl: 'http://localhost:3000/user',
-  Url:'http://localhost:3000/admin',
-  RTCPeerConfiguration: {
-    iceServers: [
-      {
-        urls: 'stun:stun1.l.google.com:19302'
-      }
-    ]
-  }
+  production: true,
+  apiUrl: 'http://localhost:3000/api/user',
+  Url:'http://localhost:3000/api/admin',
+
 };

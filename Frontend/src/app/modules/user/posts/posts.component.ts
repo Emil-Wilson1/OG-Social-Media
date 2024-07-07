@@ -6,12 +6,12 @@ import { Post } from '../../../models/postModel';
 import { fetchPostAPI } from '../../store/posts/post.action';
 import { SelectorPostData } from '../../store/posts/post.selector';
 import { map, Observable, Subscription } from 'rxjs';
-import moment from 'moment';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportPostComponent } from '../report-post/report-post.component';
 import { AuthService } from '../../../services/auth.service';
 import { Route, Router, Routes } from '@angular/router';
+import { format, parseISO } from 'date-fns';
 
 @Component({
   selector: 'app-posts',
@@ -193,12 +193,13 @@ export class PostsComponent {
     return this.savedPosts.includes(postId);
   }
 
-  formatCreatedAt(createdAt: any): any {
-    const createdAtDate = moment(createdAt);
-    const now = moment();
-    const diffInMinutes = now.diff(createdAtDate, 'minutes');
-    const diffInHours = now.diff(createdAtDate, 'hours');
-    const diffInDays = now.diff(createdAtDate, 'days');
+  formatCreatedAt(createdAt: any): string {
+    const createdAtDate = parseISO(createdAt);
+
+    const now = new Date();
+    const diffInMinutes = Math.floor((now.getTime() - createdAtDate.getTime()) / 60000);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
 
     if (diffInMinutes == 0) {
       return `Just now`;
@@ -209,7 +210,7 @@ export class PostsComponent {
     } else if (diffInDays < 7) {
       return `${diffInDays} days ago`;
     } else {
-      return createdAtDate.format('MMM DD, YYYY');
+      return format(createdAtDate, 'MMM dd, yyyy');
     }
   }
 }

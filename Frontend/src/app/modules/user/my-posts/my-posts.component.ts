@@ -10,11 +10,12 @@ import {
   selectSavedPosts,
   selectUserPosts,
 } from '../../store/posts/post.selector';
-import moment from 'moment';
+
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { EditDelPostComponent } from '../edit-del-post/edit-del-post.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { format, parseISO } from 'date-fns';
 
 @Component({
   selector: 'app-my-posts',
@@ -148,13 +149,13 @@ export class MyPostsComponent {
     return this.savedPosts.includes(postId);
   }
 
-  formatCreatedAt(createdAt: any): any {
-    const createdAtDate = moment(createdAt);
+  formatCreatedAt(createdAt: any): string {
+    const createdAtDate = parseISO(createdAt);
 
-    const now = moment();
-    const diffInMinutes = now.diff(createdAtDate, 'minutes');
-    const diffInHours = now.diff(createdAtDate, 'hours');
-    const diffInDays = now.diff(createdAtDate, 'days');
+    const now = new Date();
+    const diffInMinutes = Math.floor((now.getTime() - createdAtDate.getTime()) / 60000);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
 
     if (diffInMinutes == 0) {
       return `Just now`;
@@ -165,7 +166,7 @@ export class MyPostsComponent {
     } else if (diffInDays < 7) {
       return `${diffInDays} days ago`;
     } else {
-      return createdAtDate.format('MMM DD, YYYY');
+      return format(createdAtDate, 'MMM dd, yyyy');
     }
   }
 }

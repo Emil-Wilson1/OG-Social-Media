@@ -40,8 +40,8 @@ app.use(cors({
 }));
 
 // Routes
-app.use('/user', userRouter,postRouter,chatRouter);
-app.use('/admin', adminRouter);
+app.use('/api/user', userRouter,postRouter,chatRouter);
+app.use('/api/admin', adminRouter);
 
 import './src/utils/birthdayCron'
 

@@ -2,7 +2,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Post } from '../models/postModel';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 
 
 interface CommentResponse {

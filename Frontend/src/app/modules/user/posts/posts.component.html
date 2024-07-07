@@ -111,7 +111,7 @@
     <div id="controls-carousel" class="relative w-full" data-carousel="static">
       <div class="carousel-inner relative w-full overflow-hidden">
         <div class="carousel-item absolute top-0 left-0 w-full h-full" *ngFor="let image of data.images; let i = index" [ngClass]="{ 'active': i === currentIndex }">
-          <img [src]="image" class="block w-full h-full object-cover" [alt]="'Post Image ' + (i + 1)">
+          <img [src]="data.images" class="block w-full h-full object-cover" [alt]="'Post Image ' + (i + 1)">
         </div>
       </div>
       <!-- Slider controls -->

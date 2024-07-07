@@ -1,5 +1,4 @@
 import { SelectorPostData } from './../../store/posts/post.selector';
-import 'hammerjs';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { SidebarComponent } from '../sidebar/sidebar.component';
@@ -12,9 +11,7 @@ import { select, Store } from '@ngrx/store';
 import { fetchPostAPI } from '../../store/posts/post.action';
 import { ImageCropperComponent, ImageCropperModule } from 'ngx-image-cropper';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ModalComponent } from '../modal/modal.component';
-import moment from 'moment';
 import { ReportPostComponent } from '../report-post/report-post.component';
 import { PostsComponent } from '../posts/posts.component';
 import { SuggestionsComponent } from '../suggestions/suggestions.component';
@@ -425,29 +422,6 @@ export class HomeComponent {
   //   return this.savedPosts.includes(postId);
   // }
 
-  // formatCreatedAt(createdAt: any): any {
-  //   // Parse the createdAt string using moment.js
-  //   const createdAtDate = moment(createdAt);
-
-  //   // Calculate the difference between the createdAt date and the current date
-  //   const now = moment();
-  //   const diffInMinutes = now.diff(createdAtDate, 'minutes');
-  //   const diffInHours = now.diff(createdAtDate, 'hours');
-  //   const diffInDays = now.diff(createdAtDate, 'days');
-
-  //   // Choose the appropriate format based on the time difference
-  //   if (diffInMinutes == 0) {
-  //     return `Just now`;
-  //   } else if (diffInMinutes < 60) {
-  //     return `${diffInMinutes} minutes ago`;
-  //   } else if (diffInHours < 24) {
-  //     return `${diffInHours} hours ago`;
-  //   } else if (diffInDays < 7) {
-  //     return `${diffInDays} days ago`;
-  //   } else {
-  //     return createdAtDate.format('MMM DD, YYYY'); // Fallback to a standard date format
-  //   }
-  // }
 }
 
 
