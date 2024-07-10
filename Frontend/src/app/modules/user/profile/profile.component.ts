@@ -1,10 +1,8 @@
 import { fetchUserAPI } from '../../store/user/user.action';
-
-
 import { SelectorData } from '../../store/user/user.selector';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { select, Store} from '@ngrx/store';
-import { map, Observable } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 import  { IUser } from '../../../models/userModel';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLinkActive } from '@angular/router';
@@ -50,7 +48,8 @@ export class ProfileComponent {
   users$!: Observable<IUser[]>;
   isPrivate: boolean = false; // Assuming you have a way to determine the initial privacy setting
  userPostCount: number = 0;
-
+ followRequestsCount: number = 0;
+ followRequestUsers: IUser[] = [];
 
 
   constructor(
@@ -66,25 +65,77 @@ export class ProfileComponent {
     this.posts$ = this.postStore.pipe(select(SelectorPostData));
     this.store.dispatch(fetchUsersAPI());
     this.users$ = this.store.select(userSelectorData);
+    this.user$.subscribe(users => {
+      this.isPrivate = users.some(user => user.isPrivate);
+      const currentUser = users.find(user => user._id === this.userId);
+      if (currentUser) {
+        this.followRequestsCount = currentUser.followRequests.length;
+        this.fetchFollowRequestUsers(currentUser.followRequests);
+      }
+    });  
     this.updateUserPostCount();
   }
+
+  fetchFollowRequestUsers(followRequestIds: string[]): void {
+    this.users$.pipe(
+      map(users => users.filter(user => followRequestIds.includes(user._id)))
+    ).subscribe(filteredUsers => {
+      this.followRequestUsers = filteredUsers;
+    });
+  }
+
+  ignoreRequest(user: string): void {
+  this.privacyService.cancelFollowRequest(this.userId, user).subscribe({
+      next: () => {
+        console.log('Follow request canceled');
+        this.store.dispatch(fetchUserAPI({ id: this.userId }));
+      },
+      error: (error) => {
+        console.error('Failed to cancel follow request', error);
+      }
+    });
+  }
+
+  acceptRequest(user: string): void {
+    this.privacyService.acceptFollowRequest(this.userId, user).subscribe({
+        next: () => {
+          console.log('Follow request accepted');
+          this.store.dispatch(fetchUserAPI({ id: this.userId }));
+        },
+        error: (error) => {
+          console.error('Failed to accept follow request', error);
+        }
+      });
+    }
   updateUserPostCount(): void {
     this.posts$.subscribe(posts => {
       this.userPostCount = posts.filter(post => post.userId === this.userId).length;
     });
   }
   togglePrivacy(): void {
-    this.privacyService.togglePrivacy(this.userId).subscribe(
-      (response: any) => {
-        console.log(response); // Log the response from the backend
-        // Update the component's state or UI based on the response
-        this.isPrivate = response.updatedUser.isPrivate; // Assuming the response contains the updated privacy setting
+    this.privacyService.togglePrivacy(this.userId).subscribe({
+      next: (response: any) => {
+        console.log(response); 
+        this.store.dispatch(fetchUserAPI({ id: this.userId }));
       },
-      (error: any) => {
+      error: (error: any) => {
         console.error(error); // Log any errors
         // Handle errors, e.g., display an error message to the user
+      },
+      complete: () => {
+        // Optional: Handle any logic that needs to occur when the observable completes
       }
-    );
+    });
+  }
+
+ 
+  showModal = false;
+
+
+
+
+  toggleModal() {
+    this.showModal = !this.showModal;
   }
 
   toggleShow(showSaved: boolean): void {

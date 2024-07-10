@@ -61,7 +61,7 @@ export const createPost = async (req: Request, res: Response) => {
     }
 
     await postService.createPost({
-      userId: user._id as string,
+      userId: user._id,
       description,
       images,
     });
@@ -82,6 +82,7 @@ export const createPost = async (req: Request, res: Response) => {
 export const getAllPosts = async (req: Request, res: Response) => {
   try {
     const { posts } = await postService.getAllPosts();
+    console.log(posts,"is it ok?")
     res.status(HttpStatusCode.OK).json({ posts });
   } catch (error) {
     console.error('Error fetching all posts:', error);

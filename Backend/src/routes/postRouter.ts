@@ -9,7 +9,7 @@ import { protect } from '../middlewares/authMiddleware';
 const router:Router = express.Router();
 
 router.post('/posts', protect, upload.array('images', 4), createPost);
-router.get('/fetchPosts',protect,getAllPosts);
+router.get('/fetchPosts',getAllPosts);
 router.put('/:postId/like',protect,likePost);
 router.delete('/:postId/unlike',protect, unlikePost);
 router.post('/addComments',protect,addComment)
@@ -21,6 +21,6 @@ router.delete('/:postId/unsave',protect,  unsavedPost);
 router.post('/report',protect, reportPost)
 router.delete('/postDeleted/:postId',protect, deletePost)
 router.put('/updatePostDescription',protect, updatePostDescription)
-router.get('/reportedUsers',protect, fetchReportedUsers)
+router.get('/reportedUsers', fetchReportedUsers)
 
 export default router;

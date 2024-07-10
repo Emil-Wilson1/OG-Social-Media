@@ -1,0 +1,56 @@
+<div class="bg-gray-100 flex">
+  <!-- Sidebar (unchanged from your original code) -->
+  <div class="bg-gray-800 text-gray-100 w-64 flex-none min-h-screen">
+    <!-- ... sidebar content ... -->
+    <div class="p-6">
+      <h1 class="text-2xl font-bold">Admin</h1>
+      <ul class="mt-6">
+        <li class="mb-4">
+          <a href="/dashboard" class="block text-gray-300 hover:bg-gray-700 px-4 py-2 rounded">Dashboard</a>
+        </li>
+        <li class="mb-4">
+          <a href="/users" class="block text-gray-300 hover:bg-gray-700 px-4 py-2 rounded">User Management</a>
+        </li>
+        <li class="mb-4">
+          <a href="/reportPost" class="block text-gray-300 hover:bg-gray-700 px-4 py-2 rounded">Reports</a>
+        </li>
+        <li class="mb-4">
+          <a href="#" class="block text-gray-300 hover:bg-gray-700 px-4 py-2 rounded"(click)="logout()">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Main content area -->
+  <div class="flex-1 p-10">
+    <h2 class="text-3xl font-bold mb-6">Dashboard</h2>
+    
+    <!-- Overview cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-xl font-semibold mb-2">Total Users</h3>
+        <p class="text-3xl font-bold text-blue-600">{{ totalUsers }}</p>
+      </div>
+      <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-xl font-semibold mb-2">Total Posts</h3>
+        <p class="text-3xl font-bold text-green-600">{{ totalPosts }}</p>
+      </div>
+      <!-- <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-xl font-semibold mb-2">Time Spent</h3>
+        <p class="text-3xl font-bold text-purple-600">{{ timeSpent }} hrs</p>
+      </div>
+      <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-xl font-semibold mb-2">Avg. Time/User</h3>
+        <p class="text-3xl font-bold text-orange-600">{{ avgTimePerUser }} hrs</p>
+      </div> -->
+    </div>
+    
+    <!-- Graph -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h3 class="text-xl font-semibold mb-4">Monthly Posts and Users</h3>
+      <div class="h-64">
+        <canvas #monthlyChart></canvas>
+      </div>
+    </div>
+  </div>
+</div>

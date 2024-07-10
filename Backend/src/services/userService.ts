@@ -238,13 +238,29 @@ async sendFollowReq(followerId: string, userId: string): Promise<void> {
   const userToFollow = await userRepository.findUserById(followerId);
   if (!userToFollow) {
     throw new Error("User to follow not found");
-  }
-  
+  } 
   if (userToFollow.isPrivate) {
-    // Add followerId to followRequests
     await userRepository.addFollowRequest(followerId, userId);
-    // Send notification for follow request
-    await notificationRepository.saveNotification(userId, followerId, 'follow_request');
+  }
+}
+
+async cancelFollowReq(followerId: string, userId: string): Promise<void> {
+  const userToFollow = await userRepository.findUserById(followerId);
+  if (!userToFollow) {
+    throw new Error("User to follow not found");
+  } 
+  if (userToFollow.isPrivate) {
+    await userRepository.removeFollowRequest(followerId, userId);
+  }
+}
+
+async acceptFollowReq(followerId: string, userId: string): Promise<void> {
+  const userToFollow = await userRepository.findUserById(followerId);
+  if (!userToFollow) {
+    throw new Error("User to follow not found");
+  } 
+  if (userToFollow.isPrivate) {
+    await userRepository.acceptFollowRequest(followerId, userId);
   }
 }
 

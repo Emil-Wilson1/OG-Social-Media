@@ -19,7 +19,7 @@
           Choose files
           <input id="fileInput" type="file" class="hidden" multiple #fileInput (change)="onFilesSelected($event)">
         </label>
-        <button *ngIf="imageChangedEvents.length" (click)="cancelImageSelection()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+        <button *ngIf="imageChangedEvents.length" (click)="cancelImageSelection()" class="bg-red-500 hover:bg-red-700 ml-2 text-white font-bold py-2 px-4 rounded">
           Cancel
         </button>
     
@@ -34,8 +34,8 @@
               (loadImageFailed)="loadImageFailed()">
             </image-cropper>
           </div>
-          <button (click)="prevImage()" [disabled]="currentImageIndex === 0">Previous</button>
-          <button (click)="nextImage()" [disabled]="currentImageIndex === imageChangedEvents.length - 1">Next</button>
+          <button class="bg-green-500 m-2 hover:bg-green-800 text-white font-bold py-2 px-4 rounded cursor-pointer" (click)="prevImage()" [disabled]="currentImageIndex === 0">Previous</button>
+          <button class="bg-green-500 m-2 hover:bg-green-800 text-white font-bold py-2 px-4 rounded cursor-pointer" (click)="nextImage()" [disabled]="currentImageIndex === imageChangedEvents.length - 1">Next</button>
         </div>
     
         <textarea placeholder="Write a caption..." [(ngModel)]="description"
@@ -45,12 +45,23 @@
       </div>
     </div>
     
+    <div *ngIf="isLoading" class="loader">
+      <!-- Loading spinner or message -->
+      Loading...
+    </div>
+    
 
+      <!-- Shimmer effect or placeholder for app-posts -->
+      <div class="shimmer" *ngIf="isLoading">
+        <!-- Example shimmer effect -->
+        <div class="shimmer-line"></div>
+        <div class="shimmer-line"></div>
+        <div class="shimmer-line"></div>
+      </div>
+      <!-- Replace with app-posts component when isLoading is false -->
+      <app-posts *ngIf="!isLoading"></app-posts>
 
-
-    <app-posts></app-posts>
-
-
+    
 
   </div>
 

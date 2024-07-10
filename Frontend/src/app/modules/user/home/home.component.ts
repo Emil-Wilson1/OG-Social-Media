@@ -252,33 +252,44 @@ export class HomeComponent {
   loadImageFailed() {
     console.log('Load image failed');
   }
+// Add a loading indicator property
+isLoading: boolean = false;
 
-  uploadPost(fileInput: HTMLInputElement) {
-    if (this.croppedImages.length === 0) {
-      console.error('No images selected or processed');
-      return;
-    }
-
-    const formData = new FormData();
-    this.croppedImages.forEach((image, index) => {
-      formData.append('images', image, `image${index}`);
-    });
-    formData.append('description', this.description);
-    const userId = localStorage.getItem('userId') || '';
-
-    this.uploadPostSubscription = this.postService.uploadPost(userId, formData).subscribe({
-      next: (response) => {
-        console.log('Post uploaded successfully', response);
-        this.store.dispatch(fetchPostAPI());
-        this.cancelImageSelection();
-        this.description = '';
-        fileInput.value = '';
-      },
-      error: (error) => {
-        console.error('Failed to upload post', error);
-      },
-    });
+uploadPost(fileInput: HTMLInputElement) {
+  if (this.croppedImages.length === 0) {
+    console.error('No images selected or processed');
+    return;
   }
+
+  // Start loading indicator
+  this.isLoading = true;
+
+  const formData = new FormData();
+  this.croppedImages.forEach((image, index) => {
+    formData.append('images', image, `image${index}`);
+  });
+  formData.append('description', this.description);
+  const userId = localStorage.getItem('userId') || '';
+
+  this.uploadPostSubscription = this.postService.uploadPost(userId, formData).subscribe({
+    next: (response) => {
+      console.log('Post uploaded successfully', response);
+      this.store.dispatch(fetchPostAPI());
+      this.cancelImageSelection();
+      this.description = '';
+      fileInput.value = '';
+    },
+    error: (error) => {
+      console.error('Failed to upload post', error);
+    },
+    complete: () => {
+      // Stop loading indicator when complete
+      this.isLoading = false;
+    }
+  });
+}
+
+
   sidebarOpen: boolean = false;
 
   toggleSidebar() {

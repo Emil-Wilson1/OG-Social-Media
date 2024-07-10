@@ -1,4 +1,4 @@
 export const environment = {
-  apiUrl: 'https://finito.fun/api/user',
-  Url: 'https://finito.fun/api/admin',
+  apiUrl: 'http://localhost:3000/api/user',
+  Url: 'http://localhost:3000/api/admin',
 };

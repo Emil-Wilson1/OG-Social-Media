@@ -129,6 +129,20 @@ export class MessagesComponent {
 
     
   }
+
+
+  dropdownVisible: { [key: number]: boolean } = {};
+
+
+  toggleDropdown(messageId: number) {
+    this.dropdownVisible[messageId] = !this.dropdownVisible[messageId];
+  }
+
+
+  deleteMessage(messageId: number) {
+    this.messages = this.messages.filter(message => message._id !== messageId);
+    this.toggleDropdown(messageId); 
+  }
   
   loadActiveConversations(): void {
     const activeConversations = JSON.parse(localStorage.getItem('activeConversations') || '[]');
@@ -262,25 +276,36 @@ export class MessagesComponent {
   
   sendMessage(): void {
     if (this.selectedConversation && this.receiverId) {
+      let messageText = this.newMessage;
+      let messageType = 'text';
+  
+      // Check if the message is a location
+      if (this.newMessage.startsWith('https://www.google.com/maps')) {
+        messageType = 'location';
+        // The URL is already in the correct format, so we don't need to modify it
+      }
+  
       const message = {
         senderId: this.userId,
         receiverId: this.receiverId,
-        text: this.newMessage,
+        text: messageText,
         timestamp: Date.now(),
-        messageType: 'text'
+        messageType: messageType
       };
       
       // Add the new message to the messages array
       this.messages.push({
         ...message,
-        sender:message.senderId// Adjust this property based on your message structure
+        sender: message.senderId
       });  
-      // this.messages.push(message); 
+  
       this.socketService.sendMessage(message);
       this.newMessage = '';
+      this.loadMessages();
     }
   }
 
+  
   handleTyping(): void {
     if (this.selectedConversation && this.receiverId) {
       this.socketService.sendTyping({ senderId: this.userId, receiverId: this.receiverId });

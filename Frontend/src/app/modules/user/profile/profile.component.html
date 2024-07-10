@@ -15,71 +15,104 @@
         </div>
         <!-- Bio -->
         <p class="text-gray-800 mb-2">{{data.bio}}</p>
-          <div class="flex space-x-4 mt-2">
-              <div (click)="openModal(data.followers, 'Followers')" class="cursor-pointer">
-                <span class="font-semibold">{{ data.followers.length }}</span> Followers
-              </div>
-              <div (click)="openModal(data.following, 'Following')" class="cursor-pointer">
-                <span class="font-semibold">{{ data.following.length }}</span> Following
-              </div>
-            </div>
+        <div class="flex space-x-4 mt-2">
+          <div (click)="openModal(data.followers, 'Followers')" class="cursor-pointer">
+            <span class="font-semibold">{{ data.followers.length }}</span> Followers
+          </div>
+          <div (click)="openModal(data.following, 'Following')" class="cursor-pointer">
+            <span class="font-semibold">{{ data.following.length }}</span> Following
+          </div>
+        </div>
 
         <button
           class="bg-green-500 text-white py-2 px-4 mb-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50"><a
-            href="/editProfile" class="no-underline text-white">Edit Profile</a></button>
-            <button
-            class="ml-2 bg-green-500 text-white py-2 px-4 mb-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50"
-            (click)="togglePrivacy()">
-            {{ isPrivate ? 'Private Account' : 'Public Account' }}
-          </button>
-            <div class="flex justify-around m-2">
-              <!-- My Posts Heading -->
-              <!-- <h3 class="text-lg font-semibold cursor-pointer" (click)="toggleShow(false)">My Posts</h3> -->
-              <h3 class="text-lg font-semibold cursor-pointer" (click)="toggleShow(false)">
-                My Posts ({{ userPostCount }})
-              </h3>
-              <h3 class="text-lg font-semibold cursor-pointer" (click)="toggleShow(true)">Saved Posts</h3>
+            href="/editProfile" class="no-underline text-white">Edit Profile</a>
+        </button>
+        <button
+          class="ml-2 bg-green-500 text-white py-2 px-4 mb-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50"
+          (click)="togglePrivacy()">
+          {{ isPrivate ? 'Private Account' : 'Public Account' }}
+        </button>
+        <button *ngIf="followRequestsCount > 0" (click)="toggleModal()" class="relative ml-2 bg-green-500 text-white py-2 px-4 mb-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50">
+          Requests
+          <span class="absolute top-0 right-0 bg-red-500 text-white px-1 rounded-full">{{ followRequestsCount }}</span>
+        </button>
+        
+        <div class="flex justify-around m-2">
+          <!-- My Posts Heading -->
+          <!-- <h3 class="text-lg font-semibold cursor-pointer" (click)="toggleShow(false)">My Posts</h3> -->
+          <h3 class="text-lg font-semibold cursor-pointer" (click)="toggleShow(false)">
+            My Posts ({{ userPostCount }})
+          </h3>
+          <h3 class="text-lg font-semibold cursor-pointer" (click)="toggleShow(true)">Saved Posts</h3>
+        </div>
+
+        <!-- Divider -->
+        <div class="bg-gray-300 h-px mb-6"></div>
+
+        <!-- User Posts Grid -->
+        <div class="grid grid-cols-3 gap-4" *ngIf="!showMyPost && !showSavedPost && !show">
+          <div *ngFor="let post of getUserPosts(userId) | async">
+            <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
+              <img [src]="post.images[0]" alt="Post" class="w-full h-48 object-cover cursor-pointer"
+                (click)="openPost('my', post)">
             </div>
-            
-            <!-- Divider -->
-            <div class="bg-gray-300 h-px mb-6"></div>
-            
- <!-- User Posts Grid -->
-<div class="grid grid-cols-3 gap-4" *ngIf="!showMyPost && !showSavedPost && !show">
-  <div *ngFor="let post of getUserPosts(userId) | async">
-    <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
-      <img [src]="post.images[0]" alt="Post" class="w-full h-48 object-cover cursor-pointer" (click)="openPost('my', post)">
+          </div>
+        </div>
+
+        <!-- Saved Posts Grid -->
+        <div class="grid grid-cols-3 gap-4" *ngIf="!showMyPost && !showSavedPost && show">
+          <div *ngFor="let post of getSavedPosts(userId) | async">
+            <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
+              <img [src]="post.images[0]" alt="Post" class="w-full h-48 object-cover cursor-pointer"
+                (click)="openPost('saved', post)">
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- My Posts Component -->
+        <div class="flex justify-center" *ngIf="showMyPost">
+          <app-my-posts [post]="selectedPost"></app-my-posts>
+        </div>
+
+        <!-- Saved Posts Component -->
+        <div class="flex justify-center" *ngIf="showSavedPost">
+          <app-saved-posts [post]="selectedPost"></app-saved-posts>
+        </div>
+<!-- Modal -->
+<div *ngIf="showModal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
+  <div class="bg-white rounded-lg p-8 w-full max-w-md relative">
+    <!-- Close button in top-right corner -->
+    <button (click)="toggleModal()" class="absolute top-0 right-0 m-4 text-gray-500 hover:text-gray-700 focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+    
+    <div class="text-center mb-4">
+      <h2 class="text-xl font-bold">Follow Requests</h2>
     </div>
-  </div>
-</div>
-
-<!-- Saved Posts Grid -->
-<div class="grid grid-cols-3 gap-4" *ngIf="!showMyPost && !showSavedPost && show">
-  <div *ngFor="let post of getSavedPosts(userId) | async">
-    <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
-      <img [src]="post.images[0]" alt="Post" class="w-full h-48 object-cover cursor-pointer" (click)="openPost('saved', post)">
-    </div>
-  </div>
-</div>
-            
-   
-            
-<!-- My Posts Component -->
-<div class="flex justify-center" *ngIf="showMyPost">
-  <app-my-posts [post]="selectedPost"></app-my-posts>
-</div>
-
-<!-- Saved Posts Component -->
-<div class="flex justify-center" *ngIf="showSavedPost">
-  <app-saved-posts [post]="selectedPost"></app-saved-posts>
-</div>
-          
-
+    <div class="space-y-4 overflow-y-auto max-h-96">
+      <div *ngFor="let user of followRequestUsers" class="flex items-center justify-between border-b border-gray-200 py-2">
+        <div class="flex items-center space-x-4">
+          <img [src]="user.profilePic" alt="Profile Photo" class="rounded-full" style="width: 50px; height: 50px;">
+          <span>{{ user.username }}</span>
+        </div>
+        <div>
+          <button (click)="acceptRequest(user._id)" class="bg-green-500 text-white py-1 px-3 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50 mr-2">Accept</button>
+          <button (click)="ignoreRequest(user._id)" class="bg-red-500 text-white py-1 px-3 rounded-md hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-500 focus:ring-opacity-50">Ignore</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
@@ -92,7 +125,8 @@
     <div class="mt-4">
       <div *ngIf="modalUsers.length > 0; else noUsersFound">
         <div *ngFor="let user of modalUsers" class="flex items-center space-x-4 mb-2">
-          <img [src]="user.profilePic || 'https://via.placeholder.com/40'" class="w-10 h-10 rounded-full" alt="Profile Picture">
+          <img [src]="user.profilePic || 'https://via.placeholder.com/40'" class="w-10 h-10 rounded-full"
+            alt="Profile Picture">
           <div>
             <p class="font-semibold mb-0">{{ user.fullname }}</p>
             <p class="text-sm text-gray-500">{{ user.username }}</p>

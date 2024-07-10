@@ -13,6 +13,7 @@ import { AuthService } from '../../../services/auth.service';
 import { Route, Router, Routes } from '@angular/router';
 import { format, parseISO } from 'date-fns';
 
+
 @Component({
   selector: 'app-posts',
   standalone: true,
@@ -48,6 +49,7 @@ export class PostsComponent {
   ngOnInit(): void {
     this.store.dispatch(fetchPostAPI());
     this.posts$ = this.store.pipe(select(SelectorPostData));
+    console.log(this.posts$)
     this.posts$.subscribe((posts) => {
       this.savedPosts = posts
         .filter((post) => post.saved.includes(this.userId))

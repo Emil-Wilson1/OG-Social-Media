@@ -163,15 +163,19 @@ export class UserRepository {
     }
 
     async addFollowRequest(followerId: string, userId: string): Promise<void> {
-     await this.userModel.findByIdAndUpdate(userId, { $push: { followRequests: followerId } }); 
+     await this.userModel.findByIdAndUpdate(followerId, { $push: { followRequests: userId} }); 
     }
 
+    async removeFollowRequest(followerId: string, userId: string): Promise<void> {
+      await this.userModel.findByIdAndUpdate(followerId, { $pull: { followRequests: userId} }); 
+     }
+
     async acceptFollowRequest(followerId: string, userId: string): Promise<void> {
-      await this.userModel.findByIdAndUpdate(userId, {
-        $push: { followers: followerId },
-        $pull: { followRequests: followerId }
+      await this.userModel.findByIdAndUpdate(followerId, {
+        $push: { followers: userId },
+        $pull: { followRequests: userId }
       });
-      await User.findByIdAndUpdate(followerId, { $push: { following: userId } });
+      await this.userModel.findByIdAndUpdate(userId , { $push: { following: followerId} });
     }
     
     async rejectFollowRequest(followerId: string, userId: string): Promise<void> {

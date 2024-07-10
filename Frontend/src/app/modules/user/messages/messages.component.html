@@ -71,7 +71,29 @@
               <div *ngFor="let message of messages" [ngClass]="message.sender !== userId ? 'col-start-1 col-end-8' : 'col-start-6 col-end-13'" class="p-3 rounded-lg">
                 <div [ngClass]="message.sender !== userId ? 'flex flex-row items-center' : 'flex items-center justify-start flex-row-reverse'">
                   <div [ngClass]="message.sender !== userId ? 'relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl' : 'relative mr-3 text-sm bg-green-100 py-2 px-4 shadow rounded-xl'">
-                    <div>{{ message.text }}</div>
+                    <div class="flex align-middle justify-around">
+                      <!-- Display location messages as clickable links -->
+                      <ng-container *ngIf="message.messageType === 'location'; else regularMessage">
+                        <a [href]="message.text" target="_blank" class="text-blue-500 underline">
+                          📍View Location
+                        </a>
+                      </ng-container>
+                      <ng-template #regularMessage>
+                        {{ message.text }}
+                      </ng-template>
+                      
+                      <button *ngIf="message.sender === userId" class="text-gray-400 hover:text-green-200 focus:outline-none" (click)="toggleDropdown(message._id)">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                        </svg>
+                      </button>
+                      <div *ngIf="dropdownVisible[message._id]" class="absolute mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                          <button (click)="deleteMessage(message._id)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Unsend</button>
+                          <button (click)="toggleDropdown(message._id)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Cancel</button>
+                        </div>
+                      </div>
+                    </div>
                     <div *ngIf="message.seen" class="absolute text-xs bottom-0 right-0 -mb-5 mr-2 text-gray-500">Seen</div>
                   </div>
                 </div>
@@ -81,14 +103,6 @@
         </div>
         <div class="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
           <div>
-            <!-- <button class="flex items-center justify-center text-gray-400 hover:text-gray-600" (click)="getLocation()">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13">
-                </path>
-              </svg>
-            </button> -->
             <button class="flex items-center justify-center text-gray-400 hover:text-gray-600" (click)="getLocation()">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>

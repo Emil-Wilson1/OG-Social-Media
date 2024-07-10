@@ -2,7 +2,8 @@
 /* Import other global styles */
 @import 'ngx-toastr/toastr';
 @import '@ctrl/ngx-emoji-mart/picker';
-/* @import "../node_modules/bootstrap/dist/css/bootstrap.min.css"; */
+@import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

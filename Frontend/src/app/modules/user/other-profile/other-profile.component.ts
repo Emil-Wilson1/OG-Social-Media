@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { SidebarComponent } from "../sidebar/sidebar.component";
 import { MyPostsComponent } from "../my-posts/my-posts.component";
 import { CommonModule } from '@angular/common';
-import { forkJoin, map, Observable, Subscription, take } from 'rxjs';
+import {  map, Observable, Subscription, take } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { IUser } from '../../../models/userModel';
 import { Post } from '../../../models/postModel';
@@ -34,27 +34,61 @@ export class OtherProfileComponent {
   modalTitle: string = '';
   modalUsers: IUser[] = [];
   users$!: Observable<IUser[]>;
-
+  isPrivate: boolean = false; // Initialize with default value
+  isFollower: boolean = false;
   constructor(
     private store: Store<{ user: IUser[] }>, 
     private stored: Store<{ posts: Post[] }>,
     private userService: AuthService,
     private route: ActivatedRoute,
     private router:Router,
-    private socketService:SocketService
   ) { }
 
   ngOnInit(): void {
+    this.initializeData()
+  }
+
+
+  initializeData():void{
     this.route.queryParams.subscribe(params => {
       this.userId = params['userId'];
       if (this.userId) {
         this.store.dispatch(fetchUserAPI({ id: this.userId }));
         this.user$ = this.store.pipe(select(SelectorData)) as Observable<IUser[]>;
-        this.stored.dispatch(fetchPostAPI());
-        this.posts$ = this.stored.pipe(select(SelectorPostData));
+        this.store.dispatch(fetchPostAPI());
+        this.posts$ = this.store.pipe(select(SelectorPostData));
+
+        // Subscribe to user$ observable to update isPrivate and isFollower
+        this.user$.subscribe(users => {
+          const currentUser = users.find(user => user._id === this.userId);
+          if (currentUser) {
+            this.isPrivate = currentUser.isPrivate; // Assuming isPrivate is a boolean in IUser interface
+    
+            // Check if currentUser is a follower
+            if (currentUser.followers && currentUser.followers.includes(this.currentUser)) {
+              this.isFollower = true;
+            } else {
+              this.isFollower = false;
+            }
+          }
+        });
       }
     });
-
+    
+    this.user$.subscribe(users => {
+      // Check if currentUser is in any followRequests
+      const currentUserRequested = users.some(user => user.followRequests.includes(this.currentUser));
+    
+      // Update followRequests based on boolean condition
+      if (currentUserRequested) {
+        // If currentUser is found in followRequests, set this.followRequests to true or update as needed
+        this.followRequests = users.flatMap(user => user.followRequests); // Example usage
+      } else {
+        // Handle other scenarios if necessary
+        this.followRequests = [];
+      }
+    });
+      
     this.user$.subscribe((users) => {
       this.followedUsers = users
         .filter((user) => user.followers.includes(this.currentUser))
@@ -63,6 +97,7 @@ export class OtherProfileComponent {
     this.store.dispatch(fetchUsersAPI());
     this.users$ = this.store.select(userSelectorData);
   }
+
 
   open(): void {
     this.show = true;
@@ -77,30 +112,46 @@ export class OtherProfileComponent {
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
-followOrUnfollowUser(followerId: string): void {
-  if (this.isUserFollowed(followerId)) {
-    this.unfollowUser(followerId);
-  } else {
-    this.isUserPrivate(followerId).pipe(
-      take(1) // Take only the first emission
-    ).subscribe((isPrivate) => {
-      if (isPrivate) {
-        this.sendFollowRequest(followerId);
+  followOrUnfollowUser(followerId: string): void {
+    if (this.isUserFollowed(followerId)) {
+      this.unfollowUser(followerId);
+    } else {
+      if (this.followRequests.includes(this.currentUser)) {
+        this.cancelFollowRequest(followerId); // Cancel the follow request if already requested
       } else {
-        this.followUser(followerId);
+        this.isUserPrivate(followerId).pipe(
+          take(1)
+        ).subscribe((isPrivate) => {
+          if (isPrivate) {
+            this.sendFollowRequest(followerId);
+          } else {
+            this.followUser(followerId);
+          }
+        });
       }
-    });
+    }
   }
-}
-
 sendFollowRequest(followerId: string): void {
   const sub = this.userService.sendFollowRequest(followerId, this.currentUser).subscribe({
     next: () => {
       console.log('Follow request sent');
-      this.followRequests.push(followerId);
+      this.followRequests.push(this.currentUser);
     },
     error: (error) => {
       console.error('Failed to send follow request', error);
+    }
+  });
+  this.subscriptions.add(sub);
+}
+cancelFollowRequest(followerId: string): void {
+  // Assuming you have a method in userService to cancel the follow request
+  const sub = this.userService.cancelFollowRequest(followerId, this.currentUser).subscribe({
+    next: () => {
+      console.log('Follow request canceled');
+      this.followRequests = this.followRequests.filter(id => id !== this.currentUser);
+    },
+    error: (error) => {
+      console.error('Failed to cancel follow request', error);
     }
   });
   this.subscriptions.add(sub);
@@ -140,6 +191,7 @@ sendFollowRequest(followerId: string): void {
             )
           )
         );
+        this.initializeData()
       },
       error: (error) => {
         console.error('Failed to unfollow user', error);
@@ -162,10 +214,10 @@ sendFollowRequest(followerId: string): void {
   }
   followRequests: string[] = [];
 
-  getButtonText(userId: string): string {
+  getButtonText(userId: string): string{
     if (this.isUserFollowed(userId)) {
       return 'Unfollow';
-    } else if (this.followRequests.includes(userId)) {
+    } else if (this.followRequests.includes(this.currentUser)) {
       return 'Requested';
     } else {
       return 'Follow';

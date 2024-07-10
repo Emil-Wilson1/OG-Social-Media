@@ -1,25 +1,35 @@
-<div class="flex justify-between ">
-  <app-sidebar></app-sidebar>
-  <div class="flex-1 p-7 ml-64 pr-80">
+<div class="flex flex-col md:flex-row justify-between">
+  <button class="md:hidden p-4" (click)="toggleSidebar()">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+    </svg>
+  </button>
+
+  <!-- Sidebar -->
+  <app-sidebar [ngClass]="{ 'block': sidebarOpen, 'hidden': !sidebarOpen }" 
+               (close)="sidebarOpen = false" 
+               class="fixed inset-0 z-40 md:relative md:block md:z-auto"></app-sidebar>
+
+  <div class="flex-1 p-7 md:ml-64 md:pr-80">
     <form [formGroup]="searchForm" class="flex items-center max-w-sm mx-auto">
       <label for="simple-search" class="sr-only">Search</label>
       <div class="relative w-full">
         <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
           <svg class="w-4 h-4 text-white-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-            fill="none" viewBox="0 0 18 20">
+               fill="none" viewBox="0 0 18 20">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2" />
+                  d="M3 5v10M3 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm0 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm12 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm0 0V6a3 3 0 0 0-3-3H9m1.5-2-2 2 2 2" />
           </svg>
         </div>
         <input type="text" formControlName="searchTerm" id="simple-search"
-          class="bg-gray-50 border border-gray-300 text-white-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          placeholder="Search name..." required />
+               class="bg-gray-50 border border-gray-300 text-white-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+               placeholder="Search name..." required />
       </div>
       <button type="submit"
-        class="p-2.5 ms-2 text-sm font-medium text-white bg-green-700 rounded-lg border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+              class="p-2.5 ms-2 text-sm font-medium text-white bg-green-700 rounded-lg border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
         <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
         </svg>
         <span class="sr-only">Search</span>
       </button>
@@ -27,17 +37,14 @@
     <div *ngIf="searchTerm.length > 0" class="overflow-y-auto max-h-full mt-2">
       <div *ngIf="(filteredUsers$ | async)?.length === 0" class="text-black">No users found</div>
       <div *ngFor="let user of filteredUsers$ | async"
-        class="flex items-center space-x-4 py-2 text-black hover:bg-green-500 transition duration-300 ease-in-out">
+           class="flex items-center space-x-4 py-2 text-black hover:bg-green-500 transition duration-300 ease-in-out">
         <img [src]="user.profilePic" class="w-10 h-10 rounded-full" alt="Profile Picture">
         <div class="p-0 m-0 py-0 px-0 mx-0 my-0">
-          <p class=" text-gray-800 font-bold p-0 m-2 py-0 px-0 mx-2 my-0" (click)="goToUserProfile(user._id)">{{ user.username }}</p>
+          <p class="text-gray-800 font-bold p-0 m-2 py-0 px-0 mx-2 my-0" (click)="goToUserProfile(user._id)">{{ user.username }}</p>
           <p class="text-gray-500 p-0 m-2 py-0 px-0 mx-2 my-0">{{ user.fullname }}</p>
         </div>
       </div>
     </div>
   </div>
-
-
-  
-<app-suggestions></app-suggestions>
+  <app-suggestions class="hidden md:block"></app-suggestions>
 </div>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, HostListener } from '@angular/core';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -31,7 +31,9 @@ export class SearchComponent {
   constructor(private fb: FormBuilder, 
     private store: Store<{ allUser: IUser[] }>,
     private userService:AuthService,
-    private router:Router,) {
+    private router:Router,
+    private elementRef: ElementRef
+  ) {
     this.searchForm = this.fb.group({
       searchTerm: ''
     });
@@ -67,6 +69,18 @@ export class SearchComponent {
       this.router.navigate(['/profile']);
     }
   }
+  sidebarOpen: boolean = false;
 
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent) {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      // Clicked outside the sidebar; close it if open
+      this.sidebarOpen = false;
+    }
+  }
 
 }

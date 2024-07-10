@@ -5,7 +5,7 @@
       <h1 class="text-2xl font-bold">Admin</h1>
       <ul class="mt-6">
         <li class="mb-4">
-          <a href="#" class="block text-gray-300 hover:bg-gray-700 px-4 py-2 rounded">Dashboard</a>
+          <a href="/dashboard" class="block text-gray-300 hover:bg-gray-700 px-4 py-2 rounded">Dashboard</a>
         </li>
         <li class="mb-4">
           <a href="/users" class="block text-gray-300 hover:bg-gray-700 px-4 py-2 rounded">User Management</a>
@@ -38,7 +38,7 @@
           <tbody class="text-gray-700">
             <tr *ngFor="let user of reportedUsers | paginate: { itemsPerPage: 5, currentPage: page };" class="hover:bg-gray-100 transition duration-300 ease-in-out">
               <td class="py-3 px-4 text-left flex items-center">
-                <img class="w-10 h-10 rounded-full mr-2" *ngIf="user.post" [src]="user.post.image" alt="Post Image">
+                <img class="w-10 h-10 rounded-full mr-2" *ngIf="user.post" [src]="user.post.images[0]" alt="Post Image">
                 <span class="font-semibold">{{ user.reporterUsername }}</span>
               </td>
               <td class="py-3 px-4 text-left">{{ user.createdAt | date:'dd/MM/yyyy' }}</td>

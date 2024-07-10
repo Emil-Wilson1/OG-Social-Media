@@ -203,9 +203,34 @@ export const sendFollowRequest = async (req:Request, res:Response):Promise<void>
     const { followerId } = req.body;
 
     await authService.sendFollowReq(followerId, userId);
-    console.log("nbvjkdnjbnkjd");
     
     res.status(HttpStatusCode.OK).json({ success: true, message: "Follow request sent successfully" });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: "Something went wrong" });
+  }
+};
+
+export const cancelFollowRequest = async (req:Request, res:Response):Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const { followerId } = req.body;
+
+    await authService.cancelFollowReq(followerId, userId);
+    
+    res.status(HttpStatusCode.OK).json({ success: true, message: "Follow request sent successfully" });
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: "Something went wrong" });
+  }
+};
+
+export const AcceptFollowRequest = async (req:Request, res:Response):Promise<void> => {
+  try {
+    const { userId } = req.params;
+    const { followerId } = req.body;
+
+    await authService.acceptFollowReq(followerId, userId);
+    
+    res.status(HttpStatusCode.OK).json({ success: true, message: "Follow request accepted successfully" });
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ error: "Something went wrong" });
   }

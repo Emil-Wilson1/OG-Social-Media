@@ -37,7 +37,7 @@ class postService {
     const postsData = await this.postRepository.getAllPosts();
     const postsWithUser = [];
     for (const post of postsData) {
-      const userIdString = post.userId.toString(); 
+      const userIdString = post.userId.toString()
       const userData = await userRepository.findUserById(userIdString);
       if (userData) {
         const postDataWithUser = {

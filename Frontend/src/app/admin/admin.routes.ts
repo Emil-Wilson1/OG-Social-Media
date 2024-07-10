@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { adminLoginComponent } from './modules/login/login.component';
 import { ReportPostComponent } from './modules/report-post/report-post.component';
 import { adminGuard } from './guards/admin.guard';
+import { DashboardComponent } from './modules/dashboard/dashboard.component';
 
 export const adminRoutes: Routes = [
   {
@@ -17,6 +18,11 @@ export const adminRoutes: Routes = [
   {
     path:'reportPost',
     component:ReportPostComponent,
+    canActivate:[adminGuard]
+  },
+  {
+    path:'dashboard',
+    component:DashboardComponent,
     canActivate:[adminGuard]
   },
 

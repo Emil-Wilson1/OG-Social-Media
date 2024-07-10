@@ -20,20 +20,20 @@
                 <span class="font-semibold">{{ data.following.length }}</span> Following
               </div>
             </div>
-            
+
             <!-- Follow Button -->
             <button
-            class="bg-green-500 text-white py-1 px-3 mt-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50"
-            (click)="followOrUnfollowUser(data._id)"
-          >
-            {{ getButtonText(data._id) }}
-          </button>
+              class="bg-green-500 text-white py-1 px-3 mt-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50"
+              (click)="followOrUnfollowUser(data._id)">
+              {{ getButtonText(data._id) }}
+            </button>
 
           </div>
         </div>
         <!-- Bio -->
         <p class="text-gray-800 mb-4">{{ data.bio }}</p>
-        <p class="text-sm text-gray-500 cursor-pointer" (click)="openModal(getMutualConnectionsIds(data), 'Mutual Connections')">
+        <p class="text-sm text-gray-500 cursor-pointer"
+          (click)="openModal(getMutualConnectionsIds(data), 'Mutual Connections')">
           <ng-container *ngIf="getMutualConnections(data) > 0; else suggestedForYou">
             {{ getMutualConnections(data) }} mutual connection{{ getMutualConnections(data) !== 1 ? 's' : '' }}
           </ng-container>
@@ -50,12 +50,23 @@
         <!-- User Posts Grid -->
         <div class="grid grid-cols-3 gap-4" *ngIf="!show">
           <div *ngFor="let post of getUserPosts(userId) | async">
-            <ng-container></ng-container>
-            <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
-              <img [src]="post.images[0]" alt="Post" class="w-full h-48 object-cover" (click)="open()">
-            </div>
+            <ng-container *ngIf="!isPrivate || isFollower">
+              <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
+                <img [src]="post.images[0]" alt="Post" class="w-full h-48 object-cover" (click)="open()">
+              </div>
+            </ng-container>
+           
           </div>
         </div>
+        <ng-container *ngIf="isPrivate && !isFollower">
+          <div class="bg-gray-200 rounded-lg p-8 flex flex-col items-center justify-center shadow-sm text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <p class="text-gray-800 font-semibold text-lg mb-2">This account is private</p>
+            <p class="text-gray-600">Follow to see their photos and videos.</p>
+          </div>
+        </ng-container>
         <div class="flex justify-center" *ngIf="show">
           <app-my-posts></app-my-posts>
         </div>
@@ -75,9 +86,10 @@
     <div class="mt-4">
       <div *ngIf="modalUsers.length > 0; else noUsersFound">
         <div *ngFor="let user of modalUsers" class="flex items-center space-x-4 mb-2">
-          <img [src]="user.profilePic || 'https://via.placeholder.com/40'" class="w-10 h-10 rounded-full" alt="Profile Picture">
+          <img [src]="user.profilePic || 'https://via.placeholder.com/40'" class="w-10 h-10 rounded-full"
+            alt="Profile Picture">
           <div>
-            <p class="font-semibold mb-0 cursor-pointer" (click)="goToUserProfile(user._id)" >{{ user.fullname }}</p>
+            <p class="font-semibold mb-0 cursor-pointer" (click)="goToUserProfile(user._id)">{{ user.fullname }}</p>
             <p class="text-sm text-gray-500">{{ user.username }}</p>
           </div>
         </div>

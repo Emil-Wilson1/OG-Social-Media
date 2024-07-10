@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, retry, throwError } from 'rxjs';
 import { IUser } from '../models/userModel';
 import { environment } from '../../environments/environment';
 import { LoginRequest, LoginResponse, User, verifyRes } from '../models/interface';
@@ -19,7 +19,10 @@ export interface Notification {
   read: boolean;
 }
 
-
+interface FollowRequestResponse {
+  success: boolean;
+  message: string;
+}
 
 export interface FollowUserRequest {
   followerId: string;
@@ -134,9 +137,25 @@ export class AuthService {
     return this.http.post<UnfollowUserResponse>(url, body)
   }
 
-  sendFollowRequest(followerId: string, userId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${userId}/follow-requests`, { followerId });
+  sendFollowRequest(followerId: string, userId: string): Observable<FollowUserResponse> {
+    const url = `${this.apiUrl}/${userId}/followRequests`;
+    const body: FollowUserRequest= { followerId }; // Adjust the interface/type as per your API's requirements
+    return this.http.post<FollowRequestResponse>(url, body);
   }
+
+  cancelFollowRequest(followerId: string, userId: string): Observable<FollowUserResponse> {
+    const url = `${this.apiUrl}/${userId}/cancelRequests`;
+    const body: FollowUserRequest= { followerId }; // Adjust the interface/type as per your API's requirements
+    return this.http.post<FollowRequestResponse>(url, body);
+  }
+
+  acceptFollowRequest(followerId: string, userId: string): Observable<FollowUserResponse> {
+    const url = `${this.apiUrl}/${userId}/acceptRequests`;
+    const body: FollowUserRequest= { followerId }; // Adjust the interface/type as per your API's requirements
+    return this.http.post<FollowRequestResponse>(url, body);
+  }
+
+  
   togglePrivacy(userId: string): Observable<any> {
     const url = `${this.apiUrl}/${userId}/togglePrivacy`;
     return this.http.put(url, {});
