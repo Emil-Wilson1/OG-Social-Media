@@ -113,6 +113,7 @@ export class SavedPostsComponent {
         this.posts$ = this.posts$.pipe(
           map(posts => posts.map(post => post._id === postId ? { ...post, saved: [...post.saved, this.userId] } : post))
         );
+        this.store.dispatch(fetchPostAPI());
       },
       error: (error) => {
         console.error('Failed to save post', error);
@@ -128,6 +129,7 @@ export class SavedPostsComponent {
         this.posts$ = this.posts$.pipe(
           map(posts => posts.map(post => post._id === postId ? { ...post, saved: post.saved.filter(id => id !== this.userId) } : post))
         );
+        this.store.dispatch(fetchPostAPI());
       },
       error: (error) => {
         console.error('Failed to unsave post', error);
@@ -138,6 +140,16 @@ export class SavedPostsComponent {
 
   isPostSaved(postId: string): boolean {
     return this.savedPosts.includes(postId);
+  }
+
+  currentIndex: number = 0;
+
+  prevImage(imagesLength: number) {
+    this.currentIndex = (this.currentIndex === 0) ? (imagesLength - 1) : (this.currentIndex - 1);
+  }
+
+  nextImage(imagesLength: number) {
+    this.currentIndex = (this.currentIndex === imagesLength - 1) ? 0 : (this.currentIndex + 1);
   }
 
   formatCreatedAt(createdAt: any): string {

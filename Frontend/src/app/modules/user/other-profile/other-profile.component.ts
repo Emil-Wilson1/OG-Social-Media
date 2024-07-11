@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, HostListener } from '@angular/core';
 import { SidebarComponent } from "../sidebar/sidebar.component";
 import { MyPostsComponent } from "../my-posts/my-posts.component";
 import { CommonModule } from '@angular/common';
@@ -15,6 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { userSelectorData } from '../../store/admin/admin.selector';
 import { fetchUsersAPI } from '../../../modules/store/admin/admin.action';
 import { SocketService } from '../../../services/socket.service';
+import { Socket } from 'socket.io-client';
 @Component({
     selector: 'app-other-profile',
     standalone: true,
@@ -42,6 +43,7 @@ export class OtherProfileComponent {
     private userService: AuthService,
     private route: ActivatedRoute,
     private router:Router,
+    private elementRef:ElementRef
   ) { }
 
   ngOnInit(): void {
@@ -221,6 +223,19 @@ cancelFollowRequest(followerId: string): void {
       return 'Requested';
     } else {
       return 'Follow';
+    }
+  }
+  sidebarOpen: boolean = false;
+
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+  
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent) {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      // Clicked outside the sidebar; close it if open
+      this.sidebarOpen = false;
     }
   }
   openModal(userIds: string[], title: string): void {

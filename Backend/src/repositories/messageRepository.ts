@@ -9,7 +9,8 @@ class MessageRepository {
         text: string,
         receiver: string,
         timestamp: number,
-        messageType: string
+        messageType: string,
+        replyTo:string
       ): Promise<MessageDocument> {
         try {
           const newMessage = new Message({
@@ -18,7 +19,8 @@ class MessageRepository {
             receiver,
             text,
             messageType,
-            timestamp
+            timestamp,
+            replyTo
           });
       
           const savedMessage = await newMessage.save();
@@ -48,6 +50,17 @@ class MessageRepository {
       throw new Error(`Failed to fetch messages for user ${userId}: ${error}`);
     }
   }
+
+  async delete(messageId: string): Promise<boolean> {
+    try {
+      const result = await Message.deleteOne({ _id: messageId });
+      return result.deletedCount > 0;
+    } catch (error) {
+      console.error('Error deleting message from repository:', error);
+      throw new Error(`Failed to delete message: ${error}`);
+    }
+  }
+
 }
 
 export const messageRepository = new MessageRepository();

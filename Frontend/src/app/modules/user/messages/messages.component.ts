@@ -25,6 +25,7 @@ export class MessagesComponent {
   searchForm: FormGroup;
   users$: Observable<IUser[]>;
   filteredUsers$: Observable<IUser[]>;
+  UsersNot$!: Observable<IUser[]>;
   searchTerm: string = '';
   userDetails$:Observable<any>;
   userId: string = localStorage.getItem('userId') || ''; // Replace with dynamic user ID
@@ -126,7 +127,7 @@ export class MessagesComponent {
       
     );
 
-
+    this.filterUsers('')
     
   }
 
@@ -139,27 +140,51 @@ export class MessagesComponent {
   }
 
 
-  deleteMessage(messageId: number) {
-    this.messages = this.messages.filter(message => message._id !== messageId);
-    this.toggleDropdown(messageId); 
+  deleteMessage(messageId: any) {
+    this.messageService.deleteMessage(messageId).subscribe({
+      next: (response) => {
+        console.log('Message deleted successfully:', response);
+        this.messages = this.messages.filter(message => message._id !== messageId);
+        this.toggleDropdown(messageId);
+      },
+      error: (error) => {
+        console.error('Error deleting message:', error);
+      },
+      complete: () => {
+        console.log('Delete request completed');
+      }
+    });
   }
   
   loadActiveConversations(): void {
-    const activeConversations = JSON.parse(localStorage.getItem('activeConversations') || '[]');
-    this.activeConversations = activeConversations;
-    if (activeConversations.length > 0) {
-      this.selectConversation(activeConversations[0].receiverName, activeConversations[0].receiverId,activeConversations[0].profileImg);
-    }
+    this.messageService.getActiveConversations().subscribe(
+      (activeConversations) => {
+        this.activeConversations = activeConversations;
+        if (activeConversations.length > 0) {
+          this.selectConversation(
+            activeConversations[0].receiverName,
+            activeConversations[0].receiverId,
+            activeConversations[0].profileImg
+          );
+        }
+      },
+      (error) => {
+        console.error('Error loading active conversations', error);
+      }
+    );
   }
-
-  saveActiveConversations(receiverName: string, receiverId: string,profileImg:string): void {
-    let activeConversations = JSON.parse(localStorage.getItem('activeConversations') || '[]');
-    const conversationExists = activeConversations.some((conv: any) => conv.receiverId === receiverId);
   
-    if (!conversationExists) {
-      activeConversations.push({ receiverName, receiverId, profileImg });
-      localStorage.setItem('activeConversations', JSON.stringify(activeConversations));
-    }
+  saveActiveConversations(receiverName: string, receiverId: string, profileImg: string): void {
+    const newConversation = { receiverName, receiverId, profileImg };
+    this.messageService.saveActiveConversation(newConversation).subscribe(
+      (response) => {
+        console.log('Active conversation saved', response);
+        this.loadActiveConversations();
+      },
+      (error) => {
+        console.error('Error saving active conversation', error);
+      }
+    );
   }
 
   startChat(user: IUser) {
@@ -176,7 +201,12 @@ export class MessagesComponent {
     this.profile=profileImg
     this.receiverId = receiverId;
     this.hideConversationList();
+    this.clearMessages(); 
     this.loadMessages();
+  }
+
+  clearMessages(): void {
+    this.messages = [];
   }
 
   showEmojiPicker = false;
@@ -223,7 +253,14 @@ export class MessagesComponent {
     }
   }
   filterUsers(searchTerm: string) {
-    this.filteredUsers$ = this.users$.pipe(
+    this.UsersNot$=this.users$.pipe(
+      map(users =>
+        users.filter(user =>
+          !this.activeConversations.some(conv => conv.receiverId === user._id)
+        )
+      )
+    );
+    this.filteredUsers$ =  this.UsersNot$.pipe(
       map(users =>
         users.filter(user =>
           user.fullname.toLowerCase().includes(searchTerm.toLowerCase())
@@ -252,9 +289,14 @@ export class MessagesComponent {
         .subscribe({
           next: (response: any) => {
             this.messages = [...response.sentMessages, ...response.receivedMessages];
-            console.log(this.messages, "Check it");
+            console.log([...response.sentMessages], "Check it");
             // Sort messages by timestamp
             this.messages.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+            this.messages.forEach(message => {
+              if (message.replyTo) {
+                message.replyToMessageId = this.messages.find(m => m._id === message.replyTo);
+              }
+            });
           },
           error: (error: any) => {
             console.error('Error fetching messages:', error);
@@ -273,7 +315,18 @@ export class MessagesComponent {
   onStopTyping() {
     this.socketService.sendStopTyping({ senderId: this.userId, receiverId: this.receiverId });
   }
-  
+  replyingToMessageId: string | null = null;
+
+  startReply(messageId: string) {
+    this.replyingToMessageId = messageId;
+  }
+
+  cancelReply() {
+    this.replyingToMessageId = null;
+  }
+  getMessageById(id: string) {
+    return this.messages.find(message => message._id === id) || { text: '' };
+  }
   sendMessage(): void {
     if (this.selectedConversation && this.receiverId) {
       let messageText = this.newMessage;
@@ -290,7 +343,8 @@ export class MessagesComponent {
         receiverId: this.receiverId,
         text: messageText,
         timestamp: Date.now(),
-        messageType: messageType
+        messageType: messageType,
+        replyTo: this.replyingToMessageId,
       };
       
       // Add the new message to the messages array
@@ -301,6 +355,7 @@ export class MessagesComponent {
   
       this.socketService.sendMessage(message);
       this.newMessage = '';
+      this.replyingToMessageId = null;
       this.loadMessages();
     }
   }

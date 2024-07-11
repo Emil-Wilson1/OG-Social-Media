@@ -13,6 +13,7 @@ export interface Message {
     filename: string;
     size: number;
   };
+  replyTo:Types.ObjectId;
   isRead:boolean;
   timestamp:number
   createdAt: Date;
@@ -45,6 +46,7 @@ const MessageSchema = new Schema<MessageDocument>(
       required: false,
     
     },
+    replyTo: { type:Schema.Types.ObjectId, ref: 'Message', default: null },
     attachment: {
       type: {
         type: String,

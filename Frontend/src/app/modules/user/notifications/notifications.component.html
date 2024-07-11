@@ -1,27 +1,34 @@
-<div class="flex justify-between">
-  <!-- <button (click)="toggleSidebar()" class="md:hidden">
+<div class="flex flex-col md:flex-row">
+  <!-- Sidebar toggle button for mobile -->
+  <button (click)="toggleSidebar()" class="md:hidden p-4 text-indigo-600">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
     </svg>
-  </button> -->
-  <app-sidebar ></app-sidebar>
-  <div class="flex-1 p-7 ml-64 pr-80">
-    <div class="bg-white rounded-lg shadow-md">
-      <div class="px-6 py-4">
-        <h2 class="text-2xl font-bold mb-4 text-indigo-600">Notifications</h2>
-        <div *ngIf="notifications.length === 0" class="text-gray-600 mb-4">
-          No notifications yet.
-        </div>
-        <div class="max-h-72 overflow-y-auto">
-          <div *ngFor="let notification of notifications" class="bg-indigo-50 p-4 mb-2 rounded-md">
-            <p class="text-gray-800 font-medium">{{ notification.message }}</p>
+  </button>
+
+  <!-- Sidebar -->
+  <app-sidebar class="fixed h-screen inset-y-0 left-0 z-30 w-64 bg-white shadow-lg transform md:relative md:translate-x-0 transition-transform duration-200 ease-in-out"
+               [ngClass]="{'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen}">
+  </app-sidebar>
+
+  <!-- Main content -->
+  <main class="flex-1 overflow-y-auto">
+    <div class="p-4 md:p-8 max-w-4xl mx-auto">
+      <div class="bg-white rounded-lg shadow-md mb-6">
+        <div class="px-4 md:px-6 py-4">
+          <h2 class="text-xl md:text-2xl font-bold mb-4 text-indigo-600">Notifications</h2>
+          <div *ngIf="notifications.length === 0" class="text-gray-600 mb-4">
+            No notifications yet.
+          </div>
+          <div class="max-h-[calc(100vh-200px)] overflow-y-auto">
+            <div *ngFor="let notification of notifications" class="bg-indigo-50 p-3 md:p-4 mb-2 rounded-md">
+              <p class="text-sm md:text-base text-gray-800 font-medium">{{ notification.message }}</p>
+            </div>
           </div>
         </div>
       </div>
+
     </div>
-    <app-suggestions></app-suggestions>
-  </div>
+  </main>
 </div>
-
-
 

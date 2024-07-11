@@ -67,7 +67,15 @@ export class MyPostsComponent {
   handleCommentsCountUpdated(commentsCount: number) {
     this.postCommentsCount = commentsCount;
   }
+  currentIndex: number = 0;
 
+  prevImage(imagesLength: number) {
+    this.currentIndex = (this.currentIndex === 0) ? (imagesLength - 1) : (this.currentIndex - 1);
+  }
+
+  nextImage(imagesLength: number) {
+    this.currentIndex = (this.currentIndex === imagesLength - 1) ? 0 : (this.currentIndex + 1);
+  }
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
@@ -122,6 +130,7 @@ export class MyPostsComponent {
         this.posts$ = this.posts$.pipe(
           map(posts => posts.map(post => post._id === postId ? { ...post, saved: [...post.saved, this.userId] } : post))
         );
+        this.store.dispatch(fetchPostAPI());
       },
       error: (error) => {
         console.error('Failed to save post', error);
@@ -137,6 +146,7 @@ export class MyPostsComponent {
         this.posts$ = this.posts$.pipe(
           map(posts => posts.map(post => post._id === postId ? { ...post, saved: post.saved.filter(id => id !== this.userId) } : post))
         );
+        this.store.dispatch(fetchPostAPI());
       },
       error: (error) => {
         console.error('Failed to unsave post', error);

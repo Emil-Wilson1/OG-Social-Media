@@ -27,6 +27,24 @@ export const saveMessage = async (req: Request, res: Response): Promise<void> =>
       });
     }
   };
+
+
+  export const deleteMessageController = async (req: Request, res: Response): Promise<void> => {
+    const { messageId } = req.params;
+    
+    try {
+      const response = await messageService.deleteMessage(messageId);
+      console.log('Message deleted successfully:', response);
+      res.status(HttpStatusCode.OK).json(response);
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        error: 'Failed to delete message',
+      });
+    }
+  };
+
   
 
 export const messages = async (req: Request, res: Response): Promise<void> => {
@@ -37,4 +55,30 @@ export const messages = async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({ success: false, error: "Failed to fetch messages" });
   }
+}
+
+
+export const getActiveConversations = async (req: Request, res: Response) => {
+  try {
+    const activeConversations = await messageService.getActiveConversations();
+    res.status(200).json(activeConversations);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to load active conversations' });
+  }
 };
+
+export const saveActiveConversation = async (req: Request, res: Response) => {
+  try {
+    const { receiverName, receiverId, profileImg } = req.body;
+    const newConversation = await messageService.saveActiveConversation({
+      receiverName,
+      receiverId,
+      profileImg,
+    } as any);
+    res.status(201).json(newConversation);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to save active conversation' });
+  }
+};
+
+

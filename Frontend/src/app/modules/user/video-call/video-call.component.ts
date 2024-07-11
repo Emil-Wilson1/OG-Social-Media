@@ -59,7 +59,7 @@ export class VideoCallComponent  {
       sharedLinks: [
         {
           name: 'Copy Link',
-          url: `http://localhost:3000/room/${this.roomId}`,
+          url: `https://finito.fun/api/room/${this.roomId}`,
         },
       ],
     });

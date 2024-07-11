@@ -37,7 +37,12 @@
       <!-- Display error message for gender -->
       <div *ngIf="profileForm.controls['gender']?.errors?.['required'] && profileForm.controls['gender']?.touched" class="text-red-500">Gender is required.</div>
     </div>
-    
+    <div class="mb-4">
+      <label for="birthdate" class="block text-gray-700">Birthdate</label>
+      <input type="date" id="birthdate" name="birthdate" ngModel class="mt-1 block w-full rounded-md border border-gray-500 shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50" required>
+      <div *ngIf="profileForm.controls['birthdate']?.errors?.['required'] && profileForm.controls['birthdate']?.touched"
+      class="text-red-500">Birthdate is required.</div>
+    </div>
     <div class="mb-4">
       <label for="bio" class="block text-gray-700">Bio</label>
       <textarea id="bio" name="bio" rows="3" ngModel class="mt-1 block w-full rounded-md border border-gray-500 shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50" required></textarea>

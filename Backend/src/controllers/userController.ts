@@ -130,7 +130,7 @@ export const editProfile = async (req: Request, res: Response) => {
       });
     }
 
-    const { fullname, username, gender, bio } = req.body;
+    const { fullname, username, gender, bio,birthdate } = req.body;
     let profilePic = "";
 
     if (req.file) {
@@ -138,7 +138,7 @@ export const editProfile = async (req: Request, res: Response) => {
       console.log("Profilepic:", profilePic);
     }
 
-    await authService.updateProfile(id, { fullname, username, gender, bio, profilePic });
+    await authService.updateProfile(id, { fullname, username, gender, bio, profilePic,birthdate });
 
     res.json({ success: true, message: "User profile updated successfully" });
   } catch (error) {

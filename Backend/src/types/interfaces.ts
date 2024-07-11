@@ -13,4 +13,5 @@ export interface Comment {
     gender?: string;
     bio?: string;
     profilePic?: string;
+    birthdate?:Date;
   }

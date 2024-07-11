@@ -1,4 +1,5 @@
 import Conversation from '../models/conversationModel';
+import { conversation } from '../models/convoLists';
 import Message from '../models/messageModel';
 import { conversationRepo } from '../repositories/conversationRepository';
 import { messageRepository } from '../repositories/messageRepository';
@@ -42,9 +43,10 @@ async saveMessage(messageData: {
     text: string,
     receiverId: string,
     timestamp: number,
-    messageType: string
+    messageType: string,
+    replyTo: string
   }) {
-    const { senderId, text, receiverId, timestamp, messageType } = messageData;
+    const { senderId, text, receiverId, timestamp, messageType,replyTo } = messageData;
     let conversation;
     try {
       conversation = await conversationRepo.findOneByMember(senderId);
@@ -71,7 +73,8 @@ async saveMessage(messageData: {
        text,
        receiverId,
         timestamp,
-        messageType
+        messageType,
+       replyTo
       );
       console.log('Message created successfully');
     } catch (error) {
@@ -90,6 +93,21 @@ async saveMessage(messageData: {
     };
   }
   
+   async deleteMessage (messageId: string): Promise<{ success: boolean, message: string }>{
+    try {
+      const result = await messageRepository.delete(messageId);
+      if (result) {
+        console.log('Message deleted successfully');
+        return { success: true, message: 'Message deleted successfully' };
+      } else {
+        console.error('Message not found');
+        return { success: false, message: 'Message not found' };
+      }
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      throw error;
+    }
+  };
 
   async getMessages(userId: string, receiverId: string) {
     try {
@@ -111,14 +129,14 @@ async saveMessage(messageData: {
       const sentMessages = await Message.find({
         conversationId: { $in: userConvIds },
         sender: userId,
-        reciver: receiverId,
+        receiver: receiverId,
       });
       console.log('Sent Messages:', sentMessages);
   
       const receivedMessages = await Message.find({
         conversationId: { $in: receiverConvIds },
         sender: receiverId,
-        reciver: userId,
+        receiver: userId,
       });
       console.log('Received Messages:', receivedMessages);
   
@@ -134,6 +152,14 @@ async saveMessage(messageData: {
         error: error
       };
     }
+  }
+
+  async getActiveConversations(): Promise<conversation[]> {
+    return conversationRepo.getActiveConversations();
+  }
+
+  async saveActiveConversation(conversation: conversation): Promise<conversation> {
+    return conversationRepo.saveActiveConversation(conversation);
   }
 }  
 

@@ -17,11 +17,20 @@ export class MessageService {
   constructor(private http:HttpClient,private router:Router) { 
     this.connect();
   }
+  getActiveConversations(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/active`);
+  }
 
+  saveActiveConversation(conversation: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/active`, conversation);
+  }
   saveMessage(messageData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/save`, messageData);
   }
 
+  deleteMessage(messageId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/message/${messageId}`);
+  }
   getMessages(userId: string, receiverId: string): Observable<any> {
     console.log(`Fetching messages for user: ${userId} and receiver: ${receiverId}`); // Log for debugging
     return this.http.get(`${this.apiUrl}/messages/${userId}/${receiverId}`);

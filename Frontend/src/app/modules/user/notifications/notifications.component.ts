@@ -1,4 +1,4 @@
-import {  ChangeDetectorRef, Component } from '@angular/core';
+import {  ChangeDetectorRef, Component, ElementRef, HostListener } from '@angular/core';
 import { SuggestionsComponent } from "../suggestions/suggestions.component";
 import { SidebarComponent } from "../sidebar/sidebar.component";
 import { CommonModule } from '@angular/common';
@@ -33,7 +33,8 @@ export class NotificationsComponent {
   constructor(
     private socketService: SocketService,
     private notificationService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private elementRef:ElementRef
   ) {}
 
   ngOnInit(): void {
@@ -49,11 +50,18 @@ export class NotificationsComponent {
     // Fetch notifications from backend on initialization
     this.fetchNotifications();
   }
-
-  isSidebarClosed = false;
+  sidebarOpen: boolean = false;
 
   toggleSidebar() {
-    this.isSidebarClosed = !this.isSidebarClosed;
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+  
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent) {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      // Clicked outside the sidebar; close it if open
+      this.sidebarOpen = false;
+    }
   }
 
   fetchNotifications(): void {

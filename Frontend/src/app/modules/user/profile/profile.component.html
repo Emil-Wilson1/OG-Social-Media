@@ -1,21 +1,34 @@
-<div class="felx justify-between">
-  <app-sidebar></app-sidebar>
-  <div class="flex-1 p-8 ml-64 ">
+<div class="flex flex-col md:flex-row">
+  <!-- Sidebar -->
+  <div class="md:w-64 flex-shrink-0">
+    <button class="md:hidden p-4 w-full text-left" (click)="toggleSidebar()">
+      <svg class="w-6 h-6 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+      </svg>
+      <span class="ml-2">Menu</span>
+    </button>
+    <app-sidebar [ngClass]="{ 'block': sidebarOpen, 'hidden': !sidebarOpen }" (close)="sidebarOpen = false" class="fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg md:relative md:block md:z-auto"></app-sidebar>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 p-4 md:p-8">
     <div *ngIf="(user$ | async) as user">
-      <div class="bg-white rounded-lg p-4  " *ngFor="let data of user">
+      <div class="bg-white rounded-lg p-4 shadow-md" *ngFor="let data of user">
         <!-- Profile Card -->
-        <div class="flex items-center mb-6">
-          <div class="w-36 h-36 rounded-full overflow-hidden">
-            <img [src]="data.profilePic" alt="Profile" class="object-cover rounded-full w-36 h-36">
+        <div class="flex flex-col md:flex-row items-center mb-6">
+          <div class="w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden mb-4 md:mb-0">
+            <img [src]="data.profilePic" alt="Profile" class="object-cover rounded-full w-full h-full">
           </div>
-          <div class="ml-4">
+          <div class="md:ml-4 text-center md:text-left">
             <h2 class="text-xl font-semibold">{{ data.fullname }}</h2>
             <p class="text-gray-600">{{ data.username }}</p>
           </div>
         </div>
+        
         <!-- Bio -->
         <p class="text-gray-800 mb-2">{{data.bio}}</p>
-        <div class="flex space-x-4 mt-2">
+        
+        <div class="flex flex-wrap justify-center md:justify-start space-x-4 mt-2">
           <div (click)="openModal(data.followers, 'Followers')" class="cursor-pointer">
             <span class="font-semibold">{{ data.followers.length }}</span> Followers
           </div>
@@ -24,23 +37,20 @@
           </div>
         </div>
 
-        <button
-          class="bg-green-500 text-white py-2 px-4 mb-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50"><a
-            href="/editProfile" class="no-underline text-white">Edit Profile</a>
-        </button>
-        <button
-          class="ml-2 bg-green-500 text-white py-2 px-4 mb-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50"
-          (click)="togglePrivacy()">
-          {{ isPrivate ? 'Private Account' : 'Public Account' }}
-        </button>
-        <button *ngIf="followRequestsCount > 0" (click)="toggleModal()" class="relative ml-2 bg-green-500 text-white py-2 px-4 mb-6 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50">
-          Requests
-          <span class="absolute top-0 right-0 bg-red-500 text-white px-1 rounded-full">{{ followRequestsCount }}</span>
-        </button>
+        <div class="flex flex-wrap justify-center md:justify-start space-x-2 mt-4">
+          <button class="bg-green-500 text-white py-2 px-4 mb-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50">
+            <a href="/editProfile" class="no-underline text-white">Edit Profile</a>
+          </button>
+          <button class="bg-green-500 text-white py-2 px-4 mb-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50" (click)="togglePrivacy()">
+            {{ isPrivate ? 'Private Account' : 'Public Account' }}
+          </button>
+          <button *ngIf="followRequestsCount > 0" (click)="toggleModal()" class="relative bg-green-500 text-white py-2 px-4 mb-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-500 focus:ring-opacity-50">
+            Requests
+            <span class="absolute top-0 right-0 bg-red-500 text-white px-1 rounded-full text-xs">{{ followRequestsCount }}</span>
+          </button>
+        </div>
         
         <div class="flex justify-around m-2">
-          <!-- My Posts Heading -->
-          <!-- <h3 class="text-lg font-semibold cursor-pointer" (click)="toggleShow(false)">My Posts</h3> -->
           <h3 class="text-lg font-semibold cursor-pointer" (click)="toggleShow(false)">
             My Posts ({{ userPostCount }})
           </h3>
@@ -51,26 +61,22 @@
         <div class="bg-gray-300 h-px mb-6"></div>
 
         <!-- User Posts Grid -->
-        <div class="grid grid-cols-3 gap-4" *ngIf="!showMyPost && !showSavedPost && !show">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4" *ngIf="!showMyPost && !showSavedPost && !show">
           <div *ngFor="let post of getUserPosts(userId) | async">
-            <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
-              <img [src]="post.images[0]" alt="Post" class="w-full h-48 object-cover cursor-pointer"
-                (click)="openPost('my', post)">
+            <div class="bg-white rounded-lg h-32 md:h-48 overflow-hidden shadow-sm">
+              <img [src]="post.images[0]" alt="Post" class="w-full h-full object-cover cursor-pointer" (click)="openPost('my', post)">
             </div>
           </div>
         </div>
 
         <!-- Saved Posts Grid -->
-        <div class="grid grid-cols-3 gap-4" *ngIf="!showMyPost && !showSavedPost && show">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4" *ngIf="!showMyPost && !showSavedPost && show">
           <div *ngFor="let post of getSavedPosts(userId) | async">
-            <div class="bg-white rounded-lg h-48 overflow-hidden shadow-sm">
-              <img [src]="post.images[0]" alt="Post" class="w-full h-48 object-cover cursor-pointer"
-                (click)="openPost('saved', post)">
+            <div class="bg-white rounded-lg h-32 md:h-48 overflow-hidden shadow-sm">
+              <img [src]="post.images[0]" alt="Post" class="w-full h-full object-cover cursor-pointer" (click)="openPost('saved', post)">
             </div>
           </div>
         </div>
-
-
 
         <!-- My Posts Component -->
         <div class="flex justify-center" *ngIf="showMyPost">
@@ -81,7 +87,12 @@
         <div class="flex justify-center" *ngIf="showSavedPost">
           <app-saved-posts [post]="selectedPost"></app-saved-posts>
         </div>
-<!-- Modal -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals remain unchanged -->
 <div *ngIf="showModal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
   <div class="bg-white rounded-lg p-8 w-full max-w-md relative">
     <!-- Close button in top-right corner -->
@@ -109,10 +120,6 @@
   </div>
 </div>
 
-      </div>
-    </div>
-  </div>
-</div>
 
 
 

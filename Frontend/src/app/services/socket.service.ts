@@ -46,6 +46,8 @@ export class SocketService {
       };
     });
   }
+
+
   // Listen for new messages
   listenForMessages(): Observable<any> {
     return new Observable(observer => {

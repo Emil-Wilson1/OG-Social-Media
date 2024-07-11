@@ -1,6 +1,6 @@
 import { fetchUserAPI } from '../../store/user/user.action';
 import { SelectorData } from '../../store/user/user.selector';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { select, Store} from '@ngrx/store';
 import { forkJoin, map, Observable } from 'rxjs';
 import  { IUser } from '../../../models/userModel';
@@ -55,7 +55,8 @@ export class ProfileComponent {
   constructor(
     private store: Store<{ user: IUser[] }>,
     private postStore: Store<{ posts: Post[] }>,
-    private privacyService:AuthService
+    private privacyService:AuthService,
+    private elementRef:ElementRef
   ) {}
 
   ngOnInit(): void {
@@ -95,7 +96,19 @@ export class ProfileComponent {
       }
     });
   }
+  sidebarOpen: boolean = false;
 
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+  
+  @HostListener('document:click', ['$event'])
+  onClick(event: MouseEvent) {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      // Clicked outside the sidebar; close it if open
+      this.sidebarOpen = false;
+    }
+  }
   acceptRequest(user: string): void {
     this.privacyService.acceptFollowRequest(this.userId, user).subscribe({
         next: () => {

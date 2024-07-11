@@ -47,6 +47,7 @@ export class EditProfileComponent {
     formData.append('username', profileForm.value.username);
     formData.append('gender', profileForm.value.gender);
     formData.append('bio', profileForm.value.bio);
+    formData.append('birthdate', profileForm.value.birthdate);
     
     if (this.selectedFile) {
       console.log(this.selectedFile);
