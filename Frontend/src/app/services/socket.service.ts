@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { MessageService } from './message.service';
+import { environment } from '../../environments/environment.development';
+
 
 @Injectable({
   providedIn: 'root'
@@ -30,9 +32,9 @@ export class SocketService {
 
 
   private socket: Socket;
-
+ private socketURL:string=environment.socketUrl
   constructor(private messageService: MessageService) {
-    this.socket = io('http://localhost:3000'); // Replace with your backend URL
+    this.socket = io(`${this.socketURL}`); 
   }
 
   listenForNotifications(): Observable<any> {

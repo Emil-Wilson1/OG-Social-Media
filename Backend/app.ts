@@ -20,7 +20,7 @@ const server = new Server(app);
 
 // Initialize Socket.IO
 const io = new SocketServer(server, {
-  cors: { origin: "*" }
+  cors: { origin: "https://finito.fun" }
 });
 
 // Configure Socket.IO

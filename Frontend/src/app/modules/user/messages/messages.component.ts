@@ -159,12 +159,16 @@ export class MessagesComponent {
   loadActiveConversations(): void {
     this.messageService.getActiveConversations().subscribe(
       (activeConversations) => {
-        this.activeConversations = activeConversations;
-        if (activeConversations.length > 0) {
+        // Filter out conversations where the receiver is the current user
+        this.activeConversations = activeConversations.filter(
+          conversation => conversation.receiverId !== this.userId
+        );
+  
+        if (this.activeConversations.length > 0) {
           this.selectConversation(
-            activeConversations[0].receiverName,
-            activeConversations[0].receiverId,
-            activeConversations[0].profileImg
+            this.activeConversations[0].receiverName,
+            this.activeConversations[0].receiverId,
+            this.activeConversations[0].profileImg
           );
         }
       },

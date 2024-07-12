@@ -2,7 +2,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
@@ -23,7 +23,8 @@ export class ResetComponent {
   constructor(
     private authService: AuthService,
     private route: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router:Router
   ) {}
 
   ngOnInit() {
@@ -39,6 +40,7 @@ export class ResetComponent {
         next: response => {
           console.log('Password reset successfully', response);
           this.toastr.success('Password reset successfully');
+          this.router.navigate(['/login'])
         },
         error: error => {
           console.error('Error resetting password:', error);

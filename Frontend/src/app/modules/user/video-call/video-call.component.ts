@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 import { IUser } from '../../../models/userModel';
 import { fetchUsersAPI } from '../../store/admin/admin.action';
 import { userSelectorData } from '../../store/admin/admin.selector';
+import { environment } from '../../../../environments/environment.development';
 
 @Component({
   selector: 'app-video-call',
@@ -17,7 +18,7 @@ import { userSelectorData } from '../../store/admin/admin.selector';
 })
 export class VideoCallComponent  {
   @ViewChild('videoCallContainer', { static: false }) videoCallContainer!: ElementRef;
-
+  private videoURL:string=environment.videoCall
   roomId!: string;
   userId!: string;
   user!: string;
@@ -59,7 +60,7 @@ export class VideoCallComponent  {
       sharedLinks: [
         {
           name: 'Copy Link',
-          url: `https://finito.fun/api/room/${this.roomId}`,
+          url: `${this.videoURL}/room/${this.roomId}`,
         },
       ],
     });
