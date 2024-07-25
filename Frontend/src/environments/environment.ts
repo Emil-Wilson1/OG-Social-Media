@@ -1,6 +1,6 @@
 export const environment = {
-  apiUrl: 'https://finito.fun/api/user',
-  Url: 'https://finito.fun/api/admin',
-  socketUrl:'https://finito.fun',
-  videoCall:'https://finito.fun'
+  apiUrl: 'http://localhost:3000/api/user',
+  Url: 'http://localhost:3000/api/admin',
+  socketUrl:'http://localhost:3000',
+  videoCall:'http://localhost:3000'
 };

@@ -202,7 +202,7 @@ class AuthService {
 
       await userRepository.updateResetToken(email, resetToken);
 
-      const resetLink = `https://finito.fun/forgot?token=${resetToken}`;
+      const resetLink = `https://socioclub.site/forgot?token=${resetToken}`;
 
       await nodemailer.sendReset(email, resetLink)
       setTimeout(async () => {

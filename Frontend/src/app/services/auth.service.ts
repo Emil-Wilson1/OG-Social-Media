@@ -2,9 +2,9 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, Observable, retry, throwError } from 'rxjs';
 import { IUser } from '../models/userModel';
-import { environment } from '../../environments/environment';
 import { LoginRequest, LoginResponse, User, verifyRes } from '../models/interface';
-import { io, Socket } from 'socket.io-client';
+import { environment } from '../../environments/environment.development';
+
 
 export interface Notification {
   userId: string;

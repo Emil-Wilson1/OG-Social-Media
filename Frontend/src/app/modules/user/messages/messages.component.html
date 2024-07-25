@@ -98,6 +98,12 @@
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
                             </svg>
                           </button>
+                          <div *ngIf="dropdownVisible[message._id]" class="absolute mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                            <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                              <button (click)="deleteMessage(message._id)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Unsend</button>
+                              <button (click)="toggleDropdown(message._id)" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Cancel</button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>

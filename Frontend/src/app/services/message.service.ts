@@ -1,9 +1,9 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, Subject } from 'rxjs';
-import { environment } from '../../environments/environment';
+import {  Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { io, Socket } from 'socket.io-client';
+import { environment } from '../../environments/environment.development';
 export interface Message {
   type: string;
   data: any;

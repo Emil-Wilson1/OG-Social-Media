@@ -126,6 +126,13 @@ export class MessagesComponent {
       )
       
     );
+    this.UsersNot$=this.users$.pipe(
+      map(users =>
+        users.filter(user =>
+          !this.activeConversations.some(conv => conv.receiverId === user._id)
+        )
+      )
+    );
 
     this.filterUsers('')
     
@@ -257,14 +264,7 @@ export class MessagesComponent {
     }
   }
   filterUsers(searchTerm: string) {
-    this.UsersNot$=this.users$.pipe(
-      map(users =>
-        users.filter(user =>
-          !this.activeConversations.some(conv => conv.receiverId === user._id)
-        )
-      )
-    );
-    this.filteredUsers$ =  this.UsersNot$.pipe(
+   this.filteredUsers$ =  this.UsersNot$.pipe(
       map(users =>
         users.filter(user =>
           user.fullname.toLowerCase().includes(searchTerm.toLowerCase())
