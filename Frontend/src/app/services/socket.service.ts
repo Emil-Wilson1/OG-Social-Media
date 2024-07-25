@@ -34,9 +34,7 @@ export class SocketService {
   private socket: Socket;
  private socketURL:string=environment.socketUrl
   constructor(private messageService: MessageService) {
-    this.socket = io(`${this.socketURL}`,{
-      transports: ['websocket', 'polling']
-    }); 
+    this.socket = io(`${this.socketURL}`); 
   }
 
   listenForNotifications(): Observable<any> {
