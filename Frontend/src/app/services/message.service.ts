@@ -14,8 +14,9 @@ export interface Message {
 })
 export class MessageService {
   private apiUrl:string = environment.apiUrl;
+  private socket!: Socket;
   constructor(private http:HttpClient,private router:Router) { 
-    this.connect();
+
   }
   getActiveConversations(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/active`);
@@ -35,32 +36,9 @@ export class MessageService {
     console.log(`Fetching messages for user: ${userId} and receiver: ${receiverId}`); // Log for debugging
     return this.http.get(`${this.apiUrl}/messages/${userId}/${receiverId}`);
   }
-  private socket!: Socket;
 
-  private messagesSubject = new Subject<Message>();
-  public messages$ = this.messagesSubject.asObservable();
 
-  /**
-   * Creates a new Socket.io connection and sends messages to the messages subject
-   */
-  public connect(): void {
-    if (!this.socket || !this.socket.connected) {
-      this.socket = io('http://localhost:3000');
-
-      this.socket.on('connect', () => {
-        console.log('[DataService]: connection ok');
-      });
-
-      this.socket.on('disconnect', () => {
-        console.log('[DataService]: connection closed');
-      });
-
-      this.socket.on('message', (msg: Message) => {
-        console.log('Received message of type: ' + msg.type);
-        this.messagesSubject.next(msg);
-      });
-    }
-  }
+  
 
   sendMessage(msg: Message): void {
     console.log('sending message: ' + msg.type);

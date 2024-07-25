@@ -20,7 +20,12 @@ const server = new Server(app);
 
 // Initialize Socket.IO
 const io = new SocketServer(server, {
-  cors: { origin: "*" }
+  cors: {
+    origin: "https://socioclub.site",  // Replace with your frontend URL
+    methods: ["GET", "POST","PUT","DELETE","PATCH"],
+    credentials: true
+  },
+  transports: ['websocket', 'polling']
 });
 
 // Configure Socket.IO
@@ -36,7 +41,8 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors({
-  origin: '*',
+  origin: "https://socioclub.site",  // Replace with your frontend URL
+  credentials: true
 }));
 
 // Routes
