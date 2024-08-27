@@ -19,6 +19,8 @@ export interface IUser {
   createdAt: Date;
   updatedAt: Date;
   isPrivate:boolean;
+  gender:string;
+  birthdate:Date;
 }
 
 

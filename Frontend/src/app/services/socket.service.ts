@@ -1,6 +1,7 @@
 
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { SocketIoConfig } from 'ngx-socket-io';
 import { io, Socket } from 'socket.io-client';
 import { MessageService } from './message.service';
 import { environment } from '../../environments/environment.development';
@@ -10,31 +11,21 @@ import { environment } from '../../environments/environment.development';
   providedIn: 'root'
 })
 export class SocketService {
-  // private socket: Socket;
-
-  // constructor() {
-  //   this.socket = io('http://localhost:3000', {
-  //   });
-  // }
-
-  // public getBirthdayNotifications(): Observable<any> {
-  //   return new Observable(observer => {
-  //     this.socket.on('birthdayNotification', (data: any) => {
-  //       observer.next(data);
-  //     });
-
-  //     // Handle disconnection
-  //     return () => {
-  //       this.socket.disconnect();
-  //     };
-  //   });
-  // }
-
-
-  private socket: Socket;
- private socketURL:string=environment.socketUrl
+ private socket: Socket;
   constructor(private messageService: MessageService) {
-    this.socket = io(`${this.socketURL}`); 
+    const config: SocketIoConfig = {
+      url: 'https://socioclub.site',
+      options: {},
+    };
+    this.socket = io(config.url, config.options);
+
+    this.socket.on('connect', () => {
+      console.log('Socket connected');
+    });
+
+    this.socket.on('connect_error', (error) => {
+      console.log('Socket connection error:', error);
+    });
   }
 
   listenForNotifications(): Observable<any> {

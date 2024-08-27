@@ -14,8 +14,7 @@ import { fetchUserAPI } from '../../store/user/user.action';
 import { ActivatedRoute, Router } from '@angular/router';
 import { userSelectorData } from '../../store/admin/admin.selector';
 import { fetchUsersAPI } from '../../../modules/store/admin/admin.action';
-import { SocketService } from '../../../services/socket.service';
-import { Socket } from 'socket.io-client';
+
 @Component({
     selector: 'app-other-profile',
     standalone: true,

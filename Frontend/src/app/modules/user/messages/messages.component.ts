@@ -126,16 +126,16 @@ export class MessagesComponent {
       )
       
     );
-    this.UsersNot$=this.users$.pipe(
+    this.UsersNot$ = this.users$.pipe(
       map(users =>
         users.filter(user =>
           !this.activeConversations.some(conv => conv.receiverId === user._id)
+          && user._id !== this.userId 
         )
       )
     );
 
-    this.filterUsers('')
-    
+    this.filterUsers('') 
   }
 
 

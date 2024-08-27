@@ -12,6 +12,7 @@ import { ReportPostComponent } from '../report-post/report-post.component';
 import { AuthService } from '../../../services/auth.service';
 import { Route, Router, Routes } from '@angular/router';
 import { format, parseISO } from 'date-fns';
+import { PostCarouselComponent } from "../post-carousel/post-carousel.component";
 
 
 @Component({
@@ -25,7 +26,8 @@ import { format, parseISO } from 'date-fns';
     ModalComponent,
     ReportPostComponent,
     PostsComponent,
-  ],
+    PostCarouselComponent
+],
   templateUrl: './posts.component.html',
   styleUrl: './posts.component.css',
 })
