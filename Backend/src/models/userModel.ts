@@ -64,7 +64,7 @@ const userSchema = new Schema<UserDocument>({
     profilePic: {
         type: String,
         trim: true,
-        default: "https://res.cloudinary.com/de3cijula/image/upload/v1721666742/default-profile-picture_n67gu3.webp",
+        default: "https://res.cloudinary.com/de3cijula/image/upload/v1723188261/vector-flat-illustration-grayscale-avatar-600nw-2264922221_epwxnw.webp",
     },
     phone: {
         type: String,

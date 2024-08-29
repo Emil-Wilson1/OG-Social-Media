@@ -40,8 +40,8 @@
           </div>
         </div>
         <!-- Bio -->
-        <p class="text-gray-800 mb-4 text-center md:text-left">{{ data.bio }}</p>
-        <p class="text-sm text-gray-500 cursor-pointer text-center md:text-left"
+        <p class="text-gray-800 mb-4  md:text-left">{{ data.bio }}</p>
+        <p class="text-sm text-gray-500 cursor-pointer md:text-left"
           (click)="openModal(getMutualConnectionsIds(data), 'Mutual Connections')">
           <ng-container *ngIf="getMutualConnections(data) > 0; else suggestedForYou">
             {{ getMutualConnections(data) }} mutual connection{{ getMutualConnections(data) !== 1 ? 's' : '' }}

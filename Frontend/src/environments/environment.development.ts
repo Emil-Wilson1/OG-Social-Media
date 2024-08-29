@@ -1,6 +1,6 @@
 export const environment = {
-  apiUrl: 'https://socioclub.site/api/user',
-  Url: 'https://socioclub.site/api/admin',
-  socketUrl:'https://socioclub.site',
-  videoCall:'https://socioclub.site'
+  apiUrl: 'http://localhost:3000/api/user',
+  Url: 'http://localhost:3000/api/admin',
+  socketUrl:'http://localhost:3000',
+  videoCall:'http://localhost:3000'
 };

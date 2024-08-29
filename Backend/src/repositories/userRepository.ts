@@ -1,5 +1,5 @@
 
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import User, { UserDocument } from '../models/userModel';
 import bcrypt from 'bcryptjs';
 
@@ -129,7 +129,21 @@ export class UserRepository {
       }
     }
 
-
+    async isFollowing(currentUserId: string, targetUserId: string): Promise<boolean> {
+      try {
+        const currentUser = await User.findById(currentUserId).exec();
+  
+        if (!currentUser) {
+          throw new Error('Current user not found');
+        }
+  
+        // Check if the targetUserId is in the currentUser's following list
+        return currentUser.following.includes(new mongoose.Types.ObjectId(targetUserId));
+      } catch (error) {
+        console.error('Error checking follow status:', error);
+        throw error;
+      }
+    }
     async followUser(followerId: string, userId: string): Promise<void> {
       await this.userModel.findByIdAndUpdate(followerId, { $push: { following: userId } });
       await this.userModel.findByIdAndUpdate(userId, { $push: { followers: followerId } });

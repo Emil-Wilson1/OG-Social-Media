@@ -13,6 +13,7 @@ import adminRouter from './src/routes/adminRouter';
 import socketIo_Config from './src/sockets/socket';
 import { startBirthdayCron } from './src/utils/birthdayCron';
 import chatRouter from './src/routes/chatRouter';
+import './src/types/types';
 
 // Create an Express app
 const app = express();
