@@ -20,7 +20,7 @@ const server = new Server(app);
 
 // Initialize Socket.IO
 const io = new SocketServer(server, {
-  cors: { origin: "*" }
+  cors: { origin: "https://og-social-media-ep1wx69yv-emil-s-projects-f7dc574e.vercel.app" }
 });
 
 // Configure Socket.IO
@@ -35,7 +35,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({ origin: 'https://og-social-media-ep1wx69yv-emil-s-projects-f7dc574e.vercel.app' }));
 
 // Routes
 app.use('/api/user', userRouter,postRouter,chatRouter);
