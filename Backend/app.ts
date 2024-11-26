@@ -35,9 +35,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors({
-  origin: '*',
-}));
+app.use(cors());
 
 // Routes
 app.use('/api/user', userRouter,postRouter,chatRouter);
