@@ -23,7 +23,7 @@ export interface Notification {
     standalone: true,
     templateUrl: './notifications.component.html',
     styleUrl: './notifications.component.css',
-    imports: [SuggestionsComponent, SidebarComponent,CommonModule]
+    imports: [ SidebarComponent,CommonModule]
 })
 export class NotificationsComponent {
  

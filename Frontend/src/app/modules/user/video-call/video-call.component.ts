@@ -46,8 +46,8 @@ export class VideoCallComponent  {
       return;
     }
 
-    const appId = 1700648710;
-    const serverSecret = '24ba49eb4eaa045342275a0894079d04';
+    const appId = 818329338;
+    const serverSecret = 'd6126c644551d49685d31fba12276e25';
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appId, serverSecret, this.roomId, this.user, this.userDetails?.username);
 
     const zc = ZegoUIKitPrebuilt.create(kitToken);
