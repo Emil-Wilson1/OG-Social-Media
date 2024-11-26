@@ -20,7 +20,7 @@ const server = new Server(app);
 
 // Initialize Socket.IO
 const io = new SocketServer(server, {
-  cors: { origin: "https://og-social-media-ep1wx69yv-emil-s-projects-f7dc574e.vercel.app" }
+  cors: { origin: "*" }
 });
 
 // Configure Socket.IO
@@ -31,11 +31,11 @@ mongooseConnection();
 cloudinaryConfig();
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors({ origin: 'https://og-social-media-ep1wx69yv-emil-s-projects-f7dc574e.vercel.app' }));
 
 // Routes
 app.use('/api/user', userRouter,postRouter,chatRouter);
